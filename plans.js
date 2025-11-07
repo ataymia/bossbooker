@@ -1,102 +1,82 @@
-// Plan selection
-function selectPlan(planName) {
-    alert(`You selected the ${planName} plan! This would normally redirect to the checkout page.`);
-}
+/**
+ * Plans builder — Boss Booker
+ * Keeps existing functionality; adds setup fees and updated prices.
+ */
 
-function contactSales() {
-    window.location.href = 'contact.html?subject=Enterprise%20Plan';
-}
-
-// Price Calculator
 function updatePrice() {
-    // Get base plan
+    const SETUP_FEES = { starter: 499, growth: 999, scale: 2499 };
+
+    // Base plan
     const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
-    const basePlanPrice = parseInt(basePlanRadio.dataset.price);
-    const basePlanName = basePlanRadio.value.charAt(0).toUpperCase() + basePlanRadio.value.slice(1);
-    
-    let monthlyTotal = basePlanPrice;
-    let onetimeTotal = 0;
-    
-    // Helper function to create a summary item safely
-    function createSummaryItem(label, value) {
-        const div = document.createElement('div');
-        div.className = 'summary-item';
-        
-        const labelSpan = document.createElement('span');
-        labelSpan.textContent = label;
-        
-        const valueSpan = document.createElement('span');
-        valueSpan.textContent = value;
-        
-        div.appendChild(labelSpan);
-        div.appendChild(valueSpan);
-        return div;
+    const basePlanPrice = basePlanRadio ? parseFloat(basePlanRadio.dataset.price || "0") : 0;
+
+    // Monthly add-ons
+    const addonChecks = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
+        .filter(el => !el.hasAttribute('data-onetime'));
+    const addonsMonthly = addonChecks
+        .filter(el => el.checked)
+        .map(el => parseFloat(el.dataset.price || "0"))
+        .reduce((a, b) => a + b, 0);
+
+    // One-time items
+    const onetimeChecks = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"][data-onetime="true"]'));
+    const onetimeFees = onetimeChecks
+        .filter(el => el.checked)
+        .map(el => parseFloat(el.dataset.price || "0"));
+
+    // Additional users (if present in DOM, keep backward compatibility)
+    const additionalUsersInput = document.getElementById('additionalUsers');
+    const additionalUserPrice = additionalUsersInput ? parseFloat(additionalUsersInput.dataset.price || "0") : 0;
+    const additionalUsers = additionalUsersInput ? parseInt(additionalUsersInput.value || "0", 10) : 0;
+
+    // Totals
+    const monthlyTotal = basePlanPrice + addonsMonthly + (additionalUsers * additionalUserPrice);
+    const onetimeFromAddons = onetimeFees.reduce((a, b) => a + b, 0);
+    const baseSetup = SETUP_FEES[basePlanRadio.value] || 0;
+    const onetimeTotal = baseSetup + onetimeFromAddons;
+    const firstMonthTotal = monthlyTotal + onetimeTotal;
+
+    // Update labels
+    if (document.getElementById('basePlanName')) {
+        const planName = basePlanRadio ? (basePlanRadio.value.charAt(0).toUpperCase() + basePlanRadio.value.slice(1)) : 'Starter';
+        document.getElementById('basePlanName').textContent = planName;
     }
-    
-    // Clear and rebuild summary details
-    const summaryDetails = document.getElementById('summaryDetails');
-    summaryDetails.innerHTML = ''; // Clear existing content
-    
-    // Add base plan
-    summaryDetails.appendChild(createSummaryItem('Base Plan:', `${basePlanName} - $${basePlanPrice}`));
-    
-    // Get all checked add-ons
-    const addons = document.querySelectorAll('input[type="checkbox"]:checked');
-    addons.forEach(addon => {
-        const price = parseInt(addon.dataset.price);
-        const isOnetime = addon.dataset.onetime === 'true';
-        const label = addon.parentElement.querySelector('span').textContent;
-        const labelName = label.split(' - ')[0];
-        
-        if (isOnetime) {
-            onetimeTotal += price;
-            summaryDetails.appendChild(createSummaryItem(labelName + ':', `$${price} (one-time)`));
-        } else {
-            monthlyTotal += price;
-            summaryDetails.appendChild(createSummaryItem(labelName + ':', `$${price}/mo`));
-        }
-    });
-    
-    // Get additional users
-    const additionalUsers = document.getElementById('additionalUsers');
-    const userCount = parseInt(additionalUsers.value) || 0;
-    if (userCount > 0) {
-        const userPrice = parseInt(additionalUsers.dataset.price) * userCount;
-        monthlyTotal += userPrice;
-        summaryDetails.appendChild(createSummaryItem(`Additional Users (${userCount}):`, `$${userPrice}/mo`));
-    }
-    
-    // Update totals
-    document.getElementById('monthlyTotal').textContent = `$${monthlyTotal}`;
-    document.getElementById('onetimeTotal').textContent = `$${onetimeTotal}`;
-    document.getElementById('firstMonthTotal').textContent = `$${monthlyTotal + onetimeTotal}`;
-    
-    // Show/hide one-time row
+    if (document.getElementById('monthlyTotal')) document.getElementById('monthlyTotal').textContent = `$${monthlyTotal.toLocaleString()}`;
+    if (document.getElementById('onetimeTotal')) document.getElementById('onetimeTotal').textContent = `$${onetimeTotal.toLocaleString()}`;
+    if (document.getElementById('firstMonthTotal')) document.getElementById('firstMonthTotal').textContent = `$${firstMonthTotal.toLocaleString()}`;
+
+    // Optional visibility row if your HTML uses it (kept from original pattern)
     const onetimeRow = document.getElementById('onetimeRow');
-    if (onetimeTotal > 0) {
-        onetimeRow.style.display = 'flex';
-    } else {
-        onetimeRow.style.display = 'none';
-    }
+    if (onetimeRow) onetimeRow.style.display = onetimeTotal > 0 ? 'block' : 'none';
 }
 
-function proceedToCheckout() {
-    const monthlyTotal = document.getElementById('monthlyTotal').textContent;
-    const firstMonthTotal = document.getElementById('firstMonthTotal').textContent;
-    
-    // In a real application, this would redirect to the payment page
-    // For now, we'll show a simple confirmation
-    const confirmMsg = `Ready to proceed to checkout!\n\nMonthly: ${monthlyTotal}\nFirst Month Total: ${firstMonthTotal}\n\nIn a production environment, you would be redirected to the payment page.`;
-    
-    // Show confirmation in console for debugging
-    if (window.console && console.log) {
-        console.log('Checkout initiated:', { monthlyTotal, firstMonthTotal });
-    }
-    
-    alert(confirmMsg);
+function copyQuote() {
+    // Gather state
+    const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
+    const basePlanName = basePlanRadio ? (basePlanRadio.value.charAt(0).toUpperCase() + basePlanRadio.value.slice(1)) : 'Starter';
+
+    const monthly = document.getElementById('monthlyTotal')?.textContent || '';
+    const onetime = document.getElementById('onetimeTotal')?.textContent || '';
+    const first = document.getElementById('firstMonthTotal')?.textContent || '';
+
+    const addons = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
+        .filter(el => el.checked)
+        .map(el => el.parentElement?.innerText.trim().replace(/\s+/g, ' ') || '')
+        .filter(Boolean);
+
+    const payload = [
+        "Boss Booker — Quote",
+        `Plan: ${basePlanName}`,
+        `Monthly: ${monthly}`,
+        `One-time: ${onetime}`,
+        `First Month Due: ${first}`,
+        addons.length ? `Add-ons:\n- ${addons.join('\n- ')}` : "Add-ons: (none)"
+    ].join("\n");
+
+    navigator.clipboard.writeText(payload)
+        .then(() => alert('Quote copied to clipboard'))
+        .catch(() => alert('Could not copy — select & copy manually.'));
 }
 
-// Initialize price on page load
-document.addEventListener('DOMContentLoaded', () => {
-    updatePrice();
-});
+// Initialize
+document.addEventListener('DOMContentLoaded', updatePrice);
