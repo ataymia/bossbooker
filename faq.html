@@ -3,320 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Boss Booker FAQ - Frequently Asked Questions">
-    <title>FAQ - Boss Booker</title>
+    <title>Boss Booker — FAQ</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="faq.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="container nav-container">
-            <div class="logo">
-                <a href="index.html">Boss Booker</a>
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <div class="brand">
+                <div class="logo" aria-hidden="true"></div>
+                <div>Boss Booker</div>
             </div>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="plans.html" class="nav-link">Plans</a></li>
-                <li><a href="about.html" class="nav-link">About</a></li>
-                <li><a href="faq.html" class="nav-link active">FAQ</a></li>
-                <li><a href="referrals.html" class="nav-link">Referrals</a></li>
-                <li><a href="contact.html" class="nav-link">Contact</a></li>
-            </ul>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="plans.html">Plans</a>
+                <a href="about.html">About</a>
+                <a class="active" href="faq.html">FAQ</a>
+                <a href="referrals.html">Referrals</a>
+                <a href="contact.html">Contact</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Page Header -->
-    <section class="page-header">
-        <div class="container">
-            <h1>Frequently Asked Questions</h1>
-            <p>Find answers to common questions about Boss Booker</p>
-        </div>
-    </section>
+    <main class="container section">
+        <h1 class="section-title">Frequently Asked Questions</h1>
 
-    <!-- FAQ Content -->
-    <section class="faq-section">
-        <div class="container">
-            <div class="faq-categories">
-                <button class="category-btn active" data-category="general">General</button>
-                <button class="category-btn" data-category="pricing">Pricing & Plans</button>
-                <button class="category-btn" data-category="features">Features</button>
-                <button class="category-btn" data-category="technical">Technical</button>
-                <button class="category-btn" data-category="support">Support</button>
+        <div class="grid-2">
+            <div class="card">
+                <strong>Can I change plans later?</strong>
+                <p style="color:var(--text-secondary)">Yep! Upgrade/downgrade any time. Add-ons are month-to-month unless marked one-time.</p>
             </div>
-
-            <!-- General Category -->
-            <div class="faq-category active" data-category="general">
-                <div class="faq-accordion">
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            What is Boss Booker?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Boss Booker is a comprehensive booking and scheduling platform designed to help businesses of all sizes manage appointments, reduce no-shows, and streamline their operations. We provide powerful tools that are easy to use, fully customizable, and integrate seamlessly with your existing workflows.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            How long does it take to set up?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Most users are up and running in under 15 minutes! Our intuitive setup wizard guides you through the process step by step. For more complex configurations, our professional setup service can have you fully operational within 24 hours.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Is there a free trial?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Yes! All plans include a 14-day free trial with full access to features. No credit card required to start. You can upgrade, downgrade, or cancel at any time.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Who can benefit from Boss Booker?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Boss Booker is perfect for service-based businesses including consultants, healthcare providers, fitness trainers, beauty salons, educational institutions, legal professionals, and anyone who needs to manage appointments efficiently.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="card">
+                <strong>Is there a contract?</strong>
+                <p style="color:var(--text-secondary)">No long-term lock-in. Cancel anytime, though we hope you’ll stay busy with us. 💅🏽</p>
             </div>
-
-            <!-- Pricing Category -->
-            <div class="faq-category" data-category="pricing">
-                <div class="faq-accordion">
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            How much does Boss Booker cost?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>We offer flexible pricing starting at $29/month for solo professionals. Plans scale based on your needs, with options for small teams ($79/month), established businesses ($199/month), and custom enterprise solutions. Check our Plans page for detailed pricing.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Can I change my plan later?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Absolutely! You can upgrade or downgrade your plan at any time. Upgrades take effect immediately, and you'll only pay the prorated difference. Downgrades take effect at the start of your next billing cycle.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Do you offer discounts for annual billing?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Yes! Save 20% when you pay annually. We also offer special discounts for non-profits, educational institutions, and startups. Contact our sales team for more information.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            What payment methods do you accept?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>We accept all major credit cards (Visa, Mastercard, American Express, Discover), PayPal, and can provide invoicing for annual plans or enterprise customers.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="card">
+                <strong>Do you handle the calls?</strong>
+                <p style="color:var(--text-secondary)">Our appointment-setting add-ons cover outreach + follow-ups. You can start with SMS-only and add live agents later.</p>
             </div>
-
-            <!-- Features Category -->
-            <div class="faq-category" data-category="features">
-                <div class="faq-accordion">
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            What integrations are available?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Boss Booker integrates with Google Calendar, Apple Calendar, Outlook, Zoom, Microsoft Teams, Stripe, PayPal, Slack, Mailchimp, Salesforce, QuickBooks, and Zapier. Business and Enterprise plans also offer custom API access for building your own integrations.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Can I customize my booking page?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Yes! Professional and higher plans include custom branding options. You can add your logo, choose colors, customize text, and even use your own domain. Business and Enterprise plans offer white-label solutions for complete brand control.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Does Boss Booker support team scheduling?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Absolutely! Professional and higher plans include team management features. You can manage multiple team members, set individual availability, assign specific services to team members, and let clients choose their preferred provider.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            How do reminders work?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>All plans include automated email reminders. Professional and higher plans also include SMS reminders. You can customize reminder timing (24 hours before, 1 hour before, etc.) and message content to match your brand voice.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Technical Category -->
-            <div class="faq-category" data-category="technical">
-                <div class="faq-accordion">
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Is my data secure?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Security is our top priority. We use bank-level 256-bit SSL encryption, regular security audits, and comply with GDPR, CCPA, and HIPAA standards. All data is backed up daily and stored in secure, redundant data centers.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            What's your uptime guarantee?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>We maintain a 99.9% uptime SLA. Our infrastructure is built on enterprise-grade cloud services with automatic failover and redundancy. Business and Enterprise plans include priority incident response and dedicated support.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Can I export my data?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Yes! You own your data and can export it at any time in multiple formats (CSV, JSON, Excel). There are no lock-in contracts or data export fees. We also offer migration assistance if you need to move your data to another platform.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Is Boss Booker mobile-friendly?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Absolutely! Boss Booker is fully responsive and works seamlessly on all devices. Your clients can book from any smartphone, tablet, or desktop. We also offer iOS and Android apps for managing your bookings on the go.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Support Category -->
-            <div class="faq-category" data-category="support">
-                <div class="faq-accordion">
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            What kind of support do you offer?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>All plans include email support with 24-hour response time. Professional plans add live chat support. Business plans include priority support with 4-hour response time. Enterprise plans include dedicated account management and phone support.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Do you provide training?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Yes! We offer comprehensive documentation, video tutorials, and webinars for all users. Business and Enterprise plans include personalized onboarding sessions. We also offer à la carte team training sessions for $199.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            Can you help migrate from my current system?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Absolutely! We offer data migration services starting at $499. Our team will work with you to seamlessly transfer your existing appointments, customer data, and settings to Boss Booker with minimal disruption to your business.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question" aria-expanded="false">
-                            What if I need help outside business hours?
-                            <span class="faq-icon">+</span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Our help center and documentation are available 24/7. Business and Enterprise customers have access to priority support with faster response times. For critical issues, Enterprise customers can reach our on-call team anytime.</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="card">
+                <strong>What about ads & SEO?</strong>
+                <p style="color:var(--text-secondary)">They’re optional add-ons. Starter users can add them à la carte; Growth/Scale include baseline tiers.</p>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Still Have Questions CTA -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Still Have Questions?</h2>
-            <p>Our team is here to help you find the perfect solution</p>
-            <a href="contact.html" class="btn btn-secondary btn-large">Contact Us</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Boss Booker</h3>
-                    <p>Professional booking solutions for modern businesses.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="plans.html">Plans</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="faq.html">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="referrals.html">Referrals</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Boss Booker. All rights reserved.</p>
-            </div>
-        </div>
+        <div class="container">© 2025 Boss Booker. All rights reserved.</div>
     </footer>
-
-    <script src="script.js"></script>
-    <script src="faq.js"></script>
 </body>
 </html>
