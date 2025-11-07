@@ -167,25 +167,89 @@
             </div>
         </section>
 
-        <!-- Customize + summary (kept near add-ons) -->
+        <!-- Customize + summary -->
         <section class="section" style="margin-top:20px;">
             <h2 class="section-title">Customize your package</h2>
 
             <div class="grid-2">
                 <div class="card">
-                    <h3>Add-ons & À la carte</h3>
+                    <h3>Tiered Add-ons & À la carte</h3>
+
+                    <!-- Tiered add-ons group -->
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Core Automation (choose a la carte)</div>
+                        <select class="addon-select" id="addon_core" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="core_nano" data-price="149">Nano — $149/mo</option>
+                            <option value="core_micro" data-price="249">Micro — $249/mo</option>
+                            <option value="core_starter" data-price="399">Starter — $399/mo</option>
+                            <option value="core_pro" data-price="699">Pro — $699/mo</option>
+                            <option value="core_scale" data-price="1200">Scale — $1,200/mo</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Appointment Setting (Model A)</div>
+                        <select class="addon-select" id="addon_appt" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="appt_nano" data-price="199">Nano — $199 (60 attempts)</option>
+                            <option value="appt_micro" data-price="299">Micro — $299 (120 attempts)</option>
+                            <option value="appt_starter" data-price="600">Starter — $600 (300 attempts)</option>
+                            <option value="appt_pro" data-price="1400">Pro — $1,400 (1,200 attempts)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">PPC Management</div>
+                        <select class="addon-select" id="addon_ppc" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="ppc_nano" data-price="300">Nano — $300/mo</option>
+                            <option value="ppc_micro" data-price="450">Micro — $450/mo</option>
+                            <option value="ppc_starter" data-price="600">Starter — $600/mo</option>
+                            <option value="ppc_pro" data-price="900">Pro — $900/mo</option>
+                            <option value="ppc_scale" data-price="0" data-pct="12" data-min="1200">Scale — 12% of ad spend (min $1,200)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Local SEO</div>
+                        <select class="addon-select" id="addon_seo" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="seo_nano" data-price="300">Nano — $300/mo</option>
+                            <option value="seo_micro" data-price="500">Micro — $500/mo</option>
+                            <option value="seo_starter" data-price="800">Starter — $800/mo</option>
+                            <option value="seo_pro" data-price="1200">Pro — $1,200/mo</option>
+                            <option value="seo_scale" data-price="2000">Scale — $2,000+/mo</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Websites (one-time)</div>
+                        <select class="addon-select" id="addon_websites" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="site_onepager" data-price="799" data-onetime="true">One-pager — $799 (one-time)</option>
+                            <option value="site_lp" data-price="1200" data-onetime="true">Landing Page — $1,200 (one-time)</option>
+                            <option value="site_minisite" data-price="2800" data-onetime="true">Mini-site (3–5p) — $2,800 (one-time)</option>
+                            <option value="site_full" data-price="4800" data-onetime="true">Full site (6–10p) — $4,800 (one-time)</option>
+                        </select>
+                    </div>
+
+                    <h4 style="margin-top:12px;">Other add-ons</h4>
                     <div class="checkbox-group">
                         <label class="checkbox-option"><input type="checkbox" value="sms_assistant" data-price="99" onchange="updatePrice()"><span>SMS Assistant (text bot) — $99/month</span></label>
                         <label class="checkbox-option"><input type="checkbox" value="ai_chat" data-price="79" onchange="updatePrice()"><span>Website AI Chat — $79/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="appt50" data-price="299" onchange="updatePrice()"><span>Appointment Setting (+50/mo) — $299/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="appt200" data-price="899" onchange="updatePrice()"><span>Appointment Setting (+200/mo) — $899/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="seo_basic" data-price="300" onchange="updatePrice()"><span>Local SEO — $300+ (tiered)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="ppc_mgmt" data-price="600" onchange="updatePrice()"><span>PPC Management — starting at $300–$900 depending on tier</span></label>
                         <label class="checkbox-option"><input type="checkbox" value="analytics" data-price="49" onchange="updatePrice()"><span>Analytics Dashboard — $49/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="landing" data-price="1200" data-onetime="true" onchange="updatePrice()"><span>Landing Page — $1,200 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="mini_site" data-price="2800" data-onetime="true" onchange="updatePrice()"><span>Mini-site (3–5p) — $2,800 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="full_site" data-price="4800" data-onetime="true" onchange="updatePrice()"><span>Full site (6–10p) — $4,800 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="csm" data-price="299" onchange="updatePrice()"><span>Dedicated Success Manager — $299/month</span></label>
                     </div>
+
+                    <h4 style="margin-top:12px;">GLAM à-la-carte (available to GLAM plans)</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option"><input type="checkbox" value="one_page_portfolio" data-price="799" data-onetime="true" onchange="updatePrice()"><span>One-page portfolio — $799 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="policy_forms" data-price="149" data-onetime="true" onchange="updatePrice()"><span>Policy / Intake forms — $149 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="last_minute_fill" data-price="49" onchange="updatePrice()"><span>Last-minute fill blast — $49/campaign</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="ad_boost" data-price="150" onchange="updatePrice()"><span>Basic ad boost mgmt — $150/month (up to $300 spend)</span></label>
+                    </div>
+
                 </div>
 
                 <aside class="summary-card">
