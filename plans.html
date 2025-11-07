@@ -6,143 +6,185 @@
     <title>Boss Booker — Plans</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <style>
-        /* tiny page-local helpers so we don't touch your global CSS */
-        .nav-brand {display:flex;align-items:center;gap:10px;font-weight:800;flex-shrink:0;}
-        .nav-brand img {height:32px;width:32px;border-radius:8px;display:block;}
-        .nav-container {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:8px 0;flex-wrap:wrap;}
-        .nav-links {display:flex;align-items:center;gap:12px;list-style:none;margin:0;padding:0;flex-wrap:wrap;justify-content:flex-end;}
-        .nav-links li {margin:0;}
-        .nav-links a, .nav-links button {white-space:nowrap;}
-        
-        /* Mobile navigation adjustments */
-        @media (max-width: 768px) {
-            .nav-container {gap:8px;}
-            .nav-links {gap:8px;font-size:14px;}
-            .nav-links a {padding:6px 10px;font-size:14px;}
-            .nav-links button {padding:8px 10px;font-size:14px;}
-        }
-        
-        @media (max-width: 480px) {
-            .nav-container {justify-content:center;}
-            .nav-links {width:100%;justify-content:center;gap:4px;flex-wrap:wrap;}
-            .nav-links a {padding:6px 8px;font-size:13px;}
-            .nav-links button {padding:6px 10px;font-size:13px;}
-        }
-    </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar" id="navbar">
-        <div class="container nav-container">
-            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;">
-                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo">
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-weight:800;">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:48px;width:48px;border-radius:8px;display:block;">
             </a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a class="active" href="plans.html">Plans</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="faq.html">FAQ</a></li>
-                <li><a href="referrals.html">Referrals</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a class="active" href="plans.html">Plans</a>
+                <a href="about.html">About</a>
+                <a href="faq.html">FAQ</a>
+                <a href="referrals.html">Referrals</a>
+                <a href="contact.html">Contact</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
     <main class="container section">
         <h1 class="section-title">Plans that start smart and scale up</h1>
-        <p class="pill">Transparent packages &mdash; plus à la carte everything</p>
+        <p class="pill">A tightened, scaled lineup from Nano → Micro → Starter → Pro → Scale → Enterprise. Small Business Starter Kit remains a special standalone option.</p>
 
+        <!-- Base plans selection -->
         <div class="card" style="margin-top:14px">
-            <h2>Pick a base plan</h2>
+            <h2>Pick a bundle</h2>
             <div class="feature-card">
                 <div class="radio-group">
-                    <!-- Small Business Starter Kit (no checkbox, just warning) -->
-                    <label class="radio-option" id="smallBusinessOption" style="border: 2px solid var(--secondary-color); box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-                        <input type="radio" name="basePlan" value="smallbusiness" data-price="199" data-setup="399" onchange="updatePrice()">
+
+                    <label class="radio-option" title="Nano">
+                        <input type="radio" name="basePlan" value="nano" data-price="599" data-setup="0" onchange="updatePrice()">
                         <span>
-                            <strong>Small Business Starter Kit</strong> — $199/month + $399 setup
-                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">
-                                <span style="color:var(--warning-color); font-weight:bold;"><i>Only available for businesses with &lt;10 employees.</i></span>
-                            </small>
+                            <strong>Nano</strong> — $599/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">For very small teams — Core Automation Nano, Appt Setting Nano, Pick ONE channel</small>
                         </span>
                     </label>
-                    <label class="radio-option">
-                        <input type="radio" name="basePlan" value="starter" data-price="199" checked onchange="updatePrice()">
-                        <span>Starter — $199/month</span>
+
+                    <label class="radio-option" title="Micro">
+                        <input type="radio" name="basePlan" value="micro" data-price="799" data-setup="299" onchange="updatePrice()">
+                        <span>
+                            <strong>Micro</strong> — $799/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Light volume, growing — Core Automation Micro, Appt Setting Micro, Pick ONE channel</small>
+                        </span>
                     </label>
-                    <label class="radio-option">
-                        <input type="radio" name="basePlan" value="growth" data-price="699" onchange="updatePrice()">
-                        <span>Growth — $699/month</span>
+
+                    <label class="radio-option" title="Starter">
+                        <input type="radio" name="basePlan" value="starter" data-price="1899" data-setup="0" onchange="updatePrice()" checked>
+                        <span>
+                            <strong>Starter</strong> — $1,899/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Most popular — Core Automation Starter, Appt Setting Starter, PPC Starter + SEO Micro</small>
+                        </span>
                     </label>
-                    <label class="radio-option">
-                        <input type="radio" name="basePlan" value="scale" data-price="1999" onchange="updatePrice()">
-                        <span>Scale — $1,999/month</span>
+
+                    <label class="radio-option" title="Pro">
+                        <input type="radio" name="basePlan" value="pro" data-price="3799" data-setup="0" onchange="updatePrice()">
+                        <span>
+                            <strong>Pro</strong> — $3,799/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Multi-service push or multi-location lite — Core Automation Pro, Appt Setting Pro</small>
+                        </span>
                     </label>
+
+                    <label class="radio-option" title="Scale">
+                        <input type="radio" name="basePlan" value="scale" data-price="4199" data-setup="1200" onchange="updatePrice()">
+                        <span>
+                            <strong>Scale</strong> — $4,199+/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Heavier ops; several locations — priority support, multi-location dashboards</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="Enterprise">
+                        <input type="radio" name="basePlan" value="enterprise" data-price="0" data-setup="0" data-custom="true" onchange="updatePrice()">
+                        <span>
+                            <strong>Enterprise</strong> — Custom pricing
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Custom SLAs, >1,200 attempts, bespoke integrations. Contact us for pricing.</small>
+                        </span>
+                    </label>
+
+                    <!-- Keep Small Business Starter Kit as-is and present it clearly -->
+                    <label class="radio-option" id="smallBusinessOption" style="border:2px dashed var(--accent-color); margin-top:8px;">
+                        <input type="radio" name="basePlan" value="smallbusiness" data-price="199" data-setup="399" onchange="updatePrice()">
+                        <span>
+                            <strong>Small Business Starter Kit</strong> — $199/mo + $399 setup
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Special package — 1 custom page, setup, starter ads, CRM, appointment booking, automation, SMS, analytics, onboarding support.</small>
+                        </span>
+                    </label>
+
                 </div>
             </div>
         </div>
 
-        <section class="section">
-            <h2 class="section-title">Compare plans</h2>
+        <!-- Compare table -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">What’s included by bundle (at a glance)</h2>
             <div class="card">
-                <table class="compare">
+                <div style="overflow:auto;">
+                <table class="compare" style="min-width:900px;">
                     <thead>
                         <tr>
-                            <th>Feature</th>
-                            <th>Small Business Starter Kit</th>
+                            <th>Capability</th>
+                            <th>Nano</th>
+                            <th>Micro</th>
                             <th>Starter</th>
-                            <th>Growth</th>
+                            <th>Pro</th>
                             <th>Scale</th>
+                            <th>Enterprise</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><strong>Lead-capture site</strong></td><td>1 custom page</td><td>1 page</td><td>Up to 3 pages</td><td>5–7 pages</td></tr>
-                        <tr><td><strong>Initial setup/onboarding</strong></td><td>✓ Included</td><td>—</td><td>—</td><td>—</td></tr>
-                        <tr><td><strong>Appointment booking</strong></td><td>✓ Included</td><td>—</td><td>50/mo</td><td>200/mo</td></tr>
-                        <tr><td><strong>CRM setup</strong></td><td>Starter CRM</td><td>Basic</td><td>Pro + pipelines</td><td>Multi-location</td></tr>
-                        <tr><td><strong>Automation packs</strong></td><td>1 pack</td><td>1</td><td>3</td><td>6</td></tr>
-                        <tr><td><strong>SMS assistant</strong></td><td>✓ Included</td><td>—</td><td>—</td><td>—</td></tr>
-                        <tr><td><strong>Analytics dashboard</strong></td><td>✓ Included</td><td>—</td><td>Included</td><td>Included</td></tr>
-                        <tr><td><strong>Onboarding support</strong></td><td>✓ Included</td><td>—</td><td>—</td><td>—</td></tr>
-                        <tr><td><strong>Starter ads (Google/Meta)</strong></td><td>✓ Included</td><td>—</td><td>Starter add-on</td><td>Pro included</td></tr>
-                        <tr><td><strong>SEO</strong></td><td>—</td><td>—</td><td>— (add-on)</td><td>Pro included</td></tr>
+                        <tr><td>Core Automation tier</td><td>Nano</td><td>Micro</td><td>Starter</td><td>Pro</td><td>Scale</td><td>Custom</td></tr>
+                        <tr><td>Missed-call text-back</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                        <tr><td>Follow-up depth</td><td>2-touch</td><td>3-touch</td><td>3–4</td><td>4–5</td><td>4–5 + rules</td><td>Custom</td></tr>
+                        <tr><td>Pipelines</td><td>1</td><td>2</td><td>4</td><td>Multi-loc lite</td><td>Multi-loc + adv.</td><td>Custom</td></tr>
+                        <tr><td>KPI email (weekly)</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                        <tr><td>Strategy/review cadence</td><td>15m/mo</td><td>30m/mo</td><td>45m/mo</td><td>Bi-weekly</td><td>Quarterly exec</td><td>Custom</td></tr>
+                        <tr><td>Appt Setting attempts</td><td>60</td><td>120</td><td>300</td><td>1,200</td><td>1,200 + 300 buffer</td><td>Custom</td></tr>
+                        <tr><td>PPC management</td><td>Pick 1</td><td>Pick 1</td><td>Starter</td><td>Pro</td><td>Pro</td><td>12% (>$10k)</td></tr>
+                        <tr><td>SEO management</td><td>Pick 1</td><td>Pick 1</td><td>Micro</td><td>Pro</td><td>Pro/Scale</td><td>Scale/Custom</td></tr>
+                        <tr><td>Site perk/credit</td><td>—</td><td>—</td><td>50% off LP</td><td>LP included (1x/yr)</td><td>Mini-site −50% or $1.2k credit</td><td>Full-site −50% or credit</td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </section>
 
-        <section class="section">
+        <!-- GLAM track added as selectable bundle options (GLAM Nano/Micro/Pro) -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">GLAM by Boss Booker — Beauty & Creator Services</h2>
+            <p class="pill" style="margin-bottom:12px;">Stylists, MUAs, braiders, nail artists and creators — DM-driven bookings, fast turnarounds. Sparkle included ✨</p>
+
+            <div class="card">
+                <div class="radio-group">
+                    <label class="radio-option" title="GLAM Nano">
+                        <input type="radio" name="basePlan" value="glam_nano" data-price="149" data-setup="79" onchange="updatePrice()">
+                        <span>
+                            <strong>GLAM Nano</strong> — $149/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Link-in-bio booking hub, DM auto-replies, reminders, 2 templated posts/mo. Setup $79.</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="GLAM Micro">
+                        <input type="radio" name="basePlan" value="glam_micro" data-price="299" data-setup="129" onchange="updatePrice()">
+                        <span>
+                            <strong>GLAM Micro</strong> — $299/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Everything in Nano + 8 templated posts/mo, story calendar, waitlist & slot-drop SMS. Setup $129.</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="GLAM Pro">
+                        <input type="radio" name="basePlan" value="glam_pro" data-price="599" data-setup="179" onchange="updatePrice()">
+                        <span>
+                            <strong>GLAM Pro</strong> — $599/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Everything in Micro + 20 posts/mo, 2 light clip trims/mo, boosted-post advising (up to $150 spend), Appointment Setting Nano included. Setup $179.</small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <p style="font-size:13px; color:var(--text-secondary)">GLAM à la carte: one-page portfolio $799; policy/intake forms $149; last-minute fill blast $49/campaign; basic ad boost mgmt $150/mo (up to $300 spend).</p>
+            </div>
+        </section>
+
+        <!-- Customize + summary (kept near add-ons) -->
+        <section class="section" style="margin-top:20px;">
             <h2 class="section-title">Customize your package</h2>
 
             <div class="grid-2">
                 <div class="card">
-                    <h3>Add-ons</h3>
+                    <h3>Add-ons & À la carte</h3>
                     <div class="checkbox-group">
-                        <!-- Existing add-ons as normal -->
                         <label class="checkbox-option"><input type="checkbox" value="sms_assistant" data-price="99" onchange="updatePrice()"><span>SMS Assistant (text bot) — $99/month</span></label>
                         <label class="checkbox-option"><input type="checkbox" value="ai_chat" data-price="79" onchange="updatePrice()"><span>Website AI Chat — $79/month</span></label>
                         <label class="checkbox-option"><input type="checkbox" value="appt50" data-price="299" onchange="updatePrice()"><span>Appointment Setting (+50/mo) — $299/month</span></label>
                         <label class="checkbox-option"><input type="checkbox" value="appt200" data-price="899" onchange="updatePrice()"><span>Appointment Setting (+200/mo) — $899/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="seo_basic" data-price="300" onchange="updatePrice()"><span>SEO (Basic) — $300/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="seo_pro" data-price="700" onchange="updatePrice()"><span>SEO (Pro) — $700/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="ppc_mgmt" data-price="400" onchange="updatePrice()"><span>Ads Mgmt (Starter) — $400/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="ppc_pro" data-price="900" onchange="updatePrice()"><span>Ads Mgmt (Pro) — $900/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="social" data-price="350" onchange="updatePrice()"><span>Social Media Mgmt — $350/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="scripts" data-price="120" onchange="updatePrice()"><span>Content Scripts — $120/month</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="seo_basic" data-price="300" onchange="updatePrice()"><span>Local SEO — $300+ (tiered)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="ppc_mgmt" data-price="600" onchange="updatePrice()"><span>PPC Management — starting at $300–$900 depending on tier</span></label>
                         <label class="checkbox-option"><input type="checkbox" value="analytics" data-price="49" onchange="updatePrice()"><span>Analytics Dashboard — $49/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="sla" data-price="59" onchange="updatePrice()"><span>Maintenance SLA — $59/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="csm" data-price="299" onchange="updatePrice()"><span>Dedicated Success Manager — $299/month</span></label>
-                    </div>
-
-                    <h3>À La Carte Services</h3>
-                    <div class="checkbox-group">
-                        <label class="checkbox-option"><input type="checkbox" value="landing" data-price="399" data-onetime="true" onchange="updatePrice()"><span>Landing Page — $399 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="mini_site" data-price="1999" data-onetime="true" onchange="updatePrice()"><span>Mini-site (up to 3 pages) — $1,999 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="full_site" data-price="3499" data-onetime="true" onchange="updatePrice()"><span>Full Site (5–7 pages) — $3,499 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="crm_pro" data-price="500" data-onetime="true" onchange="updatePrice()"><span>CRM Pro Setup + Pipelines — $500 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="crm_multi" data-price="1200" data-onetime="true" onchange="updatePrice()"><span>CRM Multi-location Setup — $1,200 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="referral" data-price="199" data-onetime="true" onchange="updatePrice()"><span>Referral Program Setup — $199 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="landing" data-price="1200" data-onetime="true" onchange="updatePrice()"><span>Landing Page — $1,200 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="mini_site" data-price="2800" data-onetime="true" onchange="updatePrice()"><span>Mini-site (3–5p) — $2,800 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="full_site" data-price="4800" data-onetime="true" onchange="updatePrice()"><span>Full site (6–10p) — $4,800 (one-time)</span></label>
                     </div>
                 </div>
 
@@ -151,18 +193,46 @@
                     <div class="grid-2">
                         <div class="card">
                             <div class="line"><span>Base Plan:</span> <strong id="basePlanName">Starter</strong></div>
-                            <div class="line"><span>Monthly Total:</span> <strong class="price-value" id="monthlyTotal">$199</strong></div>
-                            <div class="line"><span>One-time Setup Fee:</span> <strong class="price-value" id="onetimeTotal">$0</strong></div>
-                            <div class="line"><span>First Month Due:</span> <strong class="price-value" id="firstMonthTotal">$199</strong></div>
+                            <div class="line"><span>Monthly Total:</span> <strong class="price-value" id="monthlyTotal">$1,899</strong></div>
+                            <div class="line" id="onetimeRow"><span>One-time Setup Fee:</span> <strong class="price-value" id="onetimeTotal">$0</strong></div>
+                            <div class="line"><span>First Month Due:</span> <strong class="price-value" id="firstMonthTotal">$1,899</strong></div>
                         </div>
                         <div class="card">
-                            <p style="color:var(--text-secondary); font-size:12px; margin:0">Note: Package pricing beats à la carte. Setup fees apply per plan and selected one-time services.</p>
+                            <p style="color:var(--text-secondary); font-size:12px; margin:0">Note: Bundles include platform setup, quiet-hours compliance, basic analytics and weekly KPI email. Carrier fees billed at cost.</p>
                             <button class="btn-primary" style="margin-top:10px" onclick="copyQuote()">Copy Quote</button>
                         </div>
                     </div>
                 </aside>
             </div>
         </section>
+
+        <!-- Bottom totals bar (visible to any plan selection, including GLAM) -->
+        <section id="bottomTotal" style="margin-top:26px;">
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div>
+                    <div style="font-size:14px; color:var(--text-secondary)">Selected</div>
+                    <div style="font-weight:700" id="bottomPlanName">Starter</div>
+                    <div style="color:var(--text-secondary); font-size:13px" id="bottomIncluded">Included: Core features + optional add-ons</div>
+                </div>
+
+                <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
+                    <div style="text-align:right;">
+                        <div style="font-size:12px; color:var(--text-secondary)">Monthly</div>
+                        <div id="bottomMonthly" style="font-weight:700">$1,899</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px; color:var(--text-secondary)">One-time</div>
+                        <div id="bottomOnetime" style="font-weight:700">$0</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px; color:var(--text-secondary)">First month</div>
+                        <div id="bottomFirst" style="font-weight:700">$1,899</div>
+                    </div>
+                    <button class="btn-primary" onclick="copyQuote()" style="margin-left:6px">Copy Quote</button>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer class="footer">
