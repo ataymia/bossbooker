@@ -68,7 +68,7 @@ function copyQuote() {
         "Boss Booker — Quote",
         `Plan: ${basePlanName}`,
         `Monthly: ${monthly}`,
-        `One-time: ${onetime}`,
+        `One-time Setup Fee: ${onetime}`,
         `First Month Due: ${first}`,
         addons.length ? `Add-ons:\n- ${addons.join('\n- ')}` : "Add-ons: (none)"
     ].join("\n");
