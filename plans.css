@@ -376,6 +376,9 @@
 
 .addon-tier-group .radio-option {
     padding: 10px;
+}
+
+.addon-tier-group .radio-option span {
     font-size: 14px;
 }
 
