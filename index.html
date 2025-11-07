@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Boss Booker - Professional booking and scheduling services tailored for your business">
+    <title>Boss Booker - Professional Booking Services</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="#home">Boss Booker</a>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="plans.html" class="nav-link">Plans</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="faq.html" class="nav-link">FAQ</a></li>
+                <li><a href="referrals.html" class="nav-link">Referrals</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Elevate Your Booking Experience</h1>
+                <p class="hero-subtitle">Professional scheduling solutions that put you in control. Streamline appointments, maximize efficiency, and grow your business.</p>
+                <button class="btn btn-primary btn-large" onclick="startQuiz()">Get Started</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Modal -->
+    <div class="modal" id="quizModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeQuiz()">&times;</button>
+            <div class="quiz-container">
+                <h2 class="quiz-title">Find Your Perfect Plan</h2>
+                <div class="quiz-step" id="quizStep">
+                    <div class="question-container">
+                        <p class="quiz-question" id="quizQuestion"></p>
+                        <div class="quiz-options" id="quizOptions"></div>
+                    </div>
+                </div>
+                <div class="quiz-result hidden" id="quizResult">
+                    <h3 class="result-title">Recommended Plan:</h3>
+                    <div class="result-content" id="resultContent"></div>
+                    <a href="plans.html" class="btn btn-primary">View All Plans</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trust Bar -->
+    <section class="trust-bar">
+        <div class="container">
+            <p class="trust-text">Trusted by over 10,000+ businesses worldwide</p>
+            <div class="trust-logos">
+                <div class="trust-logo">TechCrunch</div>
+                <div class="trust-logo">Forbes</div>
+                <div class="trust-logo">Entrepreneur</div>
+                <div class="trust-logo">Inc.</div>
+                <div class="trust-logo">FastCompany</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3-Step Explainer -->
+    <section class="explainer">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">1</div>
+                    <h3 class="step-title">Choose Your Plan</h3>
+                    <p class="step-description">Select from our flexible packages or build a custom solution that fits your unique needs.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">2</div>
+                    <h3 class="step-title">Set Up & Customize</h3>
+                    <p class="step-description">Quick integration with your existing tools. Customize booking pages, notifications, and workflows.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">3</div>
+                    <h3 class="step-title">Start Booking</h3>
+                    <p class="step-description">Go live in minutes. Accept bookings 24/7 and watch your business grow effortlessly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="testimonial-rating">★★★★★</div>
+                    <p class="testimonial-text">"Boss Booker transformed how we handle appointments. Our no-show rate dropped by 70%!"</p>
+                    <div class="testimonial-author">
+                        <strong>Sarah Johnson</strong>
+                        <span>Owner, Wellness Spa</span>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-rating">★★★★★</div>
+                    <p class="testimonial-text">"The customizable builder let us create exactly what we needed. Best investment for our consulting firm."</p>
+                    <div class="testimonial-author">
+                        <strong>Michael Chen</strong>
+                        <span>CEO, TechConsult</span>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-rating">★★★★★</div>
+                    <p class="testimonial-text">"Easy to use, powerful features, and amazing support. Our team was up and running in under an hour."</p>
+                    <div class="testimonial-author">
+                        <strong>Emily Rodriguez</strong>
+                        <span>Manager, Fitness Studio</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integrations -->
+    <section class="integrations">
+        <div class="container">
+            <h2 class="section-title">Seamless Integrations</h2>
+            <p class="section-subtitle">Connect with the tools you already use</p>
+            <div class="integration-grid">
+                <div class="integration-item">Google Calendar</div>
+                <div class="integration-item">Zoom</div>
+                <div class="integration-item">Stripe</div>
+                <div class="integration-item">Slack</div>
+                <div class="integration-item">Mailchimp</div>
+                <div class="integration-item">Salesforce</div>
+                <div class="integration-item">QuickBooks</div>
+                <div class="integration-item">Zapier</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Boss Booker</h3>
+                    <p>Professional booking solutions for modern businesses.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="plans.html">Plans</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="referrals.html">Referrals</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Boss Booker. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sticky CTA -->
+    <div class="sticky-cta" id="stickyCta">
+        <button class="btn btn-primary" onclick="startQuiz()">Get Started Free</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Boss Booker Referral Program - Earn rewards for referring friends">
+    <title>Referrals - Boss Booker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="faq.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html">Boss Booker</a>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="plans.html" class="nav-link">Plans</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="faq.html" class="nav-link">FAQ</a></li>
+                <li><a href="referrals.html" class="nav-link active">Referrals</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Referral Program</h1>
+            <p>Share Boss Booker and earn rewards together</p>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">🔗</div>
+                    <h3 class="step-title">Share Your Link</h3>
+                    <p class="step-description">Get your unique referral link and share it with friends, colleagues, and your network.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">✨</div>
+                    <h3 class="step-title">They Sign Up</h3>
+                    <p class="step-description">When someone signs up using your link and subscribes to any paid plan, you both win!</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">💰</div>
+                    <h3 class="step-title">Earn Rewards</h3>
+                    <p class="step-description">You get $50 credit, and they get 20% off their first 3 months. Unlimited referrals!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rewards Section -->
+    <section class="values-section">
+        <div class="container">
+            <h2 class="section-title">Referral Benefits</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">💵</div>
+                    <h3>$50 Per Referral</h3>
+                    <p>Earn $50 in account credit for every successful referral that subscribes to a paid plan.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🎁</div>
+                    <h3>Friend Gets 20% Off</h3>
+                    <p>Your referrals get an exclusive 20% discount on their first 3 months of any plan.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">♾️</div>
+                    <h3>Unlimited Referrals</h3>
+                    <p>No limits! Refer as many people as you want and keep earning rewards.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">⚡</div>
+                    <h3>Instant Credit</h3>
+                    <p>Credits are applied automatically when your referral's first payment clears.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Referral Form -->
+    <section class="content-section">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <h2 class="section-title">Get Your Referral Link</h2>
+                <p class="section-subtitle">Enter your email to generate your unique referral link</p>
+                
+                <form class="contact-form" id="referralForm" style="margin-top: 2rem;">
+                    <div class="form-group">
+                        <label for="referralEmail">Your Email Address</label>
+                        <input type="email" id="referralEmail" name="email" required placeholder="you@example.com">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-secondary btn-large">Generate My Link</button>
+                </form>
+
+                <div class="referral-result hidden" id="referralResult" style="margin-top: 2rem; padding: 2rem; background: var(--background-alt); border-radius: 12px; border: 2px solid var(--primary-color);">
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Your Referral Link</h3>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                        <input type="text" id="referralLink" readonly style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px;">
+                        <button onclick="copyLink()" class="btn btn-secondary">Copy</button>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem;">Share this link via email, social media, or anywhere you connect with potential customers!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem;">Referral Program Success</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">$500K+</div>
+                    <div class="stat-label">Earned by Referrers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-label">Active Referrers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15,000+</div>
+                    <div class="stat-label">Successful Referrals</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Satisfaction Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Referral FAQs</h2>
+            <div class="content-grid">
+                <div class="content-block">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">When do I get my reward?</h3>
+                    <p>You'll receive your $50 credit automatically after your referral's first paid month is complete. Credits can be used toward your subscription or saved for future use.</p>
+                </div>
+                <div class="content-block">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Is there a limit to referrals?</h3>
+                    <p>No limits! You can refer as many people as you'd like. Each successful referral earns you $50 in credit.</p>
+                </div>
+                <div class="content-block">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Can I refer existing customers?</h3>
+                    <p>The referral program is designed for new customers only. Referrals must be new to Boss Booker and subscribe to a paid plan.</p>
+                </div>
+                <div class="content-block">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">How do I track my referrals?</h3>
+                    <p>Once you're a Boss Booker customer, you can track all your referrals and rewards in your account dashboard under the "Referrals" section.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Start Earning?</h2>
+            <p>Join thousands of happy Boss Booker users sharing the love</p>
+            <a href="plans.html" class="btn btn-secondary btn-large">Sign Up & Get Your Link</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Boss Booker</h3>
+                    <p>Professional booking solutions for modern businesses.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="plans.html">Plans</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="referrals.html">Referrals</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Boss Booker. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('referralForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('referralEmail').value;
+            const encoded = btoa(email);
+            const link = `https://bossbooker.com/signup?ref=${encoded}`;
+            
+            document.getElementById('referralLink').value = link;
+            document.getElementById('referralResult').classList.remove('hidden');
+            document.getElementById('referralResult').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function copyLink() {
+            const linkInput = document.getElementById('referralLink');
+            const link = linkInput.value;
+            
+            // Use modern Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(() => {
+                    showCopySuccess();
+                }).catch(() => {
+                    // Fallback to older method
+                    fallbackCopy();
+                });
+            } else {
+                fallbackCopy();
+            }
+            
+            function fallbackCopy() {
+                linkInput.select();
+                document.execCommand('copy');
+                showCopySuccess();
+            }
+            
+            function showCopySuccess() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
