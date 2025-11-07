@@ -6,12 +6,37 @@
   <meta name="description" content="Boss Booker - Professional booking and scheduling services tailored for your business"/>
   <title>Boss Booker — Home</title>
   <link rel="stylesheet" href="/styles.css"/>
+  <style>
+    /* tiny page-local helpers so we don't touch your global CSS */
+    .nav-brand {display:flex;align-items:center;gap:10px;font-weight:800;}
+    .nav-brand img {height:32px;width:32px;border-radius:8px;display:block;}
+    /* modal overlay & dialog */
+    #quizModal.modal-overlay{
+      position:fixed;inset:0;z-index:1000;display:none;
+      background:rgba(0,0,0,0.85);
+      overflow:auto;               /* <-- overlay scrolls if needed */
+      -webkit-overflow-scrolling: touch;
+      padding:5vh 0;               /* breathing room so dialog isn't glued to edges */
+    }
+    .modal-dialog{
+      max-width:720px;width:92%;margin:0 auto;
+      background: var(--background-alt);
+      border:1px solid var(--border-color);
+      border-radius:14px;padding:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.6);
+      max-height:calc(100vh - 10vh); /* <-- dialog itself scrolls if taller than viewport */
+      overflow:auto;
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="container nav-container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;">
-      <div class="logo" style="font-weight:800;"><a href="index.html" style="text-decoration:none;color:inherit;">Boss Booker</a></div>
+      <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;">
+        <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo">
+        <span>Boss Booker</span>
+      </a>
       <ul class="nav-links" style="display:flex;align-items:center;gap:12px;list-style:none;margin:0;padding:0;">
         <li><a class="active" href="index.html">Home</a></li>
         <li><a href="plans.html">Plans</a></li>
@@ -92,8 +117,9 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-bottom">
-        <p>© 2025 Boss Booker. All rights reserved.</p>
+      <div class="footer-bottom" style="display:flex;align-items:center;gap:10px;">
+        <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:20px;width:20px;border-radius:4px;">
+        <p style="margin:0;">© 2025 Boss Booker. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -103,15 +129,9 @@
     <button class="btn btn-primary" id="openQuizSticky">Get Started</button>
   </div>
 
-  <!-- ===== Questionnaire Modal (more opaque & no notes) ===== -->
-  <div id="quizModal" aria-hidden="true"
-       style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1000;">
-    <div role="dialog" aria-modal="true" aria-labelledby="quizTitle"
-         class="card"
-         style="max-width:720px; width:92%; margin:5vh auto;
-                background: var(--background-alt);
-                border:1px solid var(--border-color);
-                border-radius:14px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,.6);">
+  <!-- ===== Questionnaire Modal (scrollable & brand-safe) ===== -->
+  <div id="quizModal" class="modal-overlay" aria-hidden="true">
+    <div role="dialog" aria-modal="true" aria-labelledby="quizTitle" class="modal-dialog">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
         <h2 id="quizTitle" class="section-title" style="margin:0;">Get Started — Quick Questionnaire</h2>
         <button class="btn btn-secondary" id="closeQuiz" aria-label="Close">Close</button>
@@ -230,13 +250,29 @@
 
   <script src="script.js"></script>
   <script>
-    // ===== Minimal modal handlers (non-breaking) =====
+    // ===== Modal handlers with body scroll lock =====
     const modal = document.getElementById('quizModal');
     const openers = [document.getElementById('openQuizTop'), document.getElementById('openQuizHero'), document.getElementById('openQuizSticky')].filter(Boolean);
     const closeBtn = document.getElementById('closeQuiz');
     const cancelBtn = document.getElementById('cancelQuiz');
-    const showModal = () => { if (modal) { modal.style.display = 'block'; modal.setAttribute('aria-hidden','false'); } if (window.openQuiz) window.openQuiz(); };
-    const hideModal = () => { if (modal) { modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); } if (window.closeQuiz) window.closeQuiz(); };
+
+    const lockBody = () => { document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden'; };
+    const unlockBody = () => { document.documentElement.style.overflow=''; document.body.style.overflow=''; };
+
+    const showModal = () => {
+      if (!modal) return;
+      modal.style.display = 'block';
+      modal.setAttribute('aria-hidden','false');
+      lockBody();
+      if (window.openQuiz) window.openQuiz();
+    };
+    const hideModal = () => {
+      if (!modal) return;
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      unlockBody();
+      if (window.closeQuiz) window.closeQuiz();
+    };
 
     openers.forEach(btn => btn.addEventListener('click', showModal));
     closeBtn?.addEventListener('click', hideModal);
