@@ -10,17 +10,17 @@
 <body>
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
-    <div class="container nav-container">
-      <div class="logo"><a href="index.html">Boss Booker</a></div>
-      <ul class="nav-links">
+    <div class="container nav-container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px;">
+      <div class="logo" style="font-weight:800;"><a href="index.html" style="text-decoration:none;color:inherit;">Boss Booker</a></div>
+      <ul class="nav-links" style="display:flex;align-items:center;gap:12px;list-style:none;margin:0;padding:0;">
         <li><a class="active" href="index.html">Home</a></li>
         <li><a href="plans.html">Plans</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="faq.html">FAQ</a></li>
         <li><a href="referrals.html">Referrals</a></li>
         <li><a href="contact.html">Contact</a></li>
+        <li><button class="btn btn-primary" id="openQuizTop" style="margin-left:6px;">Get Started</button></li>
       </ul>
-      <button class="btn btn-primary" id="openQuizTop">Get Started</button>
     </div>
   </nav>
 
@@ -28,7 +28,6 @@
   <header class="hero section">
     <div class="container">
       <div class="card">
-        <div class="badge">✨ Cute + magenta</div>
         <h1 class="section-title">Get <span style="color:var(--primary-color)">booked</span>, stay <span style="color:var(--secondary-color)">busy</span>.</h1>
         <p style="color:var(--text-secondary)">Answer a few quick questions and we’ll recommend the perfect plan — or you can customize it.</p>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
@@ -50,7 +49,7 @@
         </div>
         <div class="feature-card">
           <strong>Lead-capture websites</strong>
-          <p style="color:var(--text-secondary)">Cute, fast, and built to convert.</p>
+          <p style="color:var(--text-secondary)">Fast and built to convert.</p>
         </div>
         <div class="feature-card">
           <strong>SMS assistants & CRM</strong>
@@ -100,15 +99,19 @@
   </footer>
 
   <!-- Sticky CTA -->
-  <div class="sticky-cta" id="stickyCta">
-    <button class="btn btn-primary" id="openQuizSticky">Get Started Free</button>
+  <div class="sticky-cta" id="stickyCta" style="position:sticky;bottom:0;width:100%;display:flex;justify-content:center;padding:10px;background:transparent;">
+    <button class="btn btn-primary" id="openQuizSticky">Get Started</button>
   </div>
 
-  <!-- ===== Questionnaire Modal (Restored) ===== -->
-  <div id="quizModal" aria-hidden="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1000;">
+  <!-- ===== Questionnaire Modal (more opaque & no notes) ===== -->
+  <div id="quizModal" aria-hidden="true"
+       style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:1000;">
     <div role="dialog" aria-modal="true" aria-labelledby="quizTitle"
          class="card"
-         style="max-width:720px; width:92%; margin:5vh auto; background:rgba(255,255,255,0.04); border:1px solid var(--border-color); border-radius:14px; padding:18px;">
+         style="max-width:720px; width:92%; margin:5vh auto;
+                background: var(--background-alt);
+                border:1px solid var(--border-color);
+                border-radius:14px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,.6);">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
         <h2 id="quizTitle" class="section-title" style="margin:0;">Get Started — Quick Questionnaire</h2>
         <button class="btn btn-secondary" id="closeQuiz" aria-label="Close">Close</button>
@@ -187,10 +190,6 @@
               </select>
             </div>
           </div>
-          <div>
-            <label for="notes">Anything else we should know?</label>
-            <textarea id="notes" name="notes" placeholder="Services offered, seasons, constraints, special requests…"></textarea>
-          </div>
         </fieldset>
 
         <!-- Step 3: Budget & timeline -->
@@ -255,11 +254,9 @@
         locations: data.get('locations') || '',
         needs: data.getAll('needs'),
         goalBookings: data.get('goalBookings') || '',
-        notes: data.get('notes') || '',
         budgetMonthly: data.get('budgetMonthly') || '',
         timeline: data.get('timeline') || ''
       };
-      // Custom event so existing script.js can hook into it without changes
       document.dispatchEvent(new CustomEvent('bossbooker:quizSubmit', { detail: payload }));
       if (typeof window.onQuizSubmit === 'function') window.onQuizSubmit(payload);
       hideModal();
