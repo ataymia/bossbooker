@@ -1,9 +1,12 @@
 /**
  * Plans builder — Boss Booker
- * Fixed tiered add-ons updates, GLAM add-ons selectable, bottom totals updating,
- * and enterprise shows "Contact for pricing".
+ * Fixes:
+ *  - reliable update on select/checkbox/radio changes
+ *  - removed bottom duplicate totals (only sidebar summary remains)
+ *  - enterprise shows "Contact for pricing"
+ *  - PPC Scale preserved as note (not added to numeric totals)
  *
- * Console debug traces help verify behavior during review.
+ * Console.debug lines included to help verification.
  */
 
 // Pricing and setup map (monthly, one-time setup)
@@ -43,11 +46,13 @@ function fmt(v) {
 // Helper: read selected option data attribute safely
 function getSelectedAddonData(selectEl) {
   if (!selectEl) return null;
-  const opt = selectEl.options[selectEl.selectedIndex];
+  const idx = selectEl.selectedIndex;
+  if (idx < 0) return null;
+  const opt = selectEl.options[idx];
   if (!opt) return null;
   return {
     value: opt.value || '',
-    price: opt.dataset.price !== undefined ? parseFloat(opt.dataset.price || '0') : null,
+    price: opt.dataset.price !== undefined && opt.dataset.price !== '' ? parseFloat(opt.dataset.price || '0') : null,
     onetime: opt.dataset.onetime === 'true',
     pct: opt.dataset.pct ? parseFloat(opt.dataset.pct) : null,
     min: opt.dataset.min ? parseFloat(opt.dataset.min) : null,
@@ -56,7 +61,6 @@ function getSelectedAddonData(selectEl) {
 }
 
 function updatePrice() {
-  // Find selected base plan
   const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
   const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
   const planData = PLAN_PRICING[basePlanValue] || { monthly: 0, setup: 0 };
@@ -95,8 +99,8 @@ function updatePrice() {
   });
 
   // Monthly checkbox add-ons (including GLAM add-ons)
-  const checkboxMonthlyTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:not([data-onetime="true"])'))
-    .filter(el => el.checked)
+  const checkboxMonthlyTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
+    .filter(el => el.checked && el.dataset.onetime !== 'true')
     .map(el => {
       const p = parseFloat(el.dataset.price || "0");
       console.debug('[checkbox-monthly] ', el.value, p);
@@ -105,8 +109,8 @@ function updatePrice() {
     .reduce((a, b) => a + b, 0);
 
   // One-time checkbox add-ons
-  const checkboxOnetimeTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"][data-onetime="true"]'))
-    .filter(el => el.checked)
+  const checkboxOnetimeTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
+    .filter(el => el.checked && el.dataset.onetime === 'true')
     .map(el => {
       const p = parseFloat(el.dataset.price || "0");
       console.debug('[checkbox-onetime] ', el.value, p);
@@ -151,35 +155,13 @@ function updatePrice() {
   const onetimeRow = document.getElementById('onetimeRow');
   if (onetimeRow) onetimeRow.style.display = (onetimeTotal > 0 && !PLAN_PRICING[basePlanValue]?.custom) ? 'block' : 'none';
 
-  // Bottom totals bar update
-  const bottomPlanName = document.getElementById('bottomPlanName');
-  const bottomIncluded = document.getElementById('bottomIncluded');
-  const bottomMonthly = document.getElementById('bottomMonthly');
-  const bottomOnetime = document.getElementById('bottomOnetime');
-  const bottomFirst = document.getElementById('bottomFirst');
-
-  if (bottomPlanName) bottomPlanName.textContent = basePlanNameElem ? basePlanNameElem.textContent : basePlanValue;
-  const includedFeatures = PLAN_FEATURES[basePlanValue] || [];
-  if (bottomIncluded) bottomIncluded.textContent = includedFeatures.length ? includedFeatures.slice(0,2).join(' • ') : 'Includes core features';
-
-  if (PLAN_PRICING[basePlanValue] && PLAN_PRICING[basePlanValue].custom) {
-    if (bottomMonthly) bottomMonthly.textContent = 'Contact';
-    if (bottomOnetime) bottomOnetime.textContent = 'Contact';
-    if (bottomFirst) bottomFirst.textContent = 'Contact';
-  } else {
-    if (bottomMonthly) bottomMonthly.textContent = fmt(monthlyTotal);
-    if (bottomOnetime) bottomOnetime.textContent = fmt(onetimeTotal);
-    if (bottomFirst) bottomFirst.textContent = fmt(firstMonthTotal);
-  }
-
   // Save ppcScaleNote for copyQuote (hidden element)
   const ppcNoteEl = document.getElementById('ppcScaleNote');
   if (ppcNoteEl) {
     ppcNoteEl.textContent = ppcScaleChosen ? ppcScaleNote : '';
   }
 
-  // console debug final snapshot
-  console.debug('[updatePrice:end] sidebar monthly:', monthlyElem?.textContent, 'bottom monthly:', bottomMonthly?.textContent);
+  console.debug('[updatePrice:end] sidebar monthly:', monthlyElem?.textContent);
 }
 
 // copyQuote compiles selected plan, included features, tiered addons and checkboxes, and PPC Scale note if present
@@ -240,25 +222,14 @@ function copyQuote() {
     .catch(() => alert('Could not copy — select & copy manually.'));
 }
 
-// Event wiring: use delegation to capture changes and recalc; also attach direct listeners for older browsers
+// Wire events: listen for any change and run updatePrice; also add direct listeners for inputs/selects
 function wireEvents() {
-  // Delegated change handler
-  document.addEventListener('change', (e) => {
-    const target = e.target;
-    // Only respond for relevant inputs/selects
-    if (!target) return;
-    const tag = target.tagName.toLowerCase();
-    const isRelevant = (
-      (tag === 'input' && (target.type === 'checkbox' || target.type === 'radio')) ||
-      (tag === 'select' && target.classList.contains('addon-select'))
-    );
-    if (isRelevant) {
-      // run updatePrice on next tick to ensure DOM values are updated
-      setTimeout(updatePrice, 0);
-    }
+  // simpler: any change on document triggers recalculation (select/checkbox/radio)
+  document.addEventListener('change', () => {
+    setTimeout(updatePrice, 0);
   });
 
-  // Direct listeners (safe)
+  // direct listeners (for older browsers)
   const selects = Array.from(document.querySelectorAll('.addon-select'));
   selects.forEach(s => s.addEventListener('change', updatePrice));
   const checkboxes = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'));
