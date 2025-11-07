@@ -3,172 +3,105 @@
  * Keeps existing functionality; adds setup fees and updated prices.
  */
 
-// Small Business Starter Kit included features (cannot be added separately when this plan is selected)
-const SMALL_BUSINESS_INCLUDED = [
-    'sms_assistant',     // SMS Assistant
-    'analytics',         // Analytics Dashboard
-    'appt50',            // Appointment Setting (starter level)
-    'ppc_mgmt',          // Ads Mgmt (Starter)
+// Small Business Starter Kit features for quote and display
+const SMALLBUSINESS_FEATURES = [
+    'sms_assistant', // SMS Assistant
+    'analytics',     // Analytics Dashboard
+    'appt50',        // Appointment Setting (starter level)
+    'ppc_mgmt'       // Starter ads management
 ];
 
-function toggleSmallBusinessPlan() {
-    const checkbox = document.getElementById('eligibilityCheckbox');
-    const smallBusinessRadio = document.querySelector('input[name="basePlan"][value="smallbusiness"]');
-    const smallBusinessOption = document.getElementById('smallBusinessOption');
-    
-    if (checkbox && smallBusinessRadio) {
-        smallBusinessRadio.disabled = !checkbox.checked;
-        
-        // Visual feedback
-        if (checkbox.checked) {
-            smallBusinessOption.style.opacity = '1';
-            smallBusinessOption.style.cursor = 'pointer';
-        } else {
-            smallBusinessOption.style.opacity = '0.5';
-            smallBusinessOption.style.cursor = 'not-allowed';
-            
-            // If Small Business was selected, switch to Starter
-            if (smallBusinessRadio.checked) {
-                const starterRadio = document.querySelector('input[name="basePlan"][value="starter"]');
-                if (starterRadio) {
-                    starterRadio.checked = true;
-                    updatePrice();
-                }
-            }
-        }
-    }
-}
-
+// Update pricing and plan switching
 function updatePrice() {
-    const SETUP_FEES = { 
-        starter: 499, 
-        growth: 999, 
-        scale: 2499,
-        smallbusiness: 399  // Small Business Starter Kit setup fee
-    };
+    const SETUP_FEES = { starter: 499, growth: 999, scale: 2499, smallbusiness: 399 };
 
     // Base plan
     const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
     const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
     const basePlanPrice = basePlanRadio ? parseFloat(basePlanRadio.dataset.price || "0") : 0;
-    
-    // Check if Small Business Starter Kit is selected
-    const isSmallBusiness = basePlanValue === 'smallbusiness';
 
     // Monthly add-ons
-    const addonChecks = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
-        .filter(el => !el.hasAttribute('data-onetime') && el.id !== 'eligibilityCheckbox');
-    
-    // Disable/hide included add-ons when Small Business is selected
-    addonChecks.forEach(checkbox => {
-        const isIncluded = SMALL_BUSINESS_INCLUDED.includes(checkbox.value);
-        const label = checkbox.parentElement;
-        
-        if (isSmallBusiness && isIncluded) {
-            checkbox.disabled = true;
-            checkbox.checked = false;
-            label.style.opacity = '0.5';
-            label.style.cursor = 'not-allowed';
-            
-            // Add visual indicator
-            if (!label.querySelector('.included-badge')) {
-                const badge = document.createElement('span');
-                badge.className = 'included-badge';
-                badge.textContent = ' (Included in Small Business Kit)';
-                badge.style.color = 'var(--success-color)';
-                badge.style.fontSize = '12px';
-                badge.style.fontWeight = 'bold';
-                label.querySelector('span').appendChild(badge);
-            }
-        } else {
-            checkbox.disabled = false;
-            label.style.opacity = '1';
-            label.style.cursor = 'pointer';
-            
-            // Remove visual indicator
-            const badge = label.querySelector('.included-badge');
-            if (badge) badge.remove();
-        }
-    });
-    
-    const addonsMonthly = addonChecks
-        .filter(el => el.checked && !el.disabled)
-        .map(el => parseFloat(el.dataset.price || "0"))
-        .reduce((a, b) => a + b, 0);
+    let addonsMonthly = 0;
+    if (basePlanValue === 'smallbusiness') {
+        // Small Business: no extra add-ons needed; included in bundle
+        addonsMonthly = 0;
+    } else {
+        const addonChecks = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
+            .filter(el => !el.hasAttribute('data-onetime'));
+        addonsMonthly = addonChecks
+            .filter(el => el.checked)
+            .map(el => parseFloat(el.dataset.price || "0"))
+            .reduce((a, b) => a + b, 0);
+    }
 
     // One-time items
-    const onetimeChecks = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"][data-onetime="true"]'));
-    const onetimeFees = onetimeChecks
-        .filter(el => el.checked)
-        .map(el => parseFloat(el.dataset.price || "0"));
+    // For smallbusiness, setup fee is fixed, no extra a la carte
+    let onetimeTotal = SETUP_FEES[basePlanValue] || 0;
 
-    // Additional users (if present in DOM, keep backward compatibility)
-    const additionalUsersInput = document.getElementById('additionalUsers');
-    const additionalUserPrice = additionalUsersInput ? parseFloat(additionalUsersInput.dataset.price || "0") : 0;
-    const additionalUsers = additionalUsersInput ? parseInt(additionalUsersInput.value || "0", 10) : 0;
+    if (basePlanValue !== 'smallbusiness') {
+        const onetimeChecks = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"][data-onetime="true"]'));
+        const onetimeFees = onetimeChecks
+            .filter(el => el.checked)
+            .map(el => parseFloat(el.dataset.price || "0"));
+        onetimeTotal += onetimeFees.reduce((a, b) => a + b, 0);
+    }
 
-    // Totals
-    const monthlyTotal = basePlanPrice + addonsMonthly + (additionalUsers * additionalUserPrice);
-    const onetimeFromAddons = onetimeFees.reduce((a, b) => a + b, 0);
-    const baseSetup = SETUP_FEES[basePlanValue] || 0;
-    const onetimeTotal = baseSetup + onetimeFromAddons;
+    const monthlyTotal = basePlanPrice + addonsMonthly;
     const firstMonthTotal = monthlyTotal + onetimeTotal;
 
     // Update labels
     if (document.getElementById('basePlanName')) {
         let planName = 'Starter';
-        if (basePlanValue === 'smallbusiness') {
-            planName = 'Small Business Starter Kit';
-        } else if (basePlanRadio) {
-            planName = basePlanRadio.value.charAt(0).toUpperCase() + basePlanRadio.value.slice(1);
-        }
+        if (basePlanValue === 'smallbusiness') planName = 'Small Business Starter Kit';
+        else if (basePlanRadio) planName = basePlanRadio.value.charAt(0).toUpperCase() + basePlanRadio.value.slice(1);
         document.getElementById('basePlanName').textContent = planName;
     }
     if (document.getElementById('monthlyTotal')) document.getElementById('monthlyTotal').textContent = `$${monthlyTotal.toLocaleString()}`;
     if (document.getElementById('onetimeTotal')) document.getElementById('onetimeTotal').textContent = `$${onetimeTotal.toLocaleString()}`;
     if (document.getElementById('firstMonthTotal')) document.getElementById('firstMonthTotal').textContent = `$${firstMonthTotal.toLocaleString()}`;
-
-    // Optional visibility row if your HTML uses it (kept from original pattern)
-    const onetimeRow = document.getElementById('onetimeRow');
-    if (onetimeRow) onetimeRow.style.display = onetimeTotal > 0 ? 'block' : 'none';
 }
 
+// Ensure quotes display correct included features for the Small Business plan
 function copyQuote() {
-    // Gather state
     const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
     const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
-    let basePlanName = 'Starter';
-    
-    if (basePlanValue === 'smallbusiness') {
-        basePlanName = 'Small Business Starter Kit';
-    } else if (basePlanRadio) {
-        basePlanName = basePlanRadio.value.charAt(0).toUpperCase() + basePlanRadio.value.slice(1);
-    }
+    let planName = 'Starter';
+    if (basePlanValue === 'smallbusiness') planName = 'Small Business Starter Kit';
+    else if (basePlanRadio) planName = basePlanRadio.value.charAt(0).toUpperCase() + basePlanRadio.value.slice(1);
 
     const monthly = document.getElementById('monthlyTotal')?.textContent || '';
     const onetime = document.getElementById('onetimeTotal')?.textContent || '';
     const first = document.getElementById('firstMonthTotal')?.textContent || '';
 
-    const addons = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
-        .filter(el => el.checked && !el.disabled && el.id !== 'eligibilityCheckbox')
-        .map(el => el.parentElement?.innerText.trim().replace(/\s+/g, ' ').replace(/\(Included in Small Business Kit\)/g, '').trim() || '')
-        .filter(Boolean);
-    
-    // Add included features for Small Business Starter Kit
-    let includedFeatures = '';
+    let addons = [];
     if (basePlanValue === 'smallbusiness') {
-        includedFeatures = '\n\nIncluded Features:\n- 1 custom web page\n- Initial setup/onboarding\n- Starter ads (Google/Meta)\n- Starter CRM\n- Appointment booking\n- Automation pack\n- SMS assistant\n- Analytics dashboard\n- Onboarding support';
+        addons = [
+            "Included Features:",
+            "- 1 custom web page",
+            "- Initial setup/onboarding",
+            "- Starter ads (Google/Meta)",
+            "- CRM (starter)",
+            "- Appointment booking",
+            "- Automation pack",
+            "- SMS assistant",
+            "- Analytics dashboard",
+            "- Onboarding support"
+        ];
+    } else {
+        addons = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
+            .filter(el => el.checked)
+            .map(el => el.parentElement?.innerText.trim().replace(/\s+/g, ' ') || '')
+            .filter(Boolean);
     }
 
     const payload = [
         "Boss Booker — Quote",
-        `Plan: ${basePlanName}`,
+        `Plan: ${planName}`,
         `Monthly: ${monthly}`,
         `One-time Setup Fee: ${onetime}`,
         `First Month Due: ${first}`,
-        addons.length ? `Add-ons:\n- ${addons.join('\n- ')}` : "Add-ons: (none)",
-        includedFeatures
-    ].filter(Boolean).join("\n");
+        addons.length ? `${addons.join('\n')}` : "Add-ons: (none)"
+    ].join("\n");
 
     navigator.clipboard.writeText(payload)
         .then(() => alert('Quote copied to clipboard'))
@@ -176,7 +109,4 @@ function copyQuote() {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    toggleSmallBusinessPlan();
-    updatePrice();
-});
+document.addEventListener('DOMContentLoaded', updatePrice);
