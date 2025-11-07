@@ -1,21 +1,18 @@
 /**
  * Plans builder — Boss Booker
- * Fixes:
- *  - reliable update on select/checkbox/radio changes
- *  - removed bottom duplicate totals (only sidebar summary remains)
- *  - enterprise shows "Contact for pricing"
- *  - PPC Scale preserved as note (not added to numeric totals)
+ * Fixed: reliable wiring + tiered add-ons update + enterprise contact pricing.
  *
- * Console.debug lines included to help verification.
+ * Drop this file in place of the existing plans.js and reload the page.
+ * Console.log/debug statements are included for quick verification.
  */
 
-// Pricing and setup map (monthly, one-time setup)
+// Pricing map (monthly, one-time setup). enterprise.custom = true => Contact for pricing
 const PLAN_PRICING = {
-  nano:    { monthly: 599,  setup: 0 },
-  micro:   { monthly: 799,  setup: 299 },
+  nano: { monthly: 599, setup: 0 },
+  micro: { monthly: 799, setup: 299 },
   starter: { monthly: 1899, setup: 0 },
-  pro:     { monthly: 3799, setup: 0 },
-  scale:   { monthly: 4199, setup: 1200 },
+  pro: { monthly: 3799, setup: 0 },
+  scale: { monthly: 4199, setup: 1200 },
   enterprise: { monthly: 0, setup: 0, custom: true },
   smallbusiness: { monthly: 199, setup: 399 },
   glam_nano: { monthly: 149, setup: 79 },
@@ -23,184 +20,192 @@ const PLAN_PRICING = {
   glam_pro: { monthly: 599, setup: 179 }
 };
 
-// Feature labels (used in copyQuote)
-const PLAN_FEATURES = {
-  nano: [ "Core Automation Nano — missed-call text-back, 2-touch follow-ups, shared inbox, 1 pipeline", "Appointment Setting Nano — up to 60 attempts/mo" ],
-  micro: [ "Core Automation Micro — 3-touch follow-ups, 2 pipelines", "Appointment Setting Micro — up to 120 attempts/mo" ],
-  starter: [ "Core Automation Starter — advanced routing, UTM capture, 4 pipelines", "Appointment Setting Starter — up to 300 attempts/mo" ],
-  pro: [ "Core Automation Pro — SLA monitoring, custom events", "Appointment Setting Pro — up to 1,200 attempts/mo" ],
-  scale: [ "Core Automation Scale — priority support, advanced reporting", "Appointment Setting Pro — 1,200 attempts + 300 buffer" ],
-  enterprise: [ "Custom SLAs, bespoke integrations", "Contact us for pricing" ],
-  smallbusiness: [ "Small Business Starter Kit — included features (special)" ],
-  glam_nano: [ "GLAM Nano — Link-in-bio booking hub, DM auto-replies" ],
-  glam_micro: [ "GLAM Micro — Everything in Nano + 8 templated posts/mo" ],
-  glam_pro: [ "GLAM Pro — 20 posts/mo, light clip trims, boosted-post advising" ]
-};
-
-// Utility: format currency (simple)
-function fmt(v) {
-  if (typeof v !== 'number') return v;
+// small helper to format currency
+function fmtCurrency(v) {
+  if (typeof v !== 'number' || Number.isNaN(v)) return '$0';
   return `$${v.toLocaleString()}`;
 }
 
-// Helper: read selected option data attribute safely
-function getSelectedAddonData(selectEl) {
-  if (!selectEl) return null;
-  const idx = selectEl.selectedIndex;
-  if (idx < 0) return null;
-  const opt = selectEl.options[idx];
+// read option metadata safely
+function readOptionMeta(opt) {
   if (!opt) return null;
+  const priceAttr = opt.getAttribute('data-price');
+  const onetimeAttr = opt.getAttribute('data-onetime');
+  const pctAttr = opt.getAttribute('data-pct');
+  const minAttr = opt.getAttribute('data-min');
   return {
     value: opt.value || '',
-    price: opt.dataset.price !== undefined && opt.dataset.price !== '' ? parseFloat(opt.dataset.price || '0') : null,
-    onetime: opt.dataset.onetime === 'true',
-    pct: opt.dataset.pct ? parseFloat(opt.dataset.pct) : null,
-    min: opt.dataset.min ? parseFloat(opt.dataset.min) : null,
-    label: opt.textContent ? opt.textContent.trim() : opt.value
+    label: (opt.textContent || opt.innerText || opt.value).trim(),
+    price: priceAttr !== null && priceAttr !== '' ? parseFloat(priceAttr) : null,
+    onetime: onetimeAttr === 'true',
+    pct: pctAttr ? parseFloat(pctAttr) : null,
+    min: minAttr ? parseFloat(minAttr) : null
   };
 }
 
+// compute totals and update UI
 function updatePrice() {
-  const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
-  const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
-  const planData = PLAN_PRICING[basePlanValue] || { monthly: 0, setup: 0 };
+  // find selected base plan
+  const baseRadio = document.querySelector('input[name="basePlan"]:checked');
+  const basePlan = baseRadio ? baseRadio.value : 'starter';
+  const planInfo = PLAN_PRICING[basePlan] || { monthly: 0, setup: 0 };
 
-  console.debug('[updatePrice] basePlan:', basePlanValue, planData);
+  console.debug('[updatePrice] basePlan=', basePlan);
 
-  // Base monthly and base setup
-  let monthlyTotal = Number(planData.monthly || 0);
-  let onetimeTotal = Number(planData.setup || 0);
+  // starting totals from base plan
+  let monthlyTotal = Number(planInfo.monthly || 0);
+  let onetimeTotal = Number(planInfo.setup || 0);
 
-  // Read tiered add-ons (.addon-select)
-  const addonSelects = Array.from(document.querySelectorAll('.addon-select'));
-  let ppcScaleChosen = false;
+  // tiered selects (select.addon-select) - fallback to any select with id starting with addon_
+  const selectEls = Array.from(document.querySelectorAll('select.addon-select, select[id^="addon_"]'));
   let ppcScaleNote = '';
 
-  addonSelects.forEach(sel => {
-    const info = getSelectedAddonData(sel);
-    if (!info || !info.value) return;
-    console.debug('[addon-select] selected:', sel.id, info);
+  selectEls.forEach(sel => {
+    const idx = sel.selectedIndex;
+    if (idx <= 0) return; // no selection or 'None'
+    const opt = sel.options[idx];
+    const meta = readOptionMeta(opt);
+    if (!meta) return;
 
-    // PPC scale special handling (percent)
-    if (info.pct) {
-      ppcScaleChosen = true;
-      const min = info.min || 0;
-      ppcScaleNote = `PPC Scale selected: ${info.pct}% of ad spend (min ${fmt(min)}) — billed against ad spend.`;
-      // do not add numeric value to totals
+    // handle PPC scale % (data-pct) as note only
+    if (meta.pct) {
+      ppcScaleNote = `${meta.label} — ${meta.pct}% of ad spend (min ${fmtCurrency(meta.min || 0)})`;
+      // do NOT add numeric amount
       return;
     }
 
-    // Numeric price handling
-    if (info.onetime) {
-      onetimeTotal += (info.price || 0);
-    } else {
-      monthlyTotal += (info.price || 0);
-    }
+    // numeric price handling
+    const price = Number(meta.price || 0);
+    if (meta.onetime) onetimeTotal += price;
+    else monthlyTotal += price;
+
+    console.debug('[select-addon] ', sel.id || sel.name, meta.label, price, 'onetime=', meta.onetime);
   });
 
-  // Monthly checkbox add-ons (including GLAM add-ons)
-  const checkboxMonthlyTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
-    .filter(el => el.checked && el.dataset.onetime !== 'true')
-    .map(el => {
-      const p = parseFloat(el.dataset.price || "0");
-      console.debug('[checkbox-monthly] ', el.value, p);
-      return p;
-    })
-    .reduce((a, b) => a + b, 0);
+  // checkbox add-ons (including GLAM)
+  const checkedBoxes = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
+    .filter(cb => cb.checked);
 
-  // One-time checkbox add-ons
-  const checkboxOnetimeTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
-    .filter(el => el.checked && el.dataset.onetime === 'true')
-    .map(el => {
-      const p = parseFloat(el.dataset.price || "0");
-      console.debug('[checkbox-onetime] ', el.value, p);
-      return p;
-    })
-    .reduce((a, b) => a + b, 0);
-
-  // Add checkbox totals
-  monthlyTotal += checkboxMonthlyTotal;
-  onetimeTotal += checkboxOnetimeTotal;
+  checkedBoxes.forEach(cb => {
+    // data-onetime may be on input or missing; prefer attribute then dataset
+    const onetimeAttr = cb.getAttribute('data-onetime');
+    const isOneTime = onetimeAttr === 'true' || cb.dataset.onetime === 'true';
+    const priceRaw = cb.getAttribute('data-price') ?? cb.dataset.price ?? '0';
+    const price = parseFloat(priceRaw || '0');
+    if (isOneTime) onetimeTotal += price;
+    else monthlyTotal += price;
+    console.debug('[checkbox-addon]', cb.value || cb.name, price, 'oneTime=', isOneTime);
+  });
 
   const firstMonthTotal = monthlyTotal + onetimeTotal;
 
-  console.debug('[totals] monthly:', monthlyTotal, 'onetime:', onetimeTotal, 'first:', firstMonthTotal, 'ppcScaleChosen:', ppcScaleChosen);
-
   // Update sidebar summary
-  const basePlanNameElem = document.getElementById('basePlanName');
-  if (basePlanNameElem) {
-    let prettyName = basePlanValue;
-    if (basePlanValue === 'smallbusiness') prettyName = 'Small Business Starter Kit';
-    else if (basePlanValue.startsWith('glam_')) prettyName = basePlanValue.replace('glam_', 'GLAM ').replace('_', ' ');
-    else prettyName = basePlanValue.charAt(0).toUpperCase() + basePlanValue.slice(1);
-    basePlanNameElem.textContent = prettyName;
+  const basePlanNameEl = document.getElementById('basePlanName');
+  const monthlyEl = document.getElementById('monthlyTotal');
+  const onetimeEl = document.getElementById('onetimeTotal');
+  const firstEl = document.getElementById('firstMonthTotal');
+
+  // pretty plan name
+  if (basePlanNameEl) {
+    let pretty = basePlan;
+    if (basePlan === 'smallbusiness') pretty = 'Small Business Starter Kit';
+    else if (basePlan.startsWith('glam_')) pretty = basePlan.replace('glam_', 'GLAM ').replace('_', ' ');
+    else pretty = basePlan.charAt(0).toUpperCase() + basePlan.slice(1);
+    basePlanNameEl.textContent = pretty;
   }
 
-  // Sidebar numeric display (or contact)
-  const monthlyElem = document.getElementById('monthlyTotal');
-  const onetimeElem = document.getElementById('onetimeTotal');
-  const firstElem = document.getElementById('firstMonthTotal');
+  // If enterprise -> contact for pricing
+  const isEnterprise = !!(PLAN_PRICING[basePlan] && PLAN_PRICING[basePlan].custom);
 
-  if (PLAN_PRICING[basePlanValue] && PLAN_PRICING[basePlanValue].custom) {
-    if (monthlyElem) monthlyElem.textContent = 'Contact for pricing';
-    if (onetimeElem) onetimeElem.textContent = 'Contact for pricing';
-    if (firstElem) firstElem.textContent = 'Contact for pricing';
+  if (isEnterprise) {
+    if (monthlyEl) monthlyEl.textContent = 'Contact for pricing';
+    if (onetimeEl) onetimeEl.textContent = 'Contact for pricing';
+    if (firstEl) firstEl.textContent = 'Contact for pricing';
   } else {
-    if (monthlyElem) monthlyElem.textContent = fmt(monthlyTotal);
-    if (onetimeElem) onetimeElem.textContent = fmt(onetimeTotal);
-    if (firstElem) firstElem.textContent = fmt(firstMonthTotal);
+    if (monthlyEl) monthlyEl.textContent = fmtCurrency(monthlyTotal);
+    if (onetimeEl) onetimeEl.textContent = fmtCurrency(onetimeTotal);
+    if (firstEl) firstEl.textContent = fmtCurrency(firstMonthTotal);
   }
 
-  // Show/hide onetime row
-  const onetimeRow = document.getElementById('onetimeRow');
-  if (onetimeRow) onetimeRow.style.display = (onetimeTotal > 0 && !PLAN_PRICING[basePlanValue]?.custom) ? 'block' : 'none';
+  // Save PPC Scale note (hidden element used by copyQuote)
+  const ppcNoteHolder = document.getElementById('ppcScaleNote');
+  if (ppcNoteHolder) ppcNoteHolder.textContent = ppcScaleNote;
 
-  // Save ppcScaleNote for copyQuote (hidden element)
-  const ppcNoteEl = document.getElementById('ppcScaleNote');
-  if (ppcNoteEl) {
-    ppcNoteEl.textContent = ppcScaleChosen ? ppcScaleNote : '';
-  }
-
-  console.debug('[updatePrice:end] sidebar monthly:', monthlyElem?.textContent);
+  console.debug('[updatePrice] monthly=', monthlyEl?.textContent, 'one-time=', onetimeEl?.textContent, 'first=', firstEl?.textContent, 'ppcNote=', ppcScaleNote);
 }
 
-// copyQuote compiles selected plan, included features, tiered addons and checkboxes, and PPC Scale note if present
-function copyQuote() {
-  const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
-  const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
-  const planName = (document.getElementById('basePlanName')?.textContent) || basePlanValue;
+// prepare and wire listeners in a robust way
+function wireAndInit() {
+  // Run updatePrice on load
+  updatePrice();
 
+  // Listen for changes on the document; this is simple and reliable
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (!t) return;
+    // react to basePlan radios, selects, and add-on checkboxes
+    if (
+      (t.matches && t.matches('input[name="basePlan"]')) ||
+      (t.tagName && t.tagName.toLowerCase() === 'select') ||
+      (t.tagName && t.tagName.toLowerCase() === 'input' && (t.type === 'checkbox' || t.type === 'radio'))
+    ) {
+      // tiny delay ensures DOM state is settled
+      setTimeout(updatePrice, 0);
+    }
+  });
+
+  // Also attach direct listeners for immediate reaction (helps older browsers)
+  const selects = Array.from(document.querySelectorAll('select.addon-select, select[id^="addon_"]'));
+  selects.forEach(s => s.addEventListener('change', updatePrice));
+  const checkboxes = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'));
+  checkboxes.forEach(cb => cb.addEventListener('change', updatePrice));
+  const baseRadios = Array.from(document.querySelectorAll('input[name="basePlan"]'));
+  baseRadios.forEach(r => r.addEventListener('change', updatePrice));
+
+  console.debug('[wireAndInit] listeners attached:', {
+    selects: selects.length,
+    checkboxes: checkboxes.length,
+    baseRadios: baseRadios.length
+  });
+}
+
+// copyQuote: composes quote (reads ppcScale note from hidden holder)
+function copyQuote() {
+  const baseRadio = document.querySelector('input[name="basePlan"]:checked');
+  const basePlan = baseRadio ? baseRadio.value : 'starter';
+  const planName = document.getElementById('basePlanName')?.textContent || basePlan;
   const monthly = document.getElementById('monthlyTotal')?.textContent || '';
   const onetime = document.getElementById('onetimeTotal')?.textContent || '';
   const first = document.getElementById('firstMonthTotal')?.textContent || '';
 
-  const included = PLAN_FEATURES[basePlanValue] || [];
+  // included features snapshot (small list)
+  const included = (window.PLAN_FEATURES && window.PLAN_FEATURES[basePlan]) ? window.PLAN_FEATURES[basePlan] : [];
 
-  // tiered add-ons chosen
-  const addonSelects = Array.from(document.querySelectorAll('.addon-select'));
-  const selectedTierAddons = [];
-  addonSelects.forEach(sel => {
-    const info = getSelectedAddonData(sel);
-    if (!info || !info.value) return;
-    if (info.pct) {
-      selectedTierAddons.push(`${info.label} — ${info.pct}% of ad spend (min ${fmt(info.min)})`);
-    } else {
-      const priceStr = info.onetime ? fmt(info.price) + ' (one-time)' : fmt(info.price) + '/mo';
-      selectedTierAddons.push(`${info.label} — ${priceStr}`);
-    }
-  });
-
-  // checkbox add-ons selected
-  const addons = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
-    .filter(el => el.checked)
-    .map(el => {
-      const price = el.dataset.price ? parseFloat(el.dataset.price) : 0;
-      const onetime = el.dataset.onetime === 'true';
-      return `${el.parentElement?.innerText.trim().replace(/\s+/g, ' ')} ${onetime ? '(one-time)' : ''} — ${fmt(price)}`;
+  // tiered selects summary
+  const selectEls = Array.from(document.querySelectorAll('select.addon-select, select[id^="addon_"]'));
+  const tiered = selectEls
+    .map(sel => {
+      const opt = sel.options[sel.selectedIndex];
+      if (!opt || !opt.value) return null;
+      const meta = readOptionMeta(opt);
+      if (!meta) return null;
+      if (meta.pct) return `${meta.label} — ${meta.pct}% of ad spend (min ${fmtCurrency(meta.min || 0)})`;
+      return `${meta.label} — ${meta.onetime ? fmtCurrency(meta.price) + ' (one-time)' : fmtCurrency(meta.price) + '/mo' }`;
     })
     .filter(Boolean);
 
-  const payloadParts = [
+  // checkbox add-ons
+  const addons = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked'))
+    .map(cb => {
+      const price = parseFloat(cb.getAttribute('data-price') ?? cb.dataset.price ?? '0') || 0;
+      const one = (cb.getAttribute('data-onetime') === 'true' || cb.dataset.onetime === 'true');
+      const label = cb.parentElement?.innerText?.trim?.() || cb.value;
+      return `${label} ${one ? '(one-time)' : ''} — ${fmtCurrency(price)}`;
+    });
+
+  const ppcNote = document.getElementById('ppcScaleNote')?.textContent || '';
+
+  const parts = [
     "Boss Booker — Quote",
     `Plan: ${planName}`,
     `Monthly: ${monthly}`,
@@ -209,38 +214,20 @@ function copyQuote() {
     included.length ? `Included features:\n- ${included.join('\n- ')}` : "Included features: (none)"
   ];
 
-  if (selectedTierAddons.length) payloadParts.push(`Tiered add-ons selected:\n- ${selectedTierAddons.join('\n- ')}`);
-  if (addons.length) payloadParts.push(`Additional add-ons selected:\n- ${addons.join('\n- ')}`);
+  if (tiered.length) parts.push(`Tiered add-ons:\n- ${tiered.join('\n- ')}`);
+  if (addons.length) parts.push(`Additional add-ons:\n- ${addons.join('\n- ')}`);
+  if (ppcNote) parts.push(`Note: ${ppcNote}`);
 
-  const ppcNote = document.getElementById('ppcScaleNote')?.textContent;
-  if (ppcNote) payloadParts.push(`Note: ${ppcNote}`);
-
-  const payload = payloadParts.join("\n\n");
-
-  navigator.clipboard.writeText(payload)
-    .then(() => alert('Quote copied to clipboard'))
-    .catch(() => alert('Could not copy — select & copy manually.'));
+  const payload = parts.join('\n\n');
+  navigator.clipboard.writeText(payload).then(() => alert('Quote copied to clipboard')).catch(() => alert('Could not copy — select & copy manually.'));
 }
 
-// Wire events: listen for any change and run updatePrice; also add direct listeners for inputs/selects
-function wireEvents() {
-  // simpler: any change on document triggers recalculation (select/checkbox/radio)
-  document.addEventListener('change', () => {
-    setTimeout(updatePrice, 0);
-  });
+// expose copyQuote globally for the button's onclick
+window.copyQuote = copyQuote;
 
-  // direct listeners (for older browsers)
-  const selects = Array.from(document.querySelectorAll('.addon-select'));
-  selects.forEach(s => s.addEventListener('change', updatePrice));
-  const checkboxes = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'));
-  checkboxes.forEach(c => c.addEventListener('change', updatePrice));
-  const baseRadios = Array.from(document.querySelectorAll('input[name="basePlan"]'));
-  baseRadios.forEach(r => r.addEventListener('change', updatePrice));
-}
-
-// Initialize on DOMContentLoaded
+// init after DOM ready
 document.addEventListener('DOMContentLoaded', () => {
-  wireEvents();
+  wireAndInit();
+  // initial calc
   updatePrice();
-  console.debug('[plans.js] initialized');
 });
