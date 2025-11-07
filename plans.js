@@ -107,9 +107,11 @@ function getSelectedAddonData(selectEl) {
 }
 
 function updatePrice() {
+  console.debug('updatePrice called');
   const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
   const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
   const planData = PLAN_PRICING[basePlanValue] || { monthly: 0, setup: 0 };
+  console.debug('Base plan selected:', basePlanValue, 'data:', planData);
 
   // Base monthly and base setup
   let monthlyTotal = planData.monthly || 0;
@@ -119,14 +121,17 @@ function updatePrice() {
   const addonSelects = Array.from(document.querySelectorAll('.addon-select'));
   let ppcScaleChosen = false;
   let ppcScaleNote = '';
+  console.debug('Processing', addonSelects.length, 'addon-select elements');
   addonSelects.forEach(sel => {
     const info = getSelectedAddonData(sel);
     if (!info || !info.value) return;
+    console.debug('Addon selected:', sel.id, 'value:', info.value, 'price:', info.price, 'onetime:', info.onetime, 'pct:', info.pct);
     // PPC scale special handling (percent)
     if (info.pct) {
       ppcScaleChosen = true;
       const min = info.min || 0;
       ppcScaleNote = `PPC Scale selected: ${info.pct}% of ad spend (min ${fmt(min)}) — billed against ad spend.`;
+      console.debug('PPC Scale selected - NOT adding to numeric totals:', ppcScaleNote);
       // do not add numeric amount to totals
       return;
     }
@@ -150,11 +155,14 @@ function updatePrice() {
     .map(el => parseFloat(el.dataset.price || "0"))
     .reduce((a, b) => a + b, 0);
 
+  console.debug('Checkbox add-ons - monthly:', checkboxMonthly, 'onetime:', checkboxOnetime);
+
   // Add these to totals
   monthlyTotal += checkboxMonthly;
   onetimeTotal += checkboxOnetime;
 
   const firstMonthTotal = monthlyTotal + onetimeTotal;
+  console.debug('Final totals - monthly:', monthlyTotal, 'onetime:', onetimeTotal, 'first month:', firstMonthTotal);
 
   // Update sidebar summary
   const basePlanNameElem = document.getElementById('basePlanName');
@@ -197,9 +205,9 @@ function updatePrice() {
   if (bottomIncluded) bottomIncluded.textContent = includedFeatures.length ? includedFeatures.slice(0,2).join(' • ') : 'Includes core features';
 
   if (PLAN_PRICING[basePlanValue] && PLAN_PRICING[basePlanValue].custom) {
-    if (bottomMonthly) bottomMonthly.textContent = 'Contact';
-    if (bottomOnetime) bottomOnetime.textContent = 'Contact';
-    if (bottomFirst) bottomFirst.textContent = 'Contact';
+    if (bottomMonthly) bottomMonthly.textContent = 'Contact for pricing';
+    if (bottomOnetime) bottomOnetime.textContent = 'Contact for pricing';
+    if (bottomFirst) bottomFirst.textContent = 'Contact for pricing';
   } else {
     if (bottomMonthly) bottomMonthly.textContent = fmt(monthlyTotal);
     if (bottomOnetime) bottomOnetime.textContent = fmt(onetimeTotal);
@@ -281,9 +289,11 @@ function copyQuote() {
 
 // Wire change events for selects and checkboxes so updatePrice runs instantly
 document.addEventListener('DOMContentLoaded', () => {
+  console.debug('DOMContentLoaded - initializing event listeners');
   // initial calc
   updatePrice();
 
+  // Direct listeners for existing controls (for safety)
   // selects
   const selects = Array.from(document.querySelectorAll('.addon-select'));
   selects.forEach(s => s.addEventListener('change', updatePrice));
@@ -295,4 +305,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // base plan radios
   const baseRadios = Array.from(document.querySelectorAll('input[name="basePlan"]'));
   baseRadios.forEach(r => r.addEventListener('change', updatePrice));
+  
+  console.debug('Direct listeners attached to', selects.length, 'selects,', checkboxes.length, 'checkboxes,', baseRadios.length, 'radios');
+});
+
+// Event delegation on document for dynamic updates (belt and suspenders approach)
+document.addEventListener('change', (e) => {
+  // Check if the changed element is one of our pricing controls
+  if (e.target.matches('.addon-select') || 
+      e.target.matches('input[name="basePlan"]') || 
+      e.target.matches('.checkbox-group input[type="checkbox"]')) {
+    console.debug('Event delegation triggered change for:', e.target.id || e.target.name || e.target.value);
+    updatePrice();
+  }
 });
