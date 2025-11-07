@@ -17,6 +17,24 @@
     opacity: 0.95;
 }
 
+/* Small Business Starter Kit Styling */
+#smallBusinessOption {
+    border: 2px solid var(--primary-color);
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.05) 0%, rgba(217, 70, 239, 0.1) 100%);
+}
+
+#smallBusinessOption:hover {
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.1) 0%, rgba(217, 70, 239, 0.15) 100%);
+}
+
+#smallBusinessOption input[type="radio"]:checked + span {
+    color: var(--primary-color);
+}
+
+#smallBusinessOption strong {
+    font-size: 1.05rem;
+}
+
 /* Plan Cards */
 .plans-comparison {
     padding: 5rem 0;

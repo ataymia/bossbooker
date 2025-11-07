@@ -32,6 +32,19 @@
             <h2>Pick a base plan</h2>
             <div class="feature-card">
                 <div class="radio-group">
+                    <label class="radio-option" id="smallBusinessOption">
+                        <input type="radio" name="basePlan" value="smallbusiness" data-price="199" data-setup="399" onchange="updatePrice()" disabled>
+                        <span>
+                            <strong>Small Business Starter Kit</strong> — $199/month + $399 setup
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">
+                                Only available for businesses with &lt;10 employees
+                            </small>
+                        </span>
+                    </label>
+                    <label class="checkbox-option" style="margin-bottom:16px; background-color:var(--background-alt);">
+                        <input type="checkbox" id="eligibilityCheckbox" onchange="toggleSmallBusinessPlan()">
+                        <span style="font-size:14px;">I have fewer than 10 employees</span>
+                    </label>
                     <label class="radio-option">
                         <input type="radio" name="basePlan" value="starter" data-price="199" checked onchange="updatePrice()">
                         <span>Starter — $199/month</span>
@@ -55,19 +68,23 @@
                     <thead>
                         <tr>
                             <th>Feature</th>
+                            <th>Small Business Starter Kit</th>
                             <th>Starter</th>
                             <th>Growth</th>
                             <th>Scale</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><strong>Lead-capture site</strong></td><td>1 page</td><td>Up to 3 pages</td><td>5–7 pages</td></tr>
-                        <tr><td><strong>Appointment setting</strong></td><td>—</td><td>50/mo</td><td>200/mo</td></tr>
-                        <tr><td><strong>CRM setup</strong></td><td>Basic</td><td>Pro + pipelines</td><td>Multi-location</td></tr>
-                        <tr><td><strong>Automation packs</strong></td><td>1</td><td>3</td><td>6</td></tr>
-                        <tr><td><strong>Analytics dashboard</strong></td><td>—</td><td>Included</td><td>Included</td></tr>
-                        <tr><td><strong>SEO</strong></td><td>—</td><td>— (add-on)</td><td>Pro included</td></tr>
-                        <tr><td><strong>Ads mgmt</strong></td><td>—</td><td>Starter add-on</td><td>Pro included</td></tr>
+                        <tr><td><strong>Lead-capture site</strong></td><td>1 custom page</td><td>1 page</td><td>Up to 3 pages</td><td>5–7 pages</td></tr>
+                        <tr><td><strong>Initial setup/onboarding</strong></td><td>✓ Included</td><td>—</td><td>—</td><td>—</td></tr>
+                        <tr><td><strong>Appointment booking</strong></td><td>✓ Included</td><td>—</td><td>50/mo</td><td>200/mo</td></tr>
+                        <tr><td><strong>CRM setup</strong></td><td>Starter CRM</td><td>Basic</td><td>Pro + pipelines</td><td>Multi-location</td></tr>
+                        <tr><td><strong>Automation packs</strong></td><td>1 pack</td><td>1</td><td>3</td><td>6</td></tr>
+                        <tr><td><strong>SMS assistant</strong></td><td>✓ Included</td><td>—</td><td>—</td><td>—</td></tr>
+                        <tr><td><strong>Analytics dashboard</strong></td><td>✓ Included</td><td>—</td><td>Included</td><td>Included</td></tr>
+                        <tr><td><strong>Onboarding support</strong></td><td>✓ Included</td><td>—</td><td>—</td><td>—</td></tr>
+                        <tr><td><strong>Starter ads (Google/Meta)</strong></td><td>✓ Included</td><td>—</td><td>Starter add-on</td><td>Pro included</td></tr>
+                        <tr><td><strong>SEO</strong></td><td>—</td><td>—</td><td>— (add-on)</td><td>Pro included</td></tr>
                     </tbody>
                 </table>
             </div>
