@@ -1,6 +1,9 @@
 /**
  * Plans builder — Boss Booker
- * Updated to support tiered add-ons and selectable GLAM add-ons.
+ * Fixed tiered add-ons updates, GLAM add-ons selectable, bottom totals updating,
+ * and enterprise shows "Contact for pricing".
+ *
+ * Console debug traces help verify behavior during review.
  */
 
 // Pricing and setup map (monthly, one-time setup)
@@ -17,72 +20,18 @@ const PLAN_PRICING = {
   glam_pro: { monthly: 599, setup: 179 }
 };
 
-// Human-readable features per plan (used in copyQuote and summary messaging)
+// Feature labels (used in copyQuote)
 const PLAN_FEATURES = {
-  nano: [
-    "Core Automation Nano — missed-call text-back, 2-touch follow-ups, shared inbox, 1 pipeline",
-    "Appointment Setting Nano — up to 60 attempts/mo (stop on reply/book)",
-    "Pick ONE channel: PPC Nano (≤$1k ad spend) or SEO Nano",
-    "Monthly check-in (15 min)"
-  ],
-  micro: [
-    "Core Automation Micro — 3-touch follow-ups, 2 pipelines, basic dashboard",
-    "Appointment Setting Micro — up to 120 attempts/mo",
-    "Pick ONE channel: PPC Micro (≤$2.5k) or SEO Micro",
-    "Monthly tune-up call (30 min)"
-  ],
-  starter: [
-    "Core Automation Starter — advanced routing, UTM capture, 4 pipelines",
-    "Appointment Setting Starter — up to 300 attempts/mo",
-    "PPC Starter (≤$3k) AND SEO Micro",
-    "Monthly strategy call (45 min)",
-    "Site perk: 50% off a Landing Page build (order within 30 days)"
-  ],
-  pro: [
-    "Core Automation Pro — SLA monitoring, custom events, bi-weekly reviews",
-    "Appointment Setting Pro — up to 1,200 attempts/mo",
-    "PPC Pro ($3k–$10k spend) AND SEO Pro",
-    "Quarterly roadmap + experiments",
-    "Site perk: Landing Page included (1x per year)"
-  ],
-  scale: [
-    "Core Automation Scale — priority support, advanced reporting",
-    "Appointment Setting Pro — 1,200 attempts + 300 rollover buffer included",
-    "PPC Pro ($3k–$10k) AND SEO Pro (option to upgrade to Scale)",
-    "Multi-location dashboards + quarterly executive review",
-    "Site perk: Mini-site (3–5p) 50% off or $1,200 credit"
-  ],
-  enterprise: [
-    "Custom SLAs, bespoke integrations, multi-brand governance",
-    "Custom pricing & engagements — contact us to discuss",
-    "Site credit: Full site (6–10p) 50% off or equivalent credit"
-  ],
-  smallbusiness: [
-    "Small Business Starter Kit — 1 custom web page",
-    "Initial setup & onboarding",
-    "Starter Advertising (Google/Meta) — managed basics",
-    "Starter CRM setup (lead pipeline)",
-    "Appointment booking integration",
-    "Automation pack (lead follow-up/reminder)",
-    "SMS assistant included",
-    "Basic analytics dashboard",
-    "1-on-1 onboarding support"
-  ],
-  glam_nano: [
-    "GLAM Nano — Link-in-bio booking hub, DM auto-replies, reminders",
-    "2 templated posts/mo",
-    "Review requests, policy page"
-  ],
-  glam_micro: [
-    "Everything in GLAM Nano",
-    "8 templated posts/mo, story calendar",
-    "Waitlist & slot-drop SMS, highlight covers"
-  ],
-  glam_pro: [
-    "Everything in GLAM Micro",
-    "20 posts/mo, 2 light clip trims/mo",
-    "Boosted-post advising (up to $150), Appointment Setting Nano (60 attempts)"
-  ]
+  nano: [ "Core Automation Nano — missed-call text-back, 2-touch follow-ups, shared inbox, 1 pipeline", "Appointment Setting Nano — up to 60 attempts/mo" ],
+  micro: [ "Core Automation Micro — 3-touch follow-ups, 2 pipelines", "Appointment Setting Micro — up to 120 attempts/mo" ],
+  starter: [ "Core Automation Starter — advanced routing, UTM capture, 4 pipelines", "Appointment Setting Starter — up to 300 attempts/mo" ],
+  pro: [ "Core Automation Pro — SLA monitoring, custom events", "Appointment Setting Pro — up to 1,200 attempts/mo" ],
+  scale: [ "Core Automation Scale — priority support, advanced reporting", "Appointment Setting Pro — 1,200 attempts + 300 buffer" ],
+  enterprise: [ "Custom SLAs, bespoke integrations", "Contact us for pricing" ],
+  smallbusiness: [ "Small Business Starter Kit — included features (special)" ],
+  glam_nano: [ "GLAM Nano — Link-in-bio booking hub, DM auto-replies" ],
+  glam_micro: [ "GLAM Micro — Everything in Nano + 8 templated posts/mo" ],
+  glam_pro: [ "GLAM Pro — 20 posts/mo, light clip trims, boosted-post advising" ]
 };
 
 // Utility: format currency (simple)
@@ -95,41 +44,48 @@ function fmt(v) {
 function getSelectedAddonData(selectEl) {
   if (!selectEl) return null;
   const opt = selectEl.options[selectEl.selectedIndex];
-  if (!opt || !opt.dataset) return null;
+  if (!opt) return null;
   return {
     value: opt.value || '',
     price: opt.dataset.price !== undefined ? parseFloat(opt.dataset.price || '0') : null,
     onetime: opt.dataset.onetime === 'true',
     pct: opt.dataset.pct ? parseFloat(opt.dataset.pct) : null,
     min: opt.dataset.min ? parseFloat(opt.dataset.min) : null,
-    label: opt.textContent || opt.innerText || opt.value
+    label: opt.textContent ? opt.textContent.trim() : opt.value
   };
 }
 
 function updatePrice() {
+  // Find selected base plan
   const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
   const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
   const planData = PLAN_PRICING[basePlanValue] || { monthly: 0, setup: 0 };
 
-  // Base monthly and base setup
-  let monthlyTotal = planData.monthly || 0;
-  let onetimeTotal = planData.setup || 0;
+  console.debug('[updatePrice] basePlan:', basePlanValue, planData);
 
-  // Tiered add-ons (.addon-select)
+  // Base monthly and base setup
+  let monthlyTotal = Number(planData.monthly || 0);
+  let onetimeTotal = Number(planData.setup || 0);
+
+  // Read tiered add-ons (.addon-select)
   const addonSelects = Array.from(document.querySelectorAll('.addon-select'));
   let ppcScaleChosen = false;
   let ppcScaleNote = '';
+
   addonSelects.forEach(sel => {
     const info = getSelectedAddonData(sel);
     if (!info || !info.value) return;
+    console.debug('[addon-select] selected:', sel.id, info);
+
     // PPC scale special handling (percent)
     if (info.pct) {
       ppcScaleChosen = true;
       const min = info.min || 0;
       ppcScaleNote = `PPC Scale selected: ${info.pct}% of ad spend (min ${fmt(min)}) — billed against ad spend.`;
-      // do not add numeric amount to totals
+      // do not add numeric value to totals
       return;
     }
+
     // Numeric price handling
     if (info.onetime) {
       onetimeTotal += (info.price || 0);
@@ -138,23 +94,33 @@ function updatePrice() {
     }
   });
 
-  // Monthly checkbox add-ons
-  const checkboxMonthly = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
-    .filter(el => !el.hasAttribute('data-onetime') && el.checked)
-    .map(el => parseFloat(el.dataset.price || "0"))
+  // Monthly checkbox add-ons (including GLAM add-ons)
+  const checkboxMonthlyTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]:not([data-onetime="true"])'))
+    .filter(el => el.checked)
+    .map(el => {
+      const p = parseFloat(el.dataset.price || "0");
+      console.debug('[checkbox-monthly] ', el.value, p);
+      return p;
+    })
     .reduce((a, b) => a + b, 0);
 
   // One-time checkbox add-ons
-  const checkboxOnetime = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"][data-onetime="true"]'))
+  const checkboxOnetimeTotal = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"][data-onetime="true"]'))
     .filter(el => el.checked)
-    .map(el => parseFloat(el.dataset.price || "0"))
+    .map(el => {
+      const p = parseFloat(el.dataset.price || "0");
+      console.debug('[checkbox-onetime] ', el.value, p);
+      return p;
+    })
     .reduce((a, b) => a + b, 0);
 
-  // Add these to totals
-  monthlyTotal += checkboxMonthly;
-  onetimeTotal += checkboxOnetime;
+  // Add checkbox totals
+  monthlyTotal += checkboxMonthlyTotal;
+  onetimeTotal += checkboxOnetimeTotal;
 
   const firstMonthTotal = monthlyTotal + onetimeTotal;
+
+  console.debug('[totals] monthly:', monthlyTotal, 'onetime:', onetimeTotal, 'first:', firstMonthTotal, 'ppcScaleChosen:', ppcScaleChosen);
 
   // Update sidebar summary
   const basePlanNameElem = document.getElementById('basePlanName');
@@ -206,20 +172,17 @@ function updatePrice() {
     if (bottomFirst) bottomFirst.textContent = fmt(firstMonthTotal);
   }
 
-  // save ppcScaleNote to a DOM element for copyQuote (if needed)
+  // Save ppcScaleNote for copyQuote (hidden element)
   const ppcNoteEl = document.getElementById('ppcScaleNote');
   if (ppcNoteEl) {
     ppcNoteEl.textContent = ppcScaleChosen ? ppcScaleNote : '';
-  } else if (ppcScaleChosen) {
-    // create a small invisible element to carry the note
-    const el = document.createElement('div');
-    el.id = 'ppcScaleNote';
-    el.style.display = 'none';
-    el.textContent = ppcScaleNote;
-    document.body.appendChild(el);
   }
+
+  // console debug final snapshot
+  console.debug('[updatePrice:end] sidebar monthly:', monthlyElem?.textContent, 'bottom monthly:', bottomMonthly?.textContent);
 }
 
+// copyQuote compiles selected plan, included features, tiered addons and checkboxes, and PPC Scale note if present
 function copyQuote() {
   const basePlanRadio = document.querySelector('input[name="basePlan"]:checked');
   const basePlanValue = basePlanRadio ? basePlanRadio.value : 'starter';
@@ -229,7 +192,6 @@ function copyQuote() {
   const onetime = document.getElementById('onetimeTotal')?.textContent || '';
   const first = document.getElementById('firstMonthTotal')?.textContent || '';
 
-  // included features for the chosen plan
   const included = PLAN_FEATURES[basePlanValue] || [];
 
   // tiered add-ons chosen
@@ -238,7 +200,6 @@ function copyQuote() {
   addonSelects.forEach(sel => {
     const info = getSelectedAddonData(sel);
     if (!info || !info.value) return;
-    // handle PPC scale note specially
     if (info.pct) {
       selectedTierAddons.push(`${info.label} — ${info.pct}% of ad spend (min ${fmt(info.min)})`);
     } else {
@@ -247,7 +208,7 @@ function copyQuote() {
     }
   });
 
-  // optional add-ons selected (checkboxes)
+  // checkbox add-ons selected
   const addons = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
     .filter(el => el.checked)
     .map(el => {
@@ -279,20 +240,36 @@ function copyQuote() {
     .catch(() => alert('Could not copy — select & copy manually.'));
 }
 
-// Wire change events for selects and checkboxes so updatePrice runs instantly
-document.addEventListener('DOMContentLoaded', () => {
-  // initial calc
-  updatePrice();
+// Event wiring: use delegation to capture changes and recalc; also attach direct listeners for older browsers
+function wireEvents() {
+  // Delegated change handler
+  document.addEventListener('change', (e) => {
+    const target = e.target;
+    // Only respond for relevant inputs/selects
+    if (!target) return;
+    const tag = target.tagName.toLowerCase();
+    const isRelevant = (
+      (tag === 'input' && (target.type === 'checkbox' || target.type === 'radio')) ||
+      (tag === 'select' && target.classList.contains('addon-select'))
+    );
+    if (isRelevant) {
+      // run updatePrice on next tick to ensure DOM values are updated
+      setTimeout(updatePrice, 0);
+    }
+  });
 
-  // selects
+  // Direct listeners (safe)
   const selects = Array.from(document.querySelectorAll('.addon-select'));
   selects.forEach(s => s.addEventListener('change', updatePrice));
-
-  // checkboxes
   const checkboxes = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'));
   checkboxes.forEach(c => c.addEventListener('change', updatePrice));
-
-  // base plan radios
   const baseRadios = Array.from(document.querySelectorAll('input[name="basePlan"]'));
   baseRadios.forEach(r => r.addEventListener('change', updatePrice));
+}
+
+// Initialize on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  wireEvents();
+  updatePrice();
+  console.debug('[plans.js] initialized');
 });
