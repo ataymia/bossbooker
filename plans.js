@@ -83,7 +83,17 @@ function updatePrice() {
 function proceedToCheckout() {
     const monthlyTotal = document.getElementById('monthlyTotal').textContent;
     const firstMonthTotal = document.getElementById('firstMonthTotal').textContent;
-    alert(`Proceeding to checkout with:\nMonthly: ${monthlyTotal}\nFirst Month Total: ${firstMonthTotal}\n\nThis would normally redirect to the payment page.`);
+    
+    // In a real application, this would redirect to the payment page
+    // For now, we'll show a simple confirmation
+    const confirmMsg = `Ready to proceed to checkout!\n\nMonthly: ${monthlyTotal}\nFirst Month Total: ${firstMonthTotal}\n\nIn a production environment, you would be redirected to the payment page.`;
+    
+    // Show confirmation in console for debugging
+    if (window.console && console.log) {
+        console.log('Checkout initiated:', { monthlyTotal, firstMonthTotal });
+    }
+    
+    alert(confirmMsg);
 }
 
 // Initialize price on page load

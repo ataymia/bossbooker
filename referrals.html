@@ -224,15 +224,34 @@
 
         function copyLink() {
             const linkInput = document.getElementById('referralLink');
-            linkInput.select();
-            document.execCommand('copy');
+            const link = linkInput.value;
             
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = 'Copied!';
-            setTimeout(() => {
-                btn.textContent = originalText;
-            }, 2000);
+            // Use modern Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(() => {
+                    showCopySuccess();
+                }).catch(() => {
+                    // Fallback to older method
+                    fallbackCopy();
+                });
+            } else {
+                fallbackCopy();
+            }
+            
+            function fallbackCopy() {
+                linkInput.select();
+                document.execCommand('copy');
+                showCopySuccess();
+            }
+            
+            function showCopySuccess() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }
         }
     </script>
 </body>

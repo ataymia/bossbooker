@@ -7,7 +7,10 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
     const data = Object.fromEntries(formData);
     
     // In a real application, this would send data to a server
-    console.log('Form submitted:', data);
+    // For development/debugging only:
+    if (process.env.NODE_ENV === 'development') {
+        console.log('Form submitted:', data);
+    }
     
     // Show success message
     const successMessage = document.getElementById('formSuccess');

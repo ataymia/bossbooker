@@ -224,10 +224,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             e.preventDefault();
             const target = document.querySelector(href);
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                try {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } catch (error) {
+                    // Fallback for browsers that don't support smooth scrolling
+                    target.scrollIntoView();
+                }
             }
         }
     });
