@@ -6,23 +6,48 @@
     <title>Boss Booker — Plans</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        /* tiny page-local helpers so we don't touch your global CSS */
+        .nav-brand {display:flex;align-items:center;gap:10px;font-weight:800;flex-shrink:0;}
+        .nav-brand img {height:32px;width:32px;border-radius:8px;display:block;}
+        .nav-container {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:8px 0;flex-wrap:wrap;}
+        .nav-links {display:flex;align-items:center;gap:12px;list-style:none;margin:0;padding:0;flex-wrap:wrap;justify-content:flex-end;}
+        .nav-links li {margin:0;}
+        .nav-links a, .nav-links button {white-space:nowrap;}
+        
+        /* Mobile navigation adjustments */
+        @media (max-width: 768px) {
+            .nav-container {gap:8px;}
+            .nav-links {gap:8px;font-size:14px;}
+            .nav-links a {padding:6px 10px;font-size:14px;}
+            .nav-links button {padding:8px 10px;font-size:14px;}
+        }
+        
+        @media (max-width: 480px) {
+            .nav-container {justify-content:center;}
+            .nav-links {width:100%;justify-content:center;gap:4px;flex-wrap:wrap;}
+            .nav-links a {padding:6px 8px;font-size:13px;}
+            .nav-links button {padding:6px 10px;font-size:13px;}
+        }
+    </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="container navbar-inner">
-            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-weight:800;">
-                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:48px;width:48px;border-radius:8px;display:block;">
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo">
             </a>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a class="active" href="plans.html">Plans</a>
-                <a href="about.html">About</a>
-                <a href="faq.html">FAQ</a>
-                <a href="referrals.html">Referrals</a>
-                <a href="contact.html">Contact</a>
-            </nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a class="active" href="plans.html">Plans</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="referrals.html">Referrals</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
         </div>
-    </header>
+    </nav>
 
     <main class="container section">
         <h1 class="section-title">Plans that start smart and scale up</h1>
