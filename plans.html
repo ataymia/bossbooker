@@ -10,10 +10,10 @@
 <body>
     <header class="navbar">
         <div class="container navbar-inner">
-            <div class="brand">
-                <div class="logo" aria-hidden="true"></div>
-                <div>Boss Booker</div>
-            </div>
+            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:10px;font-weight:800;">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:32px;width:32px;border-radius:8px;display:block;">
+                <span>Boss Booker</span>
+            </a>
             <nav class="nav-links">
                 <a href="index.html">Home</a>
                 <a class="active" href="plans.html">Plans</a>
@@ -127,7 +127,12 @@
     </main>
 
     <footer class="footer">
-        <div class="container">© 2025 Boss Booker. All rights reserved.</div>
+        <div class="container">
+            <div class="footer-bottom" style="display:flex;align-items:center;gap:10px;">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:20px;width:20px;border-radius:4px;">
+                <p style="margin:0;">© 2025 Boss Booker. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
 
     <script src="plans.js"></script>
