@@ -100,9 +100,15 @@ function updatePrice() {
   // Base monthly
   let monthlyTotal = planData.monthly || 0;
 
-  // Monthly add-ons chosen by the user (always available a la carte)
+  // Monthly add-ons from checkboxes (simple add-ons like SMS Assistant, AI Chat, Analytics)
   const monthlyAddons = Array.from(document.querySelectorAll('.checkbox-group input[type="checkbox"]'))
     .filter(el => !el.hasAttribute('data-onetime') && el.checked)
+    .map(el => parseFloat(el.dataset.price || "0"))
+    .reduce((a, b) => a + b, 0);
+
+  // Tiered add-ons (radio groups) - monthly
+  const tieredMonthlyAddons = Array.from(document.querySelectorAll('.addon-tier-group input[type="radio"]:checked'))
+    .filter(el => el.value !== 'none' && !el.hasAttribute('data-onetime'))
     .map(el => parseFloat(el.dataset.price || "0"))
     .reduce((a, b) => a + b, 0);
 
@@ -112,11 +118,23 @@ function updatePrice() {
     .map(el => parseFloat(el.dataset.price || "0"))
     .reduce((a, b) => a + b, 0);
 
-  // Setup fee from plan + explicit one-time add-ons
-  let onetimeTotal = (planData.setup || 0) + onetimeChecksTotal;
+  // One-time charges from tiered add-ons (like websites)
+  const tieredOnetimeAddons = Array.from(document.querySelectorAll('.addon-tier-group input[type="radio"]:checked'))
+    .filter(el => el.value !== 'none' && el.hasAttribute('data-onetime'))
+    .map(el => parseFloat(el.dataset.price || "0"))
+    .reduce((a, b) => a + b, 0);
+
+  // Setup fees from tiered add-ons (like GLAM setup fees)
+  const tieredSetupFees = Array.from(document.querySelectorAll('.addon-tier-group input[type="radio"]:checked'))
+    .filter(el => el.value !== 'none' && el.hasAttribute('data-setup'))
+    .map(el => parseFloat(el.dataset.setup || "0"))
+    .reduce((a, b) => a + b, 0);
+
+  // Setup fee from plan + explicit one-time add-ons + tiered one-time addons + tiered setup fees
+  let onetimeTotal = (planData.setup || 0) + onetimeChecksTotal + tieredOnetimeAddons + tieredSetupFees;
 
   // Total calculation
-  monthlyTotal += monthlyAddons;
+  monthlyTotal += monthlyAddons + tieredMonthlyAddons;
   const firstMonthTotal = monthlyTotal + onetimeTotal;
 
   // Update summary areas (aside)

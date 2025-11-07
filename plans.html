@@ -174,17 +174,173 @@
             <div class="grid-2">
                 <div class="card">
                     <h3>Add-ons & À la carte</h3>
-                    <div class="checkbox-group">
-                        <label class="checkbox-option"><input type="checkbox" value="sms_assistant" data-price="99" onchange="updatePrice()"><span>SMS Assistant (text bot) — $99/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="ai_chat" data-price="79" onchange="updatePrice()"><span>Website AI Chat — $79/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="appt50" data-price="299" onchange="updatePrice()"><span>Appointment Setting (+50/mo) — $299/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="appt200" data-price="899" onchange="updatePrice()"><span>Appointment Setting (+200/mo) — $899/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="seo_basic" data-price="300" onchange="updatePrice()"><span>Local SEO — $300+ (tiered)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="ppc_mgmt" data-price="600" onchange="updatePrice()"><span>PPC Management — starting at $300–$900 depending on tier</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="analytics" data-price="49" onchange="updatePrice()"><span>Analytics Dashboard — $49/month</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="landing" data-price="1200" data-onetime="true" onchange="updatePrice()"><span>Landing Page — $1,200 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="mini_site" data-price="2800" data-onetime="true" onchange="updatePrice()"><span>Mini-site (3–5p) — $2,800 (one-time)</span></label>
-                        <label class="checkbox-option"><input type="checkbox" value="full_site" data-price="4800" data-onetime="true" onchange="updatePrice()"><span>Full site (6–10p) — $4,800 (one-time)</span></label>
+                    
+                    <!-- Core Automation - Tiered -->
+                    <div class="addon-tier-group">
+                        <h4 style="margin-bottom:8px; font-size:15px; color:var(--text-primary)">Core Automation (à la carte)</h4>
+                        <div class="radio-group" style="gap:8px;">
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_core_automation" value="none" checked onchange="updatePrice()">
+                                <span style="font-size:14px;">None</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_core_automation" value="nano" data-price="149" onchange="updatePrice()">
+                                <span style="font-size:14px;">Nano — $149/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_core_automation" value="micro" data-price="249" onchange="updatePrice()">
+                                <span style="font-size:14px;">Micro — $249/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_core_automation" value="starter" data-price="399" onchange="updatePrice()">
+                                <span style="font-size:14px;">Starter — $399/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_core_automation" value="pro" data-price="699" onchange="updatePrice()">
+                                <span style="font-size:14px;">Pro — $699/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_core_automation" value="scale" data-price="1200" onchange="updatePrice()">
+                                <span style="font-size:14px;">Scale — $1,200/mo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Setting Model A - Tiered -->
+                    <div class="addon-tier-group" style="margin-top:16px;">
+                        <h4 style="margin-bottom:8px; font-size:15px; color:var(--text-primary)">Appointment Setting (Model A)</h4>
+                        <div class="radio-group" style="gap:8px;">
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_appt_setting" value="none" checked onchange="updatePrice()">
+                                <span style="font-size:14px;">None</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_appt_setting" value="nano" data-price="299" onchange="updatePrice()">
+                                <span style="font-size:14px;">Nano (+60 attempts) — $299/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_appt_setting" value="micro" data-price="449" onchange="updatePrice()">
+                                <span style="font-size:14px;">Micro (+120 attempts) — $449/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_appt_setting" value="starter" data-price="899" onchange="updatePrice()">
+                                <span style="font-size:14px;">Starter (+300 attempts) — $899/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_appt_setting" value="pro" data-price="2400" onchange="updatePrice()">
+                                <span style="font-size:14px;">Pro (+1,200 attempts) — $2,400/mo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- PPC Management - Tiered -->
+                    <div class="addon-tier-group" style="margin-top:16px;">
+                        <h4 style="margin-bottom:8px; font-size:15px; color:var(--text-primary)">PPC Management</h4>
+                        <div class="radio-group" style="gap:8px;">
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_ppc" value="none" checked onchange="updatePrice()">
+                                <span style="font-size:14px;">None</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_ppc" value="nano" data-price="300" onchange="updatePrice()">
+                                <span style="font-size:14px;">Nano (≤$1k spend) — $300/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_ppc" value="micro" data-price="450" onchange="updatePrice()">
+                                <span style="font-size:14px;">Micro (≤$2.5k spend) — $450/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_ppc" value="starter" data-price="600" onchange="updatePrice()">
+                                <span style="font-size:14px;">Starter (≤$3k spend) — $600/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_ppc" value="pro" data-price="900" onchange="updatePrice()">
+                                <span style="font-size:14px;">Pro ($3k–$10k spend) — $900/mo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Local SEO - Tiered -->
+                    <div class="addon-tier-group" style="margin-top:16px;">
+                        <h4 style="margin-bottom:8px; font-size:15px; color:var(--text-primary)">Local SEO</h4>
+                        <div class="radio-group" style="gap:8px;">
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_seo" value="none" checked onchange="updatePrice()">
+                                <span style="font-size:14px;">None</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_seo" value="nano" data-price="200" onchange="updatePrice()">
+                                <span style="font-size:14px;">Nano — $200/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_seo" value="micro" data-price="300" onchange="updatePrice()">
+                                <span style="font-size:14px;">Micro — $300/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_seo" value="starter" data-price="500" onchange="updatePrice()">
+                                <span style="font-size:14px;">Starter — $500/mo</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_seo" value="pro" data-price="800" onchange="updatePrice()">
+                                <span style="font-size:14px;">Pro — $800/mo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Websites - One-time, Tiered -->
+                    <div class="addon-tier-group" style="margin-top:16px;">
+                        <h4 style="margin-bottom:8px; font-size:15px; color:var(--text-primary)">Websites (one-time)</h4>
+                        <div class="radio-group" style="gap:8px;">
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_website" value="none" checked onchange="updatePrice()">
+                                <span style="font-size:14px;">None</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_website" value="landing" data-price="1200" data-onetime="true" onchange="updatePrice()">
+                                <span style="font-size:14px;">Landing Page — $1,200</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_website" value="mini" data-price="2800" data-onetime="true" onchange="updatePrice()">
+                                <span style="font-size:14px;">Mini-site (3–5p) — $2,800</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_website" value="full" data-price="4800" data-onetime="true" onchange="updatePrice()">
+                                <span style="font-size:14px;">Full site (6–10p) — $4,800</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- GLAM Add-ons - Selectable -->
+                    <div class="addon-tier-group" style="margin-top:16px;">
+                        <h4 style="margin-bottom:8px; font-size:15px; color:var(--text-primary)">GLAM by Boss Booker (à la carte)</h4>
+                        <div class="radio-group" style="gap:8px;">
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_glam" value="none" checked onchange="updatePrice()">
+                                <span style="font-size:14px;">None</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_glam" value="nano" data-price="149" data-setup="79" onchange="updatePrice()">
+                                <span style="font-size:14px;">GLAM Nano — $149/mo + $79 setup</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_glam" value="micro" data-price="299" data-setup="129" onchange="updatePrice()">
+                                <span style="font-size:14px;">GLAM Micro — $299/mo + $129 setup</span>
+                            </label>
+                            <label class="radio-option" style="padding:10px;">
+                                <input type="radio" name="addon_glam" value="pro" data-price="599" data-setup="179" onchange="updatePrice()">
+                                <span style="font-size:14px;">GLAM Pro — $599/mo + $179 setup</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Other simple add-ons (keep as checkboxes) -->
+                    <div style="margin-top:16px;">
+                        <h4 style="margin-bottom:8px; font-size:15px; color:var(--text-primary)">Other Add-ons</h4>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option"><input type="checkbox" value="sms_assistant" data-price="99" onchange="updatePrice()"><span>SMS Assistant (text bot) — $99/month</span></label>
+                            <label class="checkbox-option"><input type="checkbox" value="ai_chat" data-price="79" onchange="updatePrice()"><span>Website AI Chat — $79/month</span></label>
+                            <label class="checkbox-option"><input type="checkbox" value="analytics" data-price="49" onchange="updatePrice()"><span>Analytics Dashboard — $49/month</span></label>
+                        </div>
                     </div>
                 </div>
 
