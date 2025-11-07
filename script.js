@@ -21,17 +21,19 @@ if (mobileMenuToggle) {
 const stickyCta = document.getElementById('stickyCta');
 let lastScroll = 0;
 
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll > 500) {
-        stickyCta.classList.add('visible');
-    } else {
-        stickyCta.classList.remove('visible');
-    }
-    
-    lastScroll = currentScroll;
-});
+if (stickyCta) {
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 500) {
+            stickyCta.classList.add('visible');
+        } else {
+            stickyCta.classList.remove('visible');
+        }
+        
+        lastScroll = currentScroll;
+    });
+}
 
 // Quiz Logic
 const quizData = [
