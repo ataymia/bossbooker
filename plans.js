@@ -17,13 +17,28 @@ function updatePrice() {
     let monthlyTotal = basePlanPrice;
     let onetimeTotal = 0;
     
-    // Create summary details
-    let summaryHTML = `
-        <div class="summary-item">
-            <span>Base Plan:</span>
-            <span>${basePlanName} - $${basePlanPrice}</span>
-        </div>
-    `;
+    // Helper function to create a summary item safely
+    function createSummaryItem(label, value) {
+        const div = document.createElement('div');
+        div.className = 'summary-item';
+        
+        const labelSpan = document.createElement('span');
+        labelSpan.textContent = label;
+        
+        const valueSpan = document.createElement('span');
+        valueSpan.textContent = value;
+        
+        div.appendChild(labelSpan);
+        div.appendChild(valueSpan);
+        return div;
+    }
+    
+    // Clear and rebuild summary details
+    const summaryDetails = document.getElementById('summaryDetails');
+    summaryDetails.innerHTML = ''; // Clear existing content
+    
+    // Add base plan
+    summaryDetails.appendChild(createSummaryItem('Base Plan:', `${basePlanName} - $${basePlanPrice}`));
     
     // Get all checked add-ons
     const addons = document.querySelectorAll('input[type="checkbox"]:checked');
@@ -31,23 +46,14 @@ function updatePrice() {
         const price = parseInt(addon.dataset.price);
         const isOnetime = addon.dataset.onetime === 'true';
         const label = addon.parentElement.querySelector('span').textContent;
+        const labelName = label.split(' - ')[0];
         
         if (isOnetime) {
             onetimeTotal += price;
-            summaryHTML += `
-                <div class="summary-item">
-                    <span>${label.split(' - ')[0]}:</span>
-                    <span>$${price} (one-time)</span>
-                </div>
-            `;
+            summaryDetails.appendChild(createSummaryItem(labelName + ':', `$${price} (one-time)`));
         } else {
             monthlyTotal += price;
-            summaryHTML += `
-                <div class="summary-item">
-                    <span>${label.split(' - ')[0]}:</span>
-                    <span>$${price}/mo</span>
-                </div>
-            `;
+            summaryDetails.appendChild(createSummaryItem(labelName + ':', `$${price}/mo`));
         }
     });
     
@@ -57,16 +63,10 @@ function updatePrice() {
     if (userCount > 0) {
         const userPrice = parseInt(additionalUsers.dataset.price) * userCount;
         monthlyTotal += userPrice;
-        summaryHTML += `
-            <div class="summary-item">
-                <span>Additional Users (${userCount}):</span>
-                <span>$${userPrice}/mo</span>
-            </div>
-        `;
+        summaryDetails.appendChild(createSummaryItem(`Additional Users (${userCount}):`, `$${userPrice}/mo`));
     }
     
-    // Update summary
-    document.getElementById('summaryDetails').innerHTML = summaryHTML;
+    // Update totals
     document.getElementById('monthlyTotal').textContent = `$${monthlyTotal}`;
     document.getElementById('onetimeTotal').textContent = `$${onetimeTotal}`;
     document.getElementById('firstMonthTotal').textContent = `$${monthlyTotal + onetimeTotal}`;
