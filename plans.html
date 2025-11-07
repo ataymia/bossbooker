@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Boss Booker Plans - Choose the perfect booking solution for your business">
+    <title>Plans - Boss Booker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="plans.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html">Boss Booker</a>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="plans.html" class="nav-link active">Plans</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="faq.html" class="nav-link">FAQ</a></li>
+                <li><a href="referrals.html" class="nav-link">Referrals</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Choose Your Perfect Plan</h1>
+            <p>Flexible pricing designed to grow with your business</p>
+        </div>
+    </section>
+
+    <!-- Plan Comparison -->
+    <section class="plans-comparison">
+        <div class="container">
+            <div class="plan-cards">
+                <div class="plan-card">
+                    <div class="plan-badge">Best for Solo</div>
+                    <h3 class="plan-name">Starter</h3>
+                    <div class="plan-price">
+                        <span class="price-amount">$29</span>
+                        <span class="price-period">/month</span>
+                    </div>
+                    <p class="plan-description">Perfect for freelancers and solo professionals</p>
+                    <ul class="plan-features">
+                        <li>Up to 100 appointments/month</li>
+                        <li>Basic scheduling</li>
+                        <li>Email reminders</li>
+                        <li>Mobile-friendly booking page</li>
+                        <li>Calendar sync (Google, Apple)</li>
+                        <li>Customer support</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="selectPlan('starter')">Get Started</button>
+                </div>
+
+                <div class="plan-card featured">
+                    <div class="plan-badge">Most Popular</div>
+                    <h3 class="plan-name">Professional</h3>
+                    <div class="plan-price">
+                        <span class="price-amount">$79</span>
+                        <span class="price-period">/month</span>
+                    </div>
+                    <p class="plan-description">Ideal for small teams and growing businesses</p>
+                    <ul class="plan-features">
+                        <li>Up to 500 appointments/month</li>
+                        <li>Advanced scheduling & automation</li>
+                        <li>SMS & email reminders</li>
+                        <li>Payment processing</li>
+                        <li>Team management (up to 10 users)</li>
+                        <li>Basic analytics & reporting</li>
+                        <li>Custom branding</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="selectPlan('professional')">Get Started</button>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-badge">Best Value</div>
+                    <h3 class="plan-name">Business</h3>
+                    <div class="plan-price">
+                        <span class="price-amount">$199</span>
+                        <span class="price-period">/month</span>
+                    </div>
+                    <p class="plan-description">For established businesses needing advanced features</p>
+                    <ul class="plan-features">
+                        <li>Unlimited appointments</li>
+                        <li>Advanced automation workflows</li>
+                        <li>SMS & email reminders</li>
+                        <li>Payment processing</li>
+                        <li>Team management (up to 50 users)</li>
+                        <li>Advanced analytics & insights</li>
+                        <li>Custom integrations</li>
+                        <li>API access</li>
+                        <li>White-label options</li>
+                        <li>Premium support</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="selectPlan('business')">Get Started</button>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-badge">Custom</div>
+                    <h3 class="plan-name">Enterprise</h3>
+                    <div class="plan-price">
+                        <span class="price-amount">Custom</span>
+                        <span class="price-period">pricing</span>
+                    </div>
+                    <p class="plan-description">Tailored solutions for large organizations</p>
+                    <ul class="plan-features">
+                        <li>Everything in Business</li>
+                        <li>Unlimited team members</li>
+                        <li>Dedicated account manager</li>
+                        <li>Custom development</li>
+                        <li>SLA guarantee</li>
+                        <li>Advanced security features</li>
+                        <li>On-premise deployment options</li>
+                        <li>Training & onboarding</li>
+                    </ul>
+                    <button class="btn btn-outline" onclick="contactSales()">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plan Builder -->
+    <section class="plan-builder">
+        <div class="container">
+            <h2 class="section-title">Build Your Custom Plan</h2>
+            <p class="section-subtitle">Start with a base plan and add features that matter to you</p>
+            
+            <div class="builder-container">
+                <div class="builder-config">
+                    <div class="builder-section">
+                        <h3>Select Base Plan</h3>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="basePlan" value="starter" data-price="29" checked onchange="updatePrice()">
+                                <span>Starter - $29/month</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="basePlan" value="professional" data-price="79" onchange="updatePrice()">
+                                <span>Professional - $79/month</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="basePlan" value="business" data-price="199" onchange="updatePrice()">
+                                <span>Business - $199/month</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="builder-section">
+                        <h3>Add-ons</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="sms" data-price="15" onchange="updatePrice()">
+                                <span>SMS Reminders - $15/month</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="analytics" data-price="25" onchange="updatePrice()">
+                                <span>Advanced Analytics - $25/month</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="payments" data-price="20" onchange="updatePrice()">
+                                <span>Payment Processing - $20/month</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="branding" data-price="30" onchange="updatePrice()">
+                                <span>Custom Branding - $30/month</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="api" data-price="50" onchange="updatePrice()">
+                                <span>API Access - $50/month</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="whitelabel" data-price="100" onchange="updatePrice()">
+                                <span>White Label - $100/month</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="builder-section">
+                        <h3>Additional Users</h3>
+                        <div class="input-group">
+                            <label for="additionalUsers">Extra team members (beyond base plan)</label>
+                            <input type="number" id="additionalUsers" min="0" max="100" value="0" data-price="10" onchange="updatePrice()">
+                            <small>$10 per additional user/month</small>
+                        </div>
+                    </div>
+
+                    <div class="builder-section">
+                        <h3>À La Carte Services</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="setup" data-price="299" data-onetime="true" onchange="updatePrice()">
+                                <span>Professional Setup - $299 (one-time)</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="training" data-price="199" data-onetime="true" onchange="updatePrice()">
+                                <span>Team Training Session - $199 (one-time)</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" value="migration" data-price="499" data-onetime="true" onchange="updatePrice()">
+                                <span>Data Migration - $499 (one-time)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="builder-summary">
+                    <div class="summary-card">
+                        <h3>Your Custom Plan</h3>
+                        <div class="summary-details" id="summaryDetails">
+                            <div class="summary-item">
+                                <span>Base Plan:</span>
+                                <span id="basePlanName">Starter</span>
+                            </div>
+                        </div>
+                        <div class="summary-pricing">
+                            <div class="pricing-row">
+                                <span>Monthly Total:</span>
+                                <span class="price-value" id="monthlyTotal">$29</span>
+                            </div>
+                            <div class="pricing-row" id="onetimeRow" style="display: none;">
+                                <span>One-time Fees:</span>
+                                <span class="price-value" id="onetimeTotal">$0</span>
+                            </div>
+                            <div class="pricing-total">
+                                <span>First Month Total:</span>
+                                <span class="price-value" id="firstMonthTotal">$29</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-large" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                        <p class="summary-note">14-day free trial • Cancel anytime • No credit card required</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="plans-faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h4>Can I change my plan later?</h4>
+                    <p>Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Is there a free trial?</h4>
+                    <p>All plans include a 14-day free trial with full access to features. No credit card required.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>What payment methods do you accept?</h4>
+                    <p>We accept all major credit cards, PayPal, and can invoice for annual plans.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Can I get a discount for annual billing?</h4>
+                    <p>Yes! Save 20% when you pay annually. Contact us for details.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Boss Booker</h3>
+                    <p>Professional booking solutions for modern businesses.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="plans.html">Plans</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="referrals.html">Referrals</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Boss Booker. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="plans.js"></script>
+</body>
+</html>
