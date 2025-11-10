@@ -222,12 +222,92 @@ function copyQuote() {
   navigator.clipboard.writeText(payload).then(() => alert('Quote copied to clipboard')).catch(() => alert('Could not copy — select & copy manually.'));
 }
 
-// expose copyQuote globally for the button's onclick
+// Service Request Modal
+function openServiceRequestModal() {
+  const modal = document.getElementById('serviceRequestModal');
+  const summary = document.getElementById('modalPlanSummary');
+  
+  // Get current plan details
+  const basePlan = document.getElementById('basePlanName')?.textContent || '';
+  const monthly = document.getElementById('monthlyTotal')?.textContent || '';
+  const setup = document.getElementById('onetimeTotal')?.textContent || '';
+  const first = document.getElementById('firstMonthTotal')?.textContent || '';
+  
+  summary.innerHTML = `
+    <strong>Plan:</strong> ${basePlan}<br>
+    <strong>Monthly:</strong> ${monthly}<br>
+    <strong>Setup Fee:</strong> ${setup}<br>
+    <strong>First Month:</strong> ${first}
+  `;
+  
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeServiceRequestModal() {
+  const modal = document.getElementById('serviceRequestModal');
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Handle service request form submission
+function handleServiceRequestSubmit(e) {
+  e.preventDefault();
+  
+  const formData = new FormData(e.target);
+  const request = {
+    id: 'request_' + Date.now(),
+    companyName: formData.get('companyName'),
+    contactName: formData.get('contactName'),
+    email: formData.get('email'),
+    phone: formData.get('phone'),
+    companySize: formData.get('companySize') || '',
+    address: formData.get('address') || '',
+    notes: formData.get('notes') || '',
+    planName: document.getElementById('basePlanName')?.textContent || '',
+    monthlyTotal: document.getElementById('monthlyTotal')?.textContent || '',
+    setupFee: document.getElementById('onetimeTotal')?.textContent || '',
+    firstMonthTotal: document.getElementById('firstMonthTotal')?.textContent || '',
+    timestamp: Date.now(),
+    status: 'new'
+  };
+  
+  // Save to localStorage for admin portal
+  try {
+    const requests = JSON.parse(localStorage.getItem('bossbooker_requests') || '[]');
+    requests.unshift(request); // Add to beginning
+    localStorage.setItem('bossbooker_requests', JSON.stringify(requests));
+  } catch (error) {
+    console.error('Error saving request:', error);
+  }
+  
+  // Close modal and show success
+  closeServiceRequestModal();
+  alert('Thank you! Your service request has been submitted. We\'ll contact you at ' + request.email + ' within 1 business day.');
+  e.target.reset();
+}
+
+// expose functions globally for the button's onclick
 window.copyQuote = copyQuote;
+window.openServiceRequestModal = openServiceRequestModal;
+window.closeServiceRequestModal = closeServiceRequestModal;
 
 // init after DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   wireAndInit();
   // initial calc
   updatePrice();
+  
+  // Setup service request form
+  const serviceForm = document.getElementById('serviceRequestForm');
+  if (serviceForm) {
+    serviceForm.addEventListener('submit', handleServiceRequestSubmit);
+  }
+  
+  // Close modal on outside click
+  document.getElementById('serviceRequestModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'serviceRequestModal') {
+      closeServiceRequestModal();
+    }
+  });
 });

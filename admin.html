@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boss Booker — Admin Portal</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:48px;width:48px;border-radius:8px;">
+                <h1>Admin Portal</h1>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div>
+                    <label for="username">Username</label>
+                    <input id="username" name="username" type="text" required autofocus>
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <div id="loginError" class="error-message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-header-content">
+                <div class="admin-brand">
+                    <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:32px;width:32px;border-radius:8px;">
+                    <h1>Boss Booker Admin</h1>
+                </div>
+                <div class="admin-header-actions">
+                    <a href="index.html" class="btn btn-secondary" target="_blank">View Site</a>
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="admin-tabs">
+            <button class="admin-tab active" data-tab="contacts">Contact Submissions</button>
+            <button class="admin-tab" data-tab="requests">Service Requests</button>
+            <button class="admin-tab" data-tab="clients">Client List</button>
+            <button class="admin-tab" data-tab="content">Site Content</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Contact Submissions Tab -->
+            <section id="tab-contacts" class="tab-content active">
+                <div class="tab-header">
+                    <h2>Contact Form Submissions</h2>
+                    <div class="tab-actions">
+                        <button class="btn btn-secondary" onclick="exportData('contacts')">Export CSV</button>
+                    </div>
+                </div>
+                <div id="contactsList" class="items-list"></div>
+            </section>
+
+            <!-- Service Requests Tab -->
+            <section id="tab-requests" class="tab-content">
+                <div class="tab-header">
+                    <h2>Service Requests (from Plans)</h2>
+                    <div class="tab-actions">
+                        <button class="btn btn-secondary" onclick="exportData('requests')">Export CSV</button>
+                    </div>
+                </div>
+                <div id="requestsList" class="items-list"></div>
+            </section>
+
+            <!-- Client List Tab -->
+            <section id="tab-clients" class="tab-content">
+                <div class="tab-header">
+                    <h2>Accepted Clients</h2>
+                    <div class="tab-actions">
+                        <button class="btn btn-secondary" onclick="exportData('clients')">Export CSV</button>
+                    </div>
+                </div>
+                <div id="clientsList" class="items-list"></div>
+            </section>
+
+            <!-- Site Content Management Tab -->
+            <section id="tab-content" class="tab-content">
+                <div class="tab-header">
+                    <h2>Site Content Management</h2>
+                </div>
+                <div class="content-management">
+                    <div class="card">
+                        <h3>Hero Section</h3>
+                        <div class="form-group">
+                            <label for="heroTitle">Hero Title</label>
+                            <input type="text" id="heroTitle" placeholder="Get booked like a boss.">
+                        </div>
+                        <div class="form-group">
+                            <label for="heroDescription">Hero Description</label>
+                            <textarea id="heroDescription" rows="3"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveContent('hero')">Save Changes</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>Features Section</h3>
+                        <div id="featuresList" class="editable-list"></div>
+                        <button class="btn btn-secondary" onclick="addFeature()">Add Feature</button>
+                        <button class="btn btn-primary" onclick="saveContent('features')">Save Changes</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>Contact Email</h3>
+                        <div class="form-group">
+                            <label for="contactEmail">Contact Email</label>
+                            <input type="email" id="contactEmail" value="bossbookerinfo@gmail.com" readonly>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 14px;">
+                            Current contact email: <strong>bossbookerinfo@gmail.com</strong>
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Site Content Guidelines</h3>
+                        <p style="color: var(--text-secondary);">
+                            Use this section to manage site content. Changes are stored locally. 
+                            For production deployment, you'll need to integrate with a backend service.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
