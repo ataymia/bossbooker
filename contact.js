@@ -4,28 +4,31 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
     
     // Get form data
     const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
+    const data = {
+        id: 'contact_' + Date.now(),
+        name: formData.get('name'),
+        email: formData.get('email'),
+        company: formData.get('company') || '',
+        phone: formData.get('phone') || '',
+        message: formData.get('message') || '',
+        timestamp: Date.now(),
+        status: 'new'
+    };
     
-    // In a real application, this would send data to a server
-    // For development/debugging only:
-    if (process.env.NODE_ENV === 'development') {
-        console.log('Form submitted:', data);
+    // Save to localStorage for admin portal
+    try {
+        const contacts = JSON.parse(localStorage.getItem('bossbooker_contacts') || '[]');
+        contacts.unshift(data); // Add to beginning
+        localStorage.setItem('bossbooker_contacts', JSON.stringify(contacts));
+    } catch (error) {
+        console.error('Error saving contact:', error);
     }
     
     // Show success message
-    const successMessage = document.getElementById('formSuccess');
-    successMessage.classList.remove('hidden');
+    alert('Thank you for contacting us! We\'ll get back to you within 1 business day at bossbookerinfo@gmail.com');
     
     // Reset form
     e.target.reset();
-    
-    // Scroll to success message
-    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // Hide success message after 5 seconds
-    setTimeout(() => {
-        successMessage.classList.add('hidden');
-    }, 5000);
 });
 
 // Pre-fill subject from URL parameter (e.g., from Enterprise plan contact)
