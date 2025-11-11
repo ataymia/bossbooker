@@ -342,4 +342,24 @@ document.addEventListener('DOMContentLoaded', () => {
       closeServiceRequestModal();
     }
   });
+  
+  // Add direct event listeners for mobile compatibility (supplement onclick)
+  // This ensures buttons work even if onclick fails on some mobile browsers
+  const submitButton = document.querySelector('button[onclick="openServiceRequestModal()"]');
+  if (submitButton) {
+    submitButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openServiceRequestModal();
+    });
+  }
+  
+  const copyButton = document.querySelector('button[onclick="copyQuote()"]');
+  if (copyButton) {
+    copyButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      copyQuote();
+    });
+  }
 });

@@ -1,5 +1,5 @@
 // Contact form handling
-document.getElementById('contactForm').addEventListener('submit', async (e) => {
+async function handleContactSubmit(e) {
     e.preventDefault();
     
     // Get form data
@@ -58,6 +58,23 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
         e.target.reset();
     } else {
         alert('Sorry, there was an error submitting your request. Please try again or email us directly at bossbookerinfo@gmail.com');
+    }
+}
+
+// Initialize form handler on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContactSubmit);
+        
+        // Also add direct listener to submit button for mobile compatibility
+        const submitButton = contactForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.addEventListener('click', (e) => {
+                // Let the form's submit event handle it
+                // This just ensures the button is responsive on mobile
+            });
+        }
     }
 });
 
