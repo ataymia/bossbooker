@@ -6,6 +6,7 @@
     <title>Boss Booker — Admin Portal</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/admin.css">
+    <script src="/api-config.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
@@ -17,15 +18,15 @@
             </div>
             <form id="loginForm" class="login-form">
                 <div>
-                    <label for="username">Username</label>
-                    <input id="username" name="username" type="text" required autofocus>
-                </div>
-                <div>
                     <label for="password">Password</label>
-                    <input id="password" name="password" type="password" required>
+                    <input id="password" name="password" type="password" required autofocus>
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
                 <div id="loginError" class="error-message" style="display: none;"></div>
+                <p style="margin-top:16px;font-size:12px;color:var(--text-secondary);text-align:center;">
+                    Using Cloudflare Worker? Enter the admin password.<br>
+                    Using localStorage? Set password with: <code>localStorage.setItem('ADMIN_USER', ':password')</code>
+                </p>
             </form>
         </div>
     </div>
