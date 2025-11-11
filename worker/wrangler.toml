@@ -1,0 +1,16 @@
+name = "bossbooker-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "BOSSBOOKER_KV"
+id = "YOUR_KV_NAMESPACE_ID"
+
+# Environment variables
+[vars]
+# Public variables can go here
+CORS_ORIGIN = "*"
+
+# Secrets (set with: wrangler secret put SECRET_NAME)
+# ADMIN_PASSWORD - Set this using: wrangler secret put ADMIN_PASSWORD

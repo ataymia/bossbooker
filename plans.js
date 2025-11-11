@@ -251,12 +251,11 @@ function closeServiceRequestModal() {
 }
 
 // Handle service request form submission
-function handleServiceRequestSubmit(e) {
+async function handleServiceRequestSubmit(e) {
   e.preventDefault();
   
   const formData = new FormData(e.target);
-  const request = {
-    id: 'request_' + Date.now(),
+  const requestData = {
     companyName: formData.get('companyName'),
     contactName: formData.get('contactName'),
     email: formData.get('email'),
@@ -268,23 +267,56 @@ function handleServiceRequestSubmit(e) {
     monthlyTotal: document.getElementById('monthlyTotal')?.textContent || '',
     setupFee: document.getElementById('onetimeTotal')?.textContent || '',
     firstMonthTotal: document.getElementById('firstMonthTotal')?.textContent || '',
-    timestamp: Date.now(),
-    status: 'new'
   };
   
-  // Save to localStorage for admin portal
-  try {
-    const requests = JSON.parse(localStorage.getItem('bossbooker_requests') || '[]');
-    requests.unshift(request); // Add to beginning
-    localStorage.setItem('bossbooker_requests', JSON.stringify(requests));
-  } catch (error) {
-    console.error('Error saving request:', error);
+  // Try to save to Cloudflare Worker API first
+  let success = false;
+  if (window.API_CONFIG && !window.API_CONFIG.USE_LOCALSTORAGE_FALLBACK) {
+    try {
+      const response = await fetch(`${window.API_CONFIG.WORKER_URL}${window.API_CONFIG.ENDPOINTS.REQUEST}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      });
+      
+      if (response.ok) {
+        success = true;
+      } else {
+        console.error('Worker API error:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error contacting Worker API:', error);
+    }
   }
   
-  // Close modal and show success
+  // Fallback to localStorage if Worker API fails or is not configured
+  if (!success) {
+    try {
+      const request = {
+        id: 'request_' + Date.now(),
+        ...requestData,
+        timestamp: Date.now(),
+        status: 'new'
+      };
+      const requests = JSON.parse(localStorage.getItem('bossbooker_requests') || '[]');
+      requests.unshift(request);
+      localStorage.setItem('bossbooker_requests', JSON.stringify(requests));
+      success = true;
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }
+  
+  // Close modal and show success/error
   closeServiceRequestModal();
-  alert('Thank you! Your service request has been submitted. We\'ll contact you at ' + request.email + ' within 1 business day.');
-  e.target.reset();
+  if (success) {
+    alert('Thank you! Your service request has been submitted. We\'ll contact you at ' + requestData.email + ' within 1 business day.');
+    e.target.reset();
+  } else {
+    alert('Sorry, there was an error submitting your request. Please try again or email us directly at bossbookerinfo@gmail.com');
+  }
 }
 
 // expose functions globally for the button's onclick
@@ -310,4 +342,24 @@ document.addEventListener('DOMContentLoaded', () => {
       closeServiceRequestModal();
     }
   });
+  
+  // Add direct event listeners for mobile compatibility (supplement onclick)
+  // This ensures buttons work even if onclick fails on some mobile browsers
+  const submitButton = document.querySelector('button[onclick="openServiceRequestModal()"]');
+  if (submitButton) {
+    submitButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openServiceRequestModal();
+    });
+  }
+  
+  const copyButton = document.querySelector('button[onclick="copyQuote()"]');
+  if (copyButton) {
+    copyButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      copyQuote();
+    });
+  }
 });
