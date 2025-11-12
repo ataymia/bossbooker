@@ -436,6 +436,7 @@ async function acceptContact(id) {
         }
         
         // Re-render
+        await renderDashboard();
         await renderContacts();
         await renderClients();
     } catch (error) {
@@ -480,6 +481,7 @@ async function acceptRequest(id) {
         }
         
         // Re-render
+        await renderDashboard();
         await renderRequests();
         await renderClients();
     } catch (error) {
@@ -661,8 +663,116 @@ function setupTabs() {
             // Update active content
             contents.forEach(c => c.classList.remove('active'));
             document.getElementById(`tab-${targetTab}`).classList.add('active');
+            
+            // Refresh dashboard if switching to it
+            if (targetTab === 'dashboard') {
+                renderDashboard();
+            }
         });
     });
+}
+
+// Switch to a specific tab programmatically
+function switchTab(tabName) {
+    const tab = document.querySelector(`.admin-tab[data-tab="${tabName}"]`);
+    if (tab) {
+        tab.click();
+    }
+}
+
+// Render dashboard
+async function renderDashboard() {
+    try {
+        let contacts, requests, clients;
+        
+        if (API.useWorkerAPI()) {
+            [contacts, requests, clients] = await Promise.all([
+                API.request(window.API_CONFIG.ENDPOINTS.ADMIN_CONTACTS),
+                API.request(window.API_CONFIG.ENDPOINTS.ADMIN_REQUESTS),
+                API.request(window.API_CONFIG.ENDPOINTS.ADMIN_CLIENTS)
+            ]);
+        } else {
+            contacts = getDataLocal(STORAGE_KEYS.CONTACTS);
+            requests = getDataLocal(STORAGE_KEYS.REQUESTS);
+            clients = getDataLocal(STORAGE_KEYS.CLIENTS);
+        }
+        
+        // Update stats
+        const newContacts = contacts.filter(c => c.status !== 'accepted').length;
+        const newRequests = requests.filter(r => r.status !== 'accepted').length;
+        
+        document.getElementById('stat-contacts').textContent = newContacts;
+        document.getElementById('stat-requests').textContent = newRequests;
+        document.getElementById('stat-clients').textContent = clients.length;
+        
+        // Calculate total monthly revenue from clients
+        let totalRevenue = 0;
+        clients.forEach(client => {
+            if (client.monthlyValue) {
+                const value = client.monthlyValue.replace(/[^0-9.]/g, '');
+                totalRevenue += parseFloat(value) || 0;
+            }
+        });
+        document.getElementById('stat-revenue').textContent = `$${totalRevenue.toLocaleString()}`;
+        
+        // Render recent activity
+        const recentActivity = [];
+        
+        // Add recent contacts
+        contacts.slice(0, 3).forEach(contact => {
+            recentActivity.push({
+                icon: '📬',
+                text: `New contact from ${contact.name}`,
+                time: contact.timestamp,
+                type: 'contact'
+            });
+        });
+        
+        // Add recent requests
+        requests.slice(0, 3).forEach(request => {
+            recentActivity.push({
+                icon: '📋',
+                text: `Service request from ${request.companyName}`,
+                time: request.timestamp,
+                type: 'request'
+            });
+        });
+        
+        // Add recent clients
+        clients.slice(0, 2).forEach(client => {
+            recentActivity.push({
+                icon: '✅',
+                text: `${client.name} added as client`,
+                time: client.acceptedDate,
+                type: 'client'
+            });
+        });
+        
+        // Sort by time and take most recent
+        recentActivity.sort((a, b) => b.time - a.time);
+        const activityHtml = recentActivity.slice(0, 5).map(activity => `
+            <div class="activity-item">
+                <div class="activity-icon">${activity.icon}</div>
+                <div class="activity-content">
+                    <div class="activity-text">${activity.text}</div>
+                    <div class="activity-time">${formatDate(activity.time)}</div>
+                </div>
+            </div>
+        `).join('');
+        
+        const activityContainer = document.getElementById('recentActivity');
+        if (activityHtml) {
+            activityContainer.innerHTML = activityHtml;
+        } else {
+            activityContainer.innerHTML = `
+                <div class="empty-state" style="padding: 20px;">
+                    <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">No recent activity</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error rendering dashboard:', error);
+    }
 }
 
 // Initialize
@@ -676,6 +786,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupTabs();
         
         // Load data
+        await renderDashboard();
         await renderContacts();
         await renderRequests();
         await renderClients();
@@ -712,3 +823,4 @@ window.deleteClient = deleteClient;
 window.exportData = exportData;
 window.saveContent = saveContent;
 window.addFeature = addFeature;
+window.switchTab = switchTab;
