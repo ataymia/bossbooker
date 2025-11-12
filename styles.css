@@ -211,6 +211,12 @@ input, select, textarea {
     -webkit-appearance: none;
     appearance: none;
 }
+
+/* Ensure select options are visible */
+select option {
+    background: var(--background-alt);
+    color: var(--text-primary);
+}
 textarea { 
     min-height: 110px;
     font-family: inherit;
