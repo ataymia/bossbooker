@@ -6,7 +6,7 @@ const API_CONFIG = {
   WORKER_URL: 'https://bossbooker-api.YOUR-SUBDOMAIN.workers.dev',
   
   // Set to true to use localStorage fallback (for testing without worker)
-  USE_LOCALSTORAGE_FALLBACK: false,
+  USE_LOCALSTORAGE_FALLBACK: true,
   
   // API endpoints
   ENDPOINTS: {

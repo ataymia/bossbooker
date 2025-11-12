@@ -179,37 +179,91 @@
 .radio-option,
 .checkbox-option {
     display: flex;
-    align-items: center;
-    padding: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem;
     border: 2px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.02);
+    position: relative;
 }
 
 .radio-option:hover,
 .checkbox-option:hover {
     border-color: var(--primary-color);
-    background-color: var(--background-alt);
+    background: rgba(255, 46, 190, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 46, 190, 0.15);
 }
 
 .radio-option input[type="radio"],
 .checkbox-option input[type="checkbox"] {
     margin-right: 1rem;
-    width: 20px;
-    height: 20px;
+    margin-top: 2px;
+    min-width: 22px;
+    width: 22px;
+    height: 22px;
     cursor: pointer;
     accent-color: var(--primary-color);
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    background: var(--background);
+    position: relative;
+}
+
+.radio-option input[type="radio"]:checked,
+.checkbox-option input[type="checkbox"]:checked {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+}
+
+.radio-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+.checkbox-option input[type="checkbox"] {
+    border-radius: 4px;
+}
+
+.checkbox-option input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 .radio-option span,
 .checkbox-option span {
     flex: 1;
     font-weight: 500;
+    color: var(--text-primary);
 }
 
 .radio-option input[type="radio"]:checked + span,
 .checkbox-option input[type="checkbox"]:checked + span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.radio-option input[type="radio"]:checked + span strong,
+.checkbox-option input[type="checkbox"]:checked + span strong {
     color: var(--primary-color);
 }
 

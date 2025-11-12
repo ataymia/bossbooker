@@ -49,7 +49,8 @@
 
         <!-- Tab Navigation -->
         <nav class="admin-tabs">
-            <button class="admin-tab active" data-tab="contacts">Contact Submissions</button>
+            <button class="admin-tab active" data-tab="dashboard">Dashboard</button>
+            <button class="admin-tab" data-tab="contacts">Contact Submissions</button>
             <button class="admin-tab" data-tab="requests">Service Requests</button>
             <button class="admin-tab" data-tab="clients">Client List</button>
             <button class="admin-tab" data-tab="content">Site Content</button>
@@ -57,8 +58,60 @@
 
         <!-- Main Content -->
         <main class="admin-content">
+            <!-- Dashboard Tab -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="tab-header">
+                    <h2>Dashboard Overview</h2>
+                </div>
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📬</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-contacts">0</div>
+                            <div class="stat-label">New Contacts</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-requests">0</div>
+                            <div class="stat-label">Service Requests</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-clients">0</div>
+                            <div class="stat-label">Active Clients</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="stat-revenue">$0</div>
+                            <div class="stat-label">Monthly Revenue</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-recent">
+                    <div class="card">
+                        <h3>Recent Activity</h3>
+                        <div id="recentActivity"></div>
+                    </div>
+                    <div class="card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="switchTab('contacts')">View Contacts</button>
+                            <button class="btn btn-primary" onclick="switchTab('requests')">View Requests</button>
+                            <button class="btn btn-primary" onclick="switchTab('clients')">View Clients</button>
+                            <a href="index.html" target="_blank" class="btn btn-secondary">View Website</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Contact Submissions Tab -->
-            <section id="tab-contacts" class="tab-content active">
+            <section id="tab-contacts" class="tab-content">
                 <div class="tab-header">
                     <h2>Contact Form Submissions</h2>
                     <div class="tab-actions">
