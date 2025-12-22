@@ -20,6 +20,25 @@ const PLAN_PRICING = {
   glam_pro: { monthly: 599, setup: 179 }
 };
 
+// Business Card Pricing (per order, one-time)
+const BUSINESS_CARD_PRICING = {
+  template: {
+    single: { 100: 75, 250: 125, 1000: 325 },
+    double: { 100: 95, 250: 155, 1000: 395 }
+  },
+  custom: {
+    single: { 100: 165, 250: 245, 1000: 525 },
+    double: { 100: 215, 250: 315, 1000: 625 }
+  },
+  addon: {
+    template: { single: 55, double: 75 },
+    custom: { single: 95, double: 125 }
+  }
+};
+
+// Business Card state
+let businessCardSelection = null;
+
 // small helper to format currency
 function fmtCurrency(v) {
   if (typeof v !== 'number' || Number.isNaN(v)) return '$0';
@@ -96,6 +115,12 @@ function updatePrice() {
     else monthlyTotal += price;
     console.debug('[checkbox-addon]', cb.value || cb.name, price, 'oneTime=', isOneTime);
   });
+
+  // Add business card selection if present (one-time cost)
+  if (businessCardSelection) {
+    onetimeTotal += businessCardSelection.total;
+    console.debug('[business-card-addon]', businessCardSelection.total, 'oneTime=true');
+  }
 
   const firstMonthTotal = monthlyTotal + onetimeTotal;
 
@@ -203,6 +228,12 @@ function copyQuote() {
       return `${label} ${one ? '(one-time)' : ''} — ${fmtCurrency(price)}`;
     });
 
+  // Add business card selection to addons list
+  const bcSummary = getBusinessCardSummary();
+  if (bcSummary) {
+    addons.push(`${bcSummary.text} (one-time)`);
+  }
+
   const ppcNote = document.getElementById('ppcScaleNote')?.textContent || '';
 
   const parts = [
@@ -233,12 +264,20 @@ function openServiceRequestModal() {
   const setup = document.getElementById('onetimeTotal')?.textContent || '';
   const first = document.getElementById('firstMonthTotal')?.textContent || '';
   
-  summary.innerHTML = `
+  let summaryHTML = `
     <strong>Plan:</strong> ${basePlan}<br>
     <strong>Monthly:</strong> ${monthly}<br>
     <strong>Setup Fee:</strong> ${setup}<br>
     <strong>First Month:</strong> ${first}
   `;
+  
+  // Add business card selection if present
+  const bcSummary = getBusinessCardSummary();
+  if (bcSummary) {
+    summaryHTML += `<br><br><strong>Business Cards:</strong><br>${bcSummary.text}`;
+  }
+  
+  summary.innerHTML = summaryHTML;
   
   modal.style.display = 'block';
   document.body.style.overflow = 'hidden';
@@ -267,6 +306,7 @@ async function handleServiceRequestSubmit(e) {
     monthlyTotal: document.getElementById('monthlyTotal')?.textContent || '',
     setupFee: document.getElementById('onetimeTotal')?.textContent || '',
     firstMonthTotal: document.getElementById('firstMonthTotal')?.textContent || '',
+    businessCardSelection: businessCardSelection ? getBusinessCardSummary().text : null
   };
   
   // Try to save to Cloudflare Worker API first
@@ -324,6 +364,137 @@ window.copyQuote = copyQuote;
 window.openServiceRequestModal = openServiceRequestModal;
 window.closeServiceRequestModal = closeServiceRequestModal;
 
+// Business Card Modal Functions
+function openBusinessCardModal() {
+  const modal = document.getElementById('businessCardModal');
+  if (!modal) return;
+  
+  // Initialize with current selection or defaults
+  if (businessCardSelection) {
+    // Restore previous selection
+    const packageRadio = document.querySelector(`input[name="bcPackage"][value="${businessCardSelection.package}"]`);
+    const sidesRadio = document.querySelector(`input[name="bcSides"][value="${businessCardSelection.sides}"]`);
+    const qtyRadio = document.querySelector(`input[name="bcQuantity"][value="${businessCardSelection.quantity}"]`);
+    const addonCheckbox = document.getElementById('bcAddon100');
+    
+    if (packageRadio) packageRadio.checked = true;
+    if (sidesRadio) sidesRadio.checked = true;
+    if (qtyRadio) qtyRadio.checked = true;
+    if (addonCheckbox) addonCheckbox.checked = businessCardSelection.addon;
+  }
+  
+  updateBusinessCardPrice();
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBusinessCardModal() {
+  const modal = document.getElementById('businessCardModal');
+  if (!modal) return;
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function updateBusinessCardPrice() {
+  const packageRadio = document.querySelector('input[name="bcPackage"]:checked');
+  const sidesRadio = document.querySelector('input[name="bcSides"]:checked');
+  const qtyRadio = document.querySelector('input[name="bcQuantity"]:checked');
+  const addonCheckbox = document.getElementById('bcAddon100');
+  
+  if (!packageRadio || !sidesRadio || !qtyRadio) return;
+  
+  const packageType = packageRadio.value; // 'template' or 'custom'
+  const sides = sidesRadio.value; // 'single' or 'double'
+  const quantity = qtyRadio.value; // '100', '250', '1000'
+  const hasAddon = addonCheckbox ? addonCheckbox.checked : false;
+  
+  // Calculate base price
+  let total = BUSINESS_CARD_PRICING[packageType][sides][quantity];
+  
+  // Add addon if selected
+  if (hasAddon) {
+    total += BUSINESS_CARD_PRICING.addon[packageType][sides];
+  }
+  
+  // Update display
+  const totalEl = document.getElementById('bcTotalPrice');
+  const breakdownEl = document.getElementById('bcBreakdown');
+  
+  if (totalEl) {
+    totalEl.textContent = fmtCurrency(total);
+  }
+  
+  if (breakdownEl) {
+    const pkgLabel = packageType.charAt(0).toUpperCase() + packageType.slice(1);
+    const sidesLabel = sides.charAt(0).toUpperCase() + sides.slice(1);
+    const qtyLabel = quantity;
+    const addonLabel = hasAddon ? 'Yes' : 'No';
+    breakdownEl.textContent = `Package: ${pkgLabel} • Sides: ${sidesLabel} • Qty: ${qtyLabel} • Add-on: ${addonLabel}`;
+  }
+}
+
+function applyBusinessCardSelection() {
+  const packageRadio = document.querySelector('input[name="bcPackage"]:checked');
+  const sidesRadio = document.querySelector('input[name="bcSides"]:checked');
+  const qtyRadio = document.querySelector('input[name="bcQuantity"]:checked');
+  const addonCheckbox = document.getElementById('bcAddon100');
+  
+  if (!packageRadio || !sidesRadio || !qtyRadio) return;
+  
+  const packageType = packageRadio.value;
+  const sides = sidesRadio.value;
+  const quantity = qtyRadio.value;
+  const hasAddon = addonCheckbox ? addonCheckbox.checked : false;
+  
+  // Calculate total
+  let total = BUSINESS_CARD_PRICING[packageType][sides][quantity];
+  if (hasAddon) {
+    total += BUSINESS_CARD_PRICING.addon[packageType][sides];
+  }
+  
+  // Store selection
+  businessCardSelection = {
+    package: packageType,
+    sides: sides,
+    quantity: quantity,
+    addon: hasAddon,
+    total: total
+  };
+  
+  // Update summary in the add-ons section
+  const summaryEl = document.getElementById('businessCardSummary');
+  if (summaryEl) {
+    const pkgLabel = packageType.charAt(0).toUpperCase() + packageType.slice(1);
+    const sidesLabel = sides.charAt(0).toUpperCase() + sides.slice(1);
+    const addonLabel = hasAddon ? ' + 100 more' : '';
+    summaryEl.innerHTML = `<strong>Selected:</strong> ${pkgLabel}, ${sidesLabel}-sided, ${quantity} cards${addonLabel} — <strong style="color: var(--primary-color);">${fmtCurrency(total)}</strong> (one-time)`;
+    summaryEl.style.display = 'block';
+  }
+  
+  closeBusinessCardModal();
+  
+  // Update main price calculation to include this one-time cost
+  updatePrice();
+}
+
+function getBusinessCardSummary() {
+  if (!businessCardSelection) return null;
+  
+  const pkgLabel = businessCardSelection.package.charAt(0).toUpperCase() + businessCardSelection.package.slice(1);
+  const sidesLabel = businessCardSelection.sides.charAt(0).toUpperCase() + businessCardSelection.sides.slice(1);
+  const addonLabel = businessCardSelection.addon ? ', Add-on +100: Yes' : ', Add-on +100: No';
+  
+  return {
+    text: `Business Cards — ${pkgLabel}, ${sidesLabel}, ${businessCardSelection.quantity}${addonLabel}. Total: ${fmtCurrency(businessCardSelection.total)}`,
+    price: businessCardSelection.total
+  };
+}
+
+window.openBusinessCardModal = openBusinessCardModal;
+window.closeBusinessCardModal = closeBusinessCardModal;
+window.updateBusinessCardPrice = updateBusinessCardPrice;
+window.applyBusinessCardSelection = applyBusinessCardSelection;
+
 // init after DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   wireAndInit();
@@ -340,6 +511,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('serviceRequestModal')?.addEventListener('click', (e) => {
     if (e.target.id === 'serviceRequestModal') {
       closeServiceRequestModal();
+    }
+  });
+  
+  // Close business card modal on outside click
+  document.getElementById('businessCardModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'businessCardModal') {
+      closeBusinessCardModal();
     }
   });
   

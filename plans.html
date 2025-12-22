@@ -244,6 +244,18 @@
                         <label class="checkbox-option"><input type="checkbox" value="csm" data-price="299" onchange="updatePrice()"><span>Dedicated Success Manager — $299/month</span></label>
                     </div>
 
+                    <h4 style="margin-top:16px;">Business Card Design + Print</h4>
+                    <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-top: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Business Card Design + Print</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Clean, pro business cards — template-based or fully custom. Choose single/double sided and quantity.</div>
+                                <div id="businessCardSummary" style="font-size: 12px; color: var(--text-secondary); margin-top: 8px; display: none;"></div>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="openBusinessCardModal()" style="white-space: nowrap;">Configure</button>
+                        </div>
+                    </div>
+
                     <h4 style="margin-top:12px;">GLAM à-la-carte (available to GLAM plans)</h4>
                     <div class="checkbox-group">
                         <label class="checkbox-option"><input type="checkbox" value="one_page_portfolio" data-price="799" data-onetime="true" onchange="updatePrice()"><span>One-page portfolio — $799 (one-time)</span></label>
@@ -288,6 +300,101 @@
 
     <!-- hidden holder for PPC scale note -->
     <div id="ppcScaleNote" style="display:none"></div>
+
+    <!-- Business Card Configurator Modal -->
+    <div id="businessCardModal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); overflow:auto; padding:20px;">
+        <div style="max-width:700px; width:100%; margin:40px auto; background:var(--background-alt); border:1px solid var(--border-color); border-radius:14px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0; color:var(--text-primary);">Business Card Design + Print</h2>
+                <button onclick="closeBusinessCardModal()" class="btn-secondary" style="padding:6px 12px;">Close</button>
+            </div>
+            
+            <form id="businessCardForm">
+                <div style="display:grid; gap:20px;">
+                    <!-- Package Toggle -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Package Type</legend>
+                        <div class="radio-group" style="gap: 10px;">
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcPackage" value="template" checked onchange="updateBusinessCardPrice()">
+                                <span><strong>Template</strong> — Choose from pre-designed templates</span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcPackage" value="custom" onchange="updateBusinessCardPrice()">
+                                <span><strong>Custom</strong> — Fully customized design from scratch</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Sides Toggle -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Card Sides</legend>
+                        <div class="radio-group" style="gap: 10px;">
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcSides" value="single" checked onchange="updateBusinessCardPrice()">
+                                <span><strong>Single-sided</strong></span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcSides" value="double" onchange="updateBusinessCardPrice()">
+                                <span><strong>Double-sided</strong></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Quantity Toggle -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Quantity</legend>
+                        <div class="radio-group" style="gap: 10px;">
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcQuantity" value="100" checked onchange="updateBusinessCardPrice()">
+                                <span><strong>100 cards</strong></span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcQuantity" value="250" onchange="updateBusinessCardPrice()">
+                                <span><strong>250 cards</strong></span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcQuantity" value="1000" onchange="updateBusinessCardPrice()">
+                                <span><strong>1,000 cards</strong></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Add-on +100 cards -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Optional Add-on</legend>
+                        <label class="checkbox-option" style="padding: 12px;">
+                            <input type="checkbox" id="bcAddon100" onchange="updateBusinessCardPrice()">
+                            <span><strong>Add +100 more cards</strong></span>
+                        </label>
+                    </fieldset>
+
+                    <!-- Live Price Display -->
+                    <div style="background: var(--background); border: 2px solid var(--primary-color); border-radius: 10px; padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-size: 18px; font-weight: 600; color: var(--text-primary);">Total (per order):</span>
+                            <span id="bcTotalPrice" style="font-size: 24px; font-weight: bold; color: var(--primary-color);">$75</span>
+                        </div>
+                        <div id="bcBreakdown" style="font-size: 13px; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border-color);">
+                            Package: Template • Sides: Single • Qty: 100 • Add-on: No
+                        </div>
+                    </div>
+
+                    <!-- Fine Print -->
+                    <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+                        <div style="margin-bottom: 6px;">• Template includes 1 revision round. Custom includes 2 revision rounds.</div>
+                        <div style="margin-bottom: 6px;">• Extra revision rounds: $25 each.</div>
+                        <div>• Rush / same-day: +$35.</div>
+                    </div>
+                </div>
+                
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="button" onclick="applyBusinessCardSelection()" class="btn-primary">Apply Selection</button>
+                    <button type="button" onclick="closeBusinessCardModal()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Service Request Modal -->
     <div id="serviceRequestModal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); overflow:auto; padding:20px;">
