@@ -309,29 +309,60 @@ async function handleServiceRequestSubmit(e) {
     businessCardSelection: businessCardSelection ? getBusinessCardSummary().text : null
   };
   
-  // Try to save to Cloudflare Worker API first
   let success = false;
+  
+  // 1. Try Cloudflare Worker API first
   if (window.API_CONFIG && !window.API_CONFIG.USE_LOCALSTORAGE_FALLBACK) {
     try {
       const response = await fetch(`${window.API_CONFIG.WORKER_URL}${window.API_CONFIG.ENDPOINTS.REQUEST}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData)
       });
-      
-      if (response.ok) {
-        success = true;
-      } else {
-        console.error('Worker API error:', await response.text());
-      }
+      if (response.ok) success = true;
     } catch (error) {
-      console.error('Error contacting Worker API:', error);
+      console.warn('Worker API not available:', error);
     }
   }
   
-  // Fallback to localStorage if Worker API fails or is not configured
+  // 2. Save to DataStore (LocalStorage-backed)
+  if (typeof DataStore !== 'undefined') {
+    try {
+      DataStore.savePlanRequest({
+        name: requestData.contactName,
+        email: requestData.email,
+        phone: requestData.phone,
+        plan: requestData.planName,
+        company: requestData.companyName,
+        companySize: requestData.companySize,
+        address: requestData.address,
+        additionalInfo: requestData.notes,
+        monthlyTotal: requestData.monthlyTotal,
+        setupFee: requestData.setupFee,
+        businessCards: requestData.businessCardSelection,
+        source: 'plans_page'
+      });
+      success = true;
+    } catch (error) {
+      console.error('DataStore error:', error);
+    }
+  }
+  
+  // 3. Track analytics event
+  if (typeof Analytics !== 'undefined') {
+    Analytics.trackFormSubmit('plan_request', {
+      plan: requestData.planName,
+      hasPhone: !!requestData.phone
+    });
+    
+    Analytics.trackEvent('plan_request', {
+      email: requestData.email,
+      plan: requestData.planName,
+      monthlyTotal: requestData.monthlyTotal
+    });
+  }
+  
+  // 4. Fallback to direct localStorage
   if (!success) {
     try {
       const request = {
@@ -345,17 +376,17 @@ async function handleServiceRequestSubmit(e) {
       localStorage.setItem('bossbooker_requests', JSON.stringify(requests));
       success = true;
     } catch (error) {
-      console.error('Error saving to localStorage:', error);
+      console.error('localStorage error:', error);
     }
   }
   
-  // Close modal and show success/error
+  // Close modal and show result
   closeServiceRequestModal();
   if (success) {
-    alert('Thank you! Your service request has been submitted. We\'ll contact you at ' + requestData.email + ' within 1 business day.');
+    alert('Thank you! Your service request has been submitted. We\'ll contact you within 1 business day.\n\nOr call us now: (602) 842-2772');
     e.target.reset();
   } else {
-    alert('Sorry, there was an error submitting your request. Please try again or email us directly at bossbookerinfo@gmail.com');
+    alert('Sorry, there was an error. Please try again or call us at (602) 842-2772.');
   }
 }
 

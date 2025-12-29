@@ -1,826 +1,1160 @@
-// Boss Booker Admin Portal
-// Supports both Cloudflare Workers KV (primary) and localStorage (fallback)
+/**
+ * Boss Booker - Admin Portal JavaScript
+ * 
+ * Full admin dashboard with:
+ * - Password authentication (sessionStorage)
+ * - Dashboard with stats and charts
+ * - Visitor, Event, Lead, and Plan Request management
+ * - Data export (JSON/CSV)
+ * - Settings management
+ */
 
-const STORAGE_KEYS = {
-    CONTACTS: 'bossbooker_contacts',
-    REQUESTS: 'bossbooker_requests',
-    CLIENTS: 'bossbooker_clients',
-    AUTH: 'bossbooker_admin_auth',
-    TOKEN: 'bossbooker_admin_token'
-};
+(function() {
+    'use strict';
 
-// API helper - works with both Worker API and localStorage
-const API = {
-    // Check if using Worker API or localStorage
-    useWorkerAPI() {
-        return window.API_CONFIG && 
-               !window.API_CONFIG.USE_LOCALSTORAGE_FALLBACK && 
-               window.API_CONFIG.WORKER_URL !== 'https://bossbooker-api.YOUR-SUBDOMAIN.workers.dev';
-    },
+    // =========================================
+    // CONFIGURATION
+    // =========================================
+    const CONFIG = {
+        PASSWORD: 'neversleep',
+        MAX_LOGIN_ATTEMPTS: 5,
+        LOCKOUT_KEY: 'bb_admin_lockout',
+        SESSION_KEY: 'bb_admin_session',
+        ATTEMPT_KEY: 'bb_admin_attempts'
+    };
 
-    // Get auth token
-    getToken() {
-        return localStorage.getItem(STORAGE_KEYS.TOKEN);
-    },
-
-    // Make authenticated API request
-    async request(endpoint, options = {}) {
-        if (!this.useWorkerAPI()) {
-            throw new Error('Worker API not configured');
+    // =========================================
+    // STATE
+    // =========================================
+    let state = {
+        currentTab: 'dashboard',
+        searchFilters: {
+            visitors: '',
+            events: '',
+            leads: '',
+            planRequests: ''
+        },
+        statusFilters: {
+            leads: 'all',
+            planRequests: 'all'
         }
+    };
 
-        const token = this.getToken();
-        const url = `${window.API_CONFIG.WORKER_URL}${endpoint}`;
-        
-        const headers = {
-            'Content-Type': 'application/json',
-            ...options.headers
-        };
+    // =========================================
+    // DOM ELEMENTS
+    // =========================================
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
 
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
+    // =========================================
+    // INITIALIZATION
+    // =========================================
+    document.addEventListener('DOMContentLoaded', init);
 
-        const response = await fetch(url, {
-            ...options,
-            headers
-        });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ error: 'Unknown error' }));
-            throw new Error(error.error || error.message || 'API request failed');
-        }
-
-        return await response.json();
-    }
-};
-
-// Initialize data storage (localStorage fallback)
-function initStorage() {
-    if (!localStorage.getItem(STORAGE_KEYS.CONTACTS)) {
-        localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify([]));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.REQUESTS)) {
-        localStorage.setItem(STORAGE_KEYS.REQUESTS, JSON.stringify([]));
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.CLIENTS)) {
-        localStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify([]));
-    }
-}
-
-// Get data from localStorage
-function getDataLocal(key) {
-    try {
-        return JSON.parse(localStorage.getItem(key) || '[]');
-    } catch (e) {
-        console.error('Error reading local data:', e);
-        return [];
-    }
-}
-
-// Save data to localStorage
-function saveDataLocal(key, data) {
-    try {
-        localStorage.setItem(key, JSON.stringify(data));
-        return true;
-    } catch (e) {
-        console.error('Error saving local data:', e);
-        return false;
-    }
-}
-
-// Authentication
-function checkAuth() {
-    if (API.useWorkerAPI()) {
-        return !!API.getToken();
-    } else {
-        // localStorage fallback
-        const authData = localStorage.getItem(STORAGE_KEYS.AUTH);
-        return authData === 'authenticated';
-    }
-}
-
-async function login(password) {
-    if (API.useWorkerAPI()) {
-        try {
-            const result = await API.request(window.API_CONFIG.ENDPOINTS.ADMIN_AUTH, {
-                method: 'POST',
-                body: JSON.stringify({ password })
-            });
-
-            if (result.success && result.token) {
-                localStorage.setItem(STORAGE_KEYS.TOKEN, result.token);
-                return { success: true };
-            }
-            return { success: false, message: 'Invalid password' };
-        } catch (error) {
-            console.error('Login error:', error);
-            return { success: false, message: error.message || 'Authentication failed' };
-        }
-    } else {
-        // localStorage fallback
-        const adminUser = localStorage.getItem('ADMIN_USER');
-        
-        if (!adminUser) {
-            return {
-                success: false,
-                message: 'Admin credentials not configured. Please set ADMIN_USER in localStorage (format: "username:password") or configure Cloudflare Worker API.'
-            };
-        }
-
-        const [storedUsername, storedPassword] = adminUser.split(':');
-        
-        if (password === storedPassword) {
-            localStorage.setItem(STORAGE_KEYS.AUTH, 'authenticated');
-            return { success: true };
-        }
-        
-        return { success: false, message: 'Invalid password' };
-    }
-}
-
-function logout() {
-    localStorage.removeItem(STORAGE_KEYS.AUTH);
-    localStorage.removeItem(STORAGE_KEYS.TOKEN);
-    window.location.reload();
-}
-
-// Format date
-function formatDate(timestamp) {
-    const date = new Date(timestamp);
-    return date.toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-    });
-}
-
-// Render contact submissions
-async function renderContacts() {
-    const container = document.getElementById('contactsList');
-    
-    try {
-        let contacts;
-        if (API.useWorkerAPI()) {
-            contacts = await API.request(window.API_CONFIG.ENDPOINTS.ADMIN_CONTACTS);
-        } else {
-            contacts = getDataLocal(STORAGE_KEYS.CONTACTS);
-        }
-        
-        if (contacts.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📭</div>
-                    <p class="empty-state-text">No contact submissions yet</p>
-                </div>
-            `;
+    function init() {
+        // Check if locked out
+        if (isLockedOut()) {
+            showLockoutError();
             return;
         }
-        
-        container.innerHTML = contacts.map(contact => `
-            <div class="item-card" data-id="${contact.id}">
-                <div class="item-header">
-                    <div class="item-meta">
-                        <h3 class="item-name">${contact.name}</h3>
-                        <div class="item-date">${formatDate(contact.timestamp)}</div>
-                    </div>
-                    <span class="item-status ${contact.status || 'new'}">${contact.status || 'New'}</span>
-                </div>
-                <div class="item-body">
-                    <div class="item-field">
-                        <span class="item-field-label">Email:</span>
-                        <span class="item-field-value"><a href="mailto:${contact.email}" style="color: var(--primary-color);">${contact.email}</a></span>
-                    </div>
-                    ${contact.company ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Company:</span>
-                        <span class="item-field-value">${contact.company}</span>
-                    </div>` : ''}
-                    ${contact.phone ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Phone:</span>
-                        <span class="item-field-value"><a href="tel:${contact.phone}" style="color: var(--primary-color);">${contact.phone}</a></span>
-                    </div>` : ''}
-                    ${contact.message ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Message:</span>
-                        <span class="item-field-value">${contact.message}</span>
-                    </div>` : ''}
-                </div>
-                <div class="item-actions">
-                    ${contact.status !== 'accepted' ? `
-                        <button class="btn btn-success btn-small" onclick="acceptContact('${contact.id}')">Accept & Add to Clients</button>
-                    ` : ''}
-                    <button class="btn btn-danger btn-small" onclick="deleteContact('${contact.id}')">Delete</button>
-                </div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Error rendering contacts:', error);
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">❌</div>
-                <p class="empty-state-text">Error loading contacts: ${error.message}</p>
-            </div>
-        `;
-    }
-}
 
-// Render service requests
-async function renderRequests() {
-    const container = document.getElementById('requestsList');
-    
-    try {
-        let requests;
-        if (API.useWorkerAPI()) {
-            requests = await API.request(window.API_CONFIG.ENDPOINTS.ADMIN_REQUESTS);
+        // Check if already authenticated
+        if (isAuthenticated()) {
+            showDashboard();
         } else {
-            requests = getDataLocal(STORAGE_KEYS.REQUESTS);
+            showLoginScreen();
         }
-        
-        if (requests.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📋</div>
-                    <p class="empty-state-text">No service requests yet</p>
-                </div>
-            `;
-            return;
-        }
-        
-        container.innerHTML = requests.map(request => `
-            <div class="item-card" data-id="${request.id}">
-                <div class="item-header">
-                    <div class="item-meta">
-                        <h3 class="item-name">${request.companyName}</h3>
-                        <div class="item-date">${formatDate(request.timestamp)}</div>
-                    </div>
-                    <span class="item-status ${request.status || 'new'}">${request.status || 'New'}</span>
-                </div>
-                <div class="item-body">
-                    <div class="item-field">
-                        <span class="item-field-label">Plan:</span>
-                        <span class="item-field-value"><strong>${request.planName}</strong></span>
-                    </div>
-                    <div class="item-field">
-                        <span class="item-field-label">Contact:</span>
-                        <span class="item-field-value">${request.contactName}</span>
-                    </div>
-                    <div class="item-field">
-                        <span class="item-field-label">Email:</span>
-                        <span class="item-field-value"><a href="mailto:${request.email}" style="color: var(--primary-color);">${request.email}</a></span>
-                    </div>
-                    <div class="item-field">
-                        <span class="item-field-label">Phone:</span>
-                        <span class="item-field-value"><a href="tel:${request.phone}" style="color: var(--primary-color);">${request.phone}</a></span>
-                    </div>
-                    ${request.companySize ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Company Size:</span>
-                        <span class="item-field-value">${request.companySize}</span>
-                    </div>` : ''}
-                    ${request.address ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Address:</span>
-                        <span class="item-field-value">${request.address}</span>
-                    </div>` : ''}
-                    <div class="item-field">
-                        <span class="item-field-label">Monthly:</span>
-                        <span class="item-field-value">${request.monthlyTotal}</span>
-                    </div>
-                    <div class="item-field">
-                        <span class="item-field-label">Setup Fee:</span>
-                        <span class="item-field-value">${request.setupFee}</span>
-                    </div>
-                    ${request.notes ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Notes:</span>
-                        <span class="item-field-value">${request.notes}</span>
-                    </div>` : ''}
-                </div>
-                <div class="item-actions">
-                    ${request.status !== 'accepted' ? `
-                        <button class="btn btn-success btn-small" onclick="acceptRequest('${request.id}')">Accept & Add to Clients</button>
-                    ` : ''}
-                    <button class="btn btn-danger btn-small" onclick="deleteRequest('${request.id}')">Delete</button>
-                </div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Error rendering requests:', error);
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">❌</div>
-                <p class="empty-state-text">Error loading requests: ${error.message}</p>
-            </div>
-        `;
     }
-}
 
-// Render clients
-async function renderClients() {
-    const container = document.getElementById('clientsList');
-    
-    try {
-        let clients;
-        if (API.useWorkerAPI()) {
-            clients = await API.request(window.API_CONFIG.ENDPOINTS.ADMIN_CLIENTS);
+    // =========================================
+    // AUTHENTICATION
+    // =========================================
+    function isAuthenticated() {
+        return sessionStorage.getItem(CONFIG.SESSION_KEY) === 'true';
+    }
+
+    function isLockedOut() {
+        const lockoutTime = localStorage.getItem(CONFIG.LOCKOUT_KEY);
+        if (!lockoutTime) return false;
+        
+        const lockoutEnd = parseInt(lockoutTime, 10);
+        if (Date.now() < lockoutEnd) {
+            return true;
         } else {
-            clients = getDataLocal(STORAGE_KEYS.CLIENTS);
+            // Lockout expired, clear it
+            localStorage.removeItem(CONFIG.LOCKOUT_KEY);
+            localStorage.removeItem(CONFIG.ATTEMPT_KEY);
+            return false;
+        }
+    }
+
+    function getLoginAttempts() {
+        return parseInt(localStorage.getItem(CONFIG.ATTEMPT_KEY) || '0', 10);
+    }
+
+    function incrementLoginAttempts() {
+        const attempts = getLoginAttempts() + 1;
+        localStorage.setItem(CONFIG.ATTEMPT_KEY, attempts.toString());
+        
+        if (attempts >= CONFIG.MAX_LOGIN_ATTEMPTS) {
+            // Lock out for 15 minutes
+            const lockoutEnd = Date.now() + (15 * 60 * 1000);
+            localStorage.setItem(CONFIG.LOCKOUT_KEY, lockoutEnd.toString());
         }
         
-        if (clients.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">👥</div>
-                    <p class="empty-state-text">No clients yet</p>
-                </div>
-            `;
-            return;
-        }
-        
-        container.innerHTML = clients.map(client => `
-            <div class="item-card" data-id="${client.id}">
-                <div class="item-header">
-                    <div class="item-meta">
-                        <h3 class="item-name">${client.name}</h3>
-                        <div class="item-date">Added: ${formatDate(client.acceptedDate)}</div>
-                    </div>
-                    <span class="item-status accepted">Active Client</span>
-                </div>
-                <div class="item-body">
-                    ${client.company ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Company:</span>
-                        <span class="item-field-value">${client.company}</span>
-                    </div>` : ''}
-                    <div class="item-field">
-                        <span class="item-field-label">Email:</span>
-                        <span class="item-field-value"><a href="mailto:${client.email}" style="color: var(--primary-color);">${client.email}</a></span>
-                    </div>
-                    ${client.phone ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Phone:</span>
-                        <span class="item-field-value"><a href="tel:${client.phone}" style="color: var(--primary-color);">${client.phone}</a></span>
-                    </div>` : ''}
-                    ${client.address ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Address:</span>
-                        <span class="item-field-value">${client.address}</span>
-                    </div>` : ''}
-                    ${client.plan ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Plan:</span>
-                        <span class="item-field-value"><strong>${client.plan}</strong></span>
-                    </div>` : ''}
-                    ${client.monthlyValue ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Monthly Value:</span>
-                        <span class="item-field-value">${client.monthlyValue}</span>
-                    </div>` : ''}
-                    ${client.originalSubmission ? `
-                    <div class="item-field">
-                        <span class="item-field-label">Original Date:</span>
-                        <span class="item-field-value">${formatDate(client.originalSubmission)}</span>
-                    </div>` : ''}
-                </div>
-                <div class="item-actions">
-                    <button class="btn btn-danger btn-small" onclick="deleteClient('${client.id}')">Remove Client</button>
-                </div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Error rendering clients:', error);
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">❌</div>
-                <p class="empty-state-text">Error loading clients: ${error.message}</p>
-            </div>
-        `;
+        return attempts;
     }
-}
 
-// Accept contact and add to clients
-async function acceptContact(id) {
-    try {
-        if (API.useWorkerAPI()) {
-            await API.request(window.API_CONFIG.ENDPOINTS.CONTACT_ACCEPT, {
-                method: 'POST',
-                body: JSON.stringify({ id })
-            });
-        } else {
-            // localStorage fallback
-            const contacts = getDataLocal(STORAGE_KEYS.CONTACTS);
-            const contact = contacts.find(c => c.id === id);
-            
-            if (!contact) return;
-            
-            contact.status = 'accepted';
-            saveDataLocal(STORAGE_KEYS.CONTACTS, contacts);
-            
-            const clients = getDataLocal(STORAGE_KEYS.CLIENTS);
-            clients.push({
-                id: 'client_' + Date.now(),
-                name: contact.name,
-                company: contact.company || '',
-                email: contact.email,
-                phone: contact.phone || '',
-                acceptedDate: Date.now(),
-                originalSubmission: contact.timestamp,
-                source: 'contact_form'
-            });
-            saveDataLocal(STORAGE_KEYS.CLIENTS, clients);
-        }
-        
-        // Re-render
-        await renderDashboard();
-        await renderContacts();
-        await renderClients();
-    } catch (error) {
-        console.error('Error accepting contact:', error);
-        alert('Error accepting contact: ' + error.message);
+    function clearLoginAttempts() {
+        localStorage.removeItem(CONFIG.ATTEMPT_KEY);
     }
-}
 
-// Accept service request and add to clients
-async function acceptRequest(id) {
-    try {
-        if (API.useWorkerAPI()) {
-            await API.request(window.API_CONFIG.ENDPOINTS.REQUEST_ACCEPT, {
-                method: 'POST',
-                body: JSON.stringify({ id })
-            });
-        } else {
-            // localStorage fallback
-            const requests = getDataLocal(STORAGE_KEYS.REQUESTS);
-            const request = requests.find(r => r.id === id);
-            
-            if (!request) return;
-            
-            request.status = 'accepted';
-            saveDataLocal(STORAGE_KEYS.REQUESTS, requests);
-            
-            const clients = getDataLocal(STORAGE_KEYS.CLIENTS);
-            clients.push({
-                id: 'client_' + Date.now(),
-                name: request.contactName,
-                company: request.companyName,
-                email: request.email,
-                phone: request.phone,
-                address: request.address || '',
-                plan: request.planName,
-                monthlyValue: request.monthlyTotal,
-                acceptedDate: Date.now(),
-                originalSubmission: request.timestamp,
-                source: 'service_request'
-            });
-            saveDataLocal(STORAGE_KEYS.CLIENTS, clients);
-        }
-        
-        // Re-render
-        await renderDashboard();
-        await renderRequests();
-        await renderClients();
-    } catch (error) {
-        console.error('Error accepting request:', error);
-        alert('Error accepting request: ' + error.message);
-    }
-}
-
-// Delete contact
-async function deleteContact(id) {
-    if (!confirm('Are you sure you want to delete this contact?')) return;
-    
-    try {
-        if (API.useWorkerAPI()) {
-            await API.request(`${window.API_CONFIG.ENDPOINTS.CONTACT_DELETE}${id}`, {
-                method: 'DELETE'
-            });
-        } else {
-            // localStorage fallback
-            const contacts = getDataLocal(STORAGE_KEYS.CONTACTS);
-            const filtered = contacts.filter(item => item.id !== id);
-            saveDataLocal(STORAGE_KEYS.CONTACTS, filtered);
-        }
-        
-        await renderContacts();
-    } catch (error) {
-        console.error('Error deleting contact:', error);
-        alert('Error deleting contact: ' + error.message);
-    }
-}
-
-// Delete request
-async function deleteRequest(id) {
-    if (!confirm('Are you sure you want to delete this request?')) return;
-    
-    try {
-        if (API.useWorkerAPI()) {
-            await API.request(`${window.API_CONFIG.ENDPOINTS.REQUEST_DELETE}${id}`, {
-                method: 'DELETE'
-            });
-        } else {
-            // localStorage fallback
-            const requests = getDataLocal(STORAGE_KEYS.REQUESTS);
-            const filtered = requests.filter(item => item.id !== id);
-            saveDataLocal(STORAGE_KEYS.REQUESTS, filtered);
-        }
-        
-        await renderRequests();
-    } catch (error) {
-        console.error('Error deleting request:', error);
-        alert('Error deleting request: ' + error.message);
-    }
-}
-
-// Delete client
-async function deleteClient(id) {
-    if (!confirm('Are you sure you want to remove this client?')) return;
-    
-    try {
-        if (API.useWorkerAPI()) {
-            await API.request(`${window.API_CONFIG.ENDPOINTS.CLIENT_DELETE}${id}`, {
-                method: 'DELETE'
-            });
-        } else {
-            // localStorage fallback
-            const clients = getDataLocal(STORAGE_KEYS.CLIENTS);
-            const filtered = clients.filter(client => client.id !== id);
-            saveDataLocal(STORAGE_KEYS.CLIENTS, filtered);
-        }
-        
-        await renderClients();
-    } catch (error) {
-        console.error('Error deleting client:', error);
-        alert('Error deleting client: ' + error.message);
-    }
-}
-
-// Export data to CSV
-function exportData(type) {
-    let data, filename, headers;
-    
-    if (type === 'contacts') {
-        data = API.useWorkerAPI() ? [] : getDataLocal(STORAGE_KEYS.CONTACTS);
-        filename = 'contacts.csv';
-        headers = ['Name', 'Email', 'Company', 'Phone', 'Message', 'Date', 'Status'];
-    } else if (type === 'requests') {
-        data = API.useWorkerAPI() ? [] : getDataLocal(STORAGE_KEYS.REQUESTS);
-        filename = 'service-requests.csv';
-        headers = ['Company', 'Contact', 'Email', 'Phone', 'Plan', 'Monthly', 'Setup Fee', 'Date', 'Status'];
-    } else if (type === 'clients') {
-        data = API.useWorkerAPI() ? [] : getDataLocal(STORAGE_KEYS.CLIENTS);
-        filename = 'clients.csv';
-        headers = ['Name', 'Company', 'Email', 'Phone', 'Plan', 'Monthly Value', 'Accepted Date'];
-    }
-    
-    if (API.useWorkerAPI()) {
-        alert('CSV export is not yet available when using Cloudflare Worker API. Please use the Cloudflare dashboard or wrangler CLI to export data.');
-        return;
-    }
-    
-    if (data.length === 0) {
-        alert('No data to export');
-        return;
-    }
-    
-    // Build CSV
-    let csv = headers.join(',') + '\n';
-    
-    data.forEach(item => {
-        let row = [];
-        if (type === 'contacts') {
-            row = [
-                item.name || '',
-                item.email || '',
-                item.company || '',
-                item.phone || '',
-                (item.message || '').replace(/,/g, ';'),
-                formatDate(item.timestamp),
-                item.status || 'new'
-            ];
-        } else if (type === 'requests') {
-            row = [
-                item.companyName || '',
-                item.contactName || '',
-                item.email || '',
-                item.phone || '',
-                item.planName || '',
-                item.monthlyTotal || '',
-                item.setupFee || '',
-                formatDate(item.timestamp),
-                item.status || 'new'
-            ];
-        } else if (type === 'clients') {
-            row = [
-                item.name || '',
-                item.company || '',
-                item.email || '',
-                item.phone || '',
-                item.plan || '',
-                item.monthlyValue || '',
-                formatDate(item.acceptedDate)
-            ];
-        }
-        csv += row.map(field => `"${field}"`).join(',') + '\n';
-    });
-    
-    // Download
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
-}
-
-// Content management placeholders
-function saveContent(section) {
-    alert(`Content management for ${section} saved! (This would integrate with your backend)`);
-}
-
-function addFeature() {
-    alert('Add feature functionality would be implemented here');
-}
-
-// Tab switching
-function setupTabs() {
-    const tabs = document.querySelectorAll('.admin-tab');
-    const contents = document.querySelectorAll('.tab-content');
-    
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetTab = tab.dataset.tab;
-            
-            // Update active tab
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            // Update active content
-            contents.forEach(c => c.classList.remove('active'));
-            document.getElementById(`tab-${targetTab}`).classList.add('active');
-            
-            // Refresh dashboard if switching to it
-            if (targetTab === 'dashboard') {
-                renderDashboard();
-            }
-        });
-    });
-}
-
-// Switch to a specific tab programmatically
-function switchTab(tabName) {
-    const tab = document.querySelector(`.admin-tab[data-tab="${tabName}"]`);
-    if (tab) {
-        tab.click();
-    }
-}
-
-// Render dashboard
-async function renderDashboard() {
-    try {
-        let contacts, requests, clients;
-        
-        if (API.useWorkerAPI()) {
-            [contacts, requests, clients] = await Promise.all([
-                API.request(window.API_CONFIG.ENDPOINTS.ADMIN_CONTACTS),
-                API.request(window.API_CONFIG.ENDPOINTS.ADMIN_REQUESTS),
-                API.request(window.API_CONFIG.ENDPOINTS.ADMIN_CLIENTS)
-            ]);
-        } else {
-            contacts = getDataLocal(STORAGE_KEYS.CONTACTS);
-            requests = getDataLocal(STORAGE_KEYS.REQUESTS);
-            clients = getDataLocal(STORAGE_KEYS.CLIENTS);
-        }
-        
-        // Update stats
-        const newContacts = contacts.filter(c => c.status !== 'accepted').length;
-        const newRequests = requests.filter(r => r.status !== 'accepted').length;
-        
-        document.getElementById('stat-contacts').textContent = newContacts;
-        document.getElementById('stat-requests').textContent = newRequests;
-        document.getElementById('stat-clients').textContent = clients.length;
-        
-        // Calculate total monthly revenue from clients
-        let totalRevenue = 0;
-        clients.forEach(client => {
-            if (client.monthlyValue) {
-                const value = client.monthlyValue.replace(/[^0-9.]/g, '');
-                totalRevenue += parseFloat(value) || 0;
-            }
-        });
-        document.getElementById('stat-revenue').textContent = `$${totalRevenue.toLocaleString()}`;
-        
-        // Render recent activity
-        const recentActivity = [];
-        
-        // Add recent contacts
-        contacts.slice(0, 3).forEach(contact => {
-            recentActivity.push({
-                icon: '📬',
-                text: `New contact from ${contact.name}`,
-                time: contact.timestamp,
-                type: 'contact'
-            });
-        });
-        
-        // Add recent requests
-        requests.slice(0, 3).forEach(request => {
-            recentActivity.push({
-                icon: '📋',
-                text: `Service request from ${request.companyName}`,
-                time: request.timestamp,
-                type: 'request'
-            });
-        });
-        
-        // Add recent clients
-        clients.slice(0, 2).forEach(client => {
-            recentActivity.push({
-                icon: '✅',
-                text: `${client.name} added as client`,
-                time: client.acceptedDate,
-                type: 'client'
-            });
-        });
-        
-        // Sort by time and take most recent
-        recentActivity.sort((a, b) => b.time - a.time);
-        const activityHtml = recentActivity.slice(0, 5).map(activity => `
-            <div class="activity-item">
-                <div class="activity-icon">${activity.icon}</div>
-                <div class="activity-content">
-                    <div class="activity-text">${activity.text}</div>
-                    <div class="activity-time">${formatDate(activity.time)}</div>
-                </div>
-            </div>
-        `).join('');
-        
-        const activityContainer = document.getElementById('recentActivity');
-        if (activityHtml) {
-            activityContainer.innerHTML = activityHtml;
-        } else {
-            activityContainer.innerHTML = `
-                <div class="empty-state" style="padding: 20px;">
-                    <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">No recent activity</p>
-                </div>
-            `;
-        }
-    } catch (error) {
-        console.error('Error rendering dashboard:', error);
-    }
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-    initStorage();
-    
-    // Check authentication
-    if (checkAuth()) {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('adminDashboard').style.display = 'block';
-        setupTabs();
-        
-        // Load data
-        await renderDashboard();
-        await renderContacts();
-        await renderRequests();
-        await renderClients();
-    } else {
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.getElementById('adminDashboard').style.display = 'none';
-    }
-    
-    // Login form
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    function handleLogin(e) {
         e.preventDefault();
-        const password = document.getElementById('password').value;
-        const result = await login(password);
         
-        if (result.success) {
-            window.location.reload();
+        if (isLockedOut()) {
+            showLockoutError();
+            return;
+        }
+
+        const passwordInput = $('#login-password');
+        const password = passwordInput.value.trim().toLowerCase();
+        const errorEl = $('#login-error');
+
+        if (password === CONFIG.PASSWORD.toLowerCase()) {
+            // Success!
+            sessionStorage.setItem(CONFIG.SESSION_KEY, 'true');
+            clearLoginAttempts();
+            showDashboard();
         } else {
-            const errorEl = document.getElementById('loginError');
-            errorEl.textContent = result.message;
+            // Failed
+            const attempts = incrementLoginAttempts();
+            const remaining = CONFIG.MAX_LOGIN_ATTEMPTS - attempts;
+            
+            if (remaining <= 0) {
+                showLockoutError();
+            } else {
+                errorEl.textContent = `Invalid password. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`;
+                errorEl.style.display = 'block';
+            }
+            
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+    }
+
+    function handleLogout() {
+        sessionStorage.removeItem(CONFIG.SESSION_KEY);
+        window.location.reload();
+    }
+
+    function showLockoutError() {
+        const lockoutTime = localStorage.getItem(CONFIG.LOCKOUT_KEY);
+        const lockoutEnd = parseInt(lockoutTime, 10);
+        const remaining = Math.ceil((lockoutEnd - Date.now()) / 60000);
+        
+        const errorEl = $('#login-error');
+        if (errorEl) {
+            errorEl.textContent = `Too many failed attempts. Please try again in ${remaining} minute${remaining !== 1 ? 's' : ''}.`;
             errorEl.style.display = 'block';
         }
-    });
-    
-    // Logout button
-    document.getElementById('logoutBtn')?.addEventListener('click', logout);
-});
+        
+        const passwordInput = $('#login-password');
+        const loginBtn = $('#login-btn');
+        if (passwordInput) passwordInput.disabled = true;
+        if (loginBtn) loginBtn.disabled = true;
+    }
 
-// Expose functions to window for inline onclick handlers
-window.acceptContact = acceptContact;
-window.acceptRequest = acceptRequest;
-window.deleteContact = deleteContact;
-window.deleteRequest = deleteRequest;
-window.deleteClient = deleteClient;
-window.exportData = exportData;
-window.saveContent = saveContent;
-window.addFeature = addFeature;
-window.switchTab = switchTab;
+    // =========================================
+    // VIEW SWITCHING
+    // =========================================
+    function showLoginScreen() {
+        const loginScreen = $('#login-screen');
+        const dashboard = $('#admin-dashboard');
+        
+        if (loginScreen) loginScreen.style.display = 'flex';
+        if (dashboard) dashboard.style.display = 'none';
+        
+        // Attach login handler
+        const loginForm = $('#login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', handleLogin);
+        }
+    }
+
+    function showDashboard() {
+        const loginScreen = $('#login-screen');
+        const dashboard = $('#admin-dashboard');
+        
+        if (loginScreen) loginScreen.style.display = 'none';
+        if (dashboard) dashboard.style.display = 'flex';
+        
+        // Initialize dashboard
+        initDashboard();
+    }
+
+    // =========================================
+    // DASHBOARD INITIALIZATION
+    // =========================================
+    function initDashboard() {
+        // Set up navigation
+        initNavigation();
+        
+        // Set up logout
+        const logoutBtn = $('#logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+        
+        // Set up refresh button
+        const refreshBtn = $('#refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', refreshData);
+        }
+        
+        // Set up modals
+        initModals();
+        
+        // Set up exports
+        initExports();
+        
+        // Set up danger zone
+        initDangerZone();
+        
+        // Load initial data
+        refreshData();
+        
+        // Update "last updated" timestamp
+        updateLastUpdated();
+        
+        // Show dashboard tab by default
+        switchTab('dashboard');
+    }
+
+    function initNavigation() {
+        const navItems = $$('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const tab = item.dataset.tab;
+                if (tab) {
+                    switchTab(tab);
+                }
+            });
+        });
+    }
+
+    function switchTab(tabName) {
+        state.currentTab = tabName;
+        
+        // Update nav items
+        $$('.nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.tab === tabName);
+        });
+        
+        // Update tab content
+        $$('.tab-content').forEach(content => {
+            content.classList.toggle('active', content.id === `tab-${tabName}`);
+        });
+        
+        // Update header title
+        const titles = {
+            dashboard: 'Dashboard',
+            visitors: 'Visitors',
+            events: 'Events',
+            leads: 'Leads',
+            'plan-requests': 'Plan Requests',
+            exports: 'Export Data',
+            settings: 'Settings'
+        };
+        const headerTitle = $('#header-title');
+        if (headerTitle) {
+            headerTitle.textContent = titles[tabName] || 'Dashboard';
+        }
+        
+        // Refresh data for the tab
+        refreshTabData(tabName);
+    }
+
+    function refreshData() {
+        refreshTabData(state.currentTab);
+        updateLastUpdated();
+    }
+
+    function refreshTabData(tabName) {
+        switch (tabName) {
+            case 'dashboard':
+                renderDashboard();
+                break;
+            case 'visitors':
+                renderVisitorsTable();
+                break;
+            case 'events':
+                renderEventsTable();
+                break;
+            case 'leads':
+                renderLeadsTable();
+                break;
+            case 'plan-requests':
+                renderPlanRequestsTable();
+                break;
+            case 'settings':
+                renderSettings();
+                break;
+        }
+    }
+
+    function updateLastUpdated() {
+        const el = $('#last-updated');
+        if (el) {
+            el.textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+        }
+    }
+
+    // =========================================
+    // DASHBOARD TAB
+    // =========================================
+    function renderDashboard() {
+        if (typeof DataStore === 'undefined') {
+            console.warn('DataStore not available');
+            return;
+        }
+        
+        const stats = DataStore.getDashboardStats();
+        
+        // Update stat cards
+        updateStatCard('stat-visitors', stats.uniqueVisitors);
+        updateStatCard('stat-sessions', stats.totalSessions);
+        updateStatCard('stat-pageviews', stats.totalPageViews);
+        updateStatCard('stat-conversions', stats.totalLeads + stats.totalPlanRequests);
+        
+        // Render top pages chart
+        renderTopPagesChart(stats.topPages);
+        
+        // Render conversions
+        renderConversions(stats);
+        
+        // Render referrers
+        renderReferrers(stats.topReferrers);
+        
+        // Render recent activity
+        renderRecentActivity();
+        
+        // Update nav badges
+        updateNavBadges(stats);
+    }
+
+    function updateStatCard(id, value) {
+        const el = $(`#${id}`);
+        if (el) {
+            el.textContent = formatNumber(value);
+        }
+    }
+
+    function renderTopPagesChart(topPages) {
+        const container = $('#top-pages-chart');
+        if (!container) return;
+        
+        if (!topPages || topPages.length === 0) {
+            container.innerHTML = '<p class="empty-state">No page data yet</p>';
+            return;
+        }
+        
+        const maxViews = Math.max(...topPages.map(p => p.views));
+        
+        container.innerHTML = topPages.slice(0, 5).map(page => `
+            <div class="bar-item">
+                <span class="bar-label" title="${page.page}">${page.page}</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: ${(page.views / maxViews * 100).toFixed(1)}%"></div>
+                </div>
+                <span class="bar-value">${formatNumber(page.views)}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderConversions(stats) {
+        const container = $('#conversions-list');
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="conversion-item">
+                <span>Contact Leads</span>
+                <span>${formatNumber(stats.totalLeads)}</span>
+            </div>
+            <div class="conversion-item">
+                <span>Plan Requests</span>
+                <span>${formatNumber(stats.totalPlanRequests)}</span>
+            </div>
+            <div class="conversion-item">
+                <span>Quiz Completions</span>
+                <span>${formatNumber(stats.quizCompletions || 0)}</span>
+            </div>
+        `;
+    }
+
+    function renderReferrers(referrers) {
+        const container = $('#referrers-list');
+        if (!container) return;
+        
+        if (!referrers || referrers.length === 0) {
+            container.innerHTML = '<p class="empty-state">No referrer data yet</p>';
+            return;
+        }
+        
+        const maxCount = Math.max(...referrers.map(r => r.count));
+        
+        container.innerHTML = referrers.slice(0, 5).map(ref => `
+            <div class="bar-item">
+                <span class="bar-label" title="${ref.referrer}">${ref.referrer || 'Direct'}</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: ${(ref.count / maxCount * 100).toFixed(1)}%"></div>
+                </div>
+                <span class="bar-value">${formatNumber(ref.count)}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderRecentActivity() {
+        const container = $('#recent-activity');
+        if (!container) return;
+        
+        const events = DataStore.listEvents().slice(0, 20);
+        
+        if (events.length === 0) {
+            container.innerHTML = '<p class="empty-state">No recent activity</p>';
+            return;
+        }
+        
+        container.innerHTML = events.map(event => {
+            const dotClass = event.eventType || 'default';
+            const time = formatRelativeTime(event.timestamp);
+            const text = formatEventText(event);
+            
+            return `
+                <div class="activity-item">
+                    <span class="activity-dot ${dotClass}"></span>
+                    <span class="activity-text">${text}</span>
+                    <span class="activity-time">${time}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateNavBadges(stats) {
+        const leadsNew = DataStore.listLeads().filter(l => l.status === 'new').length;
+        const plansNew = DataStore.listPlanRequests().filter(p => p.status === 'new').length;
+        
+        const leadsBadge = $('#badge-leads');
+        const plansBadge = $('#badge-plans');
+        
+        if (leadsBadge) {
+            leadsBadge.textContent = leadsNew;
+            leadsBadge.style.display = leadsNew > 0 ? 'inline' : 'none';
+        }
+        
+        if (plansBadge) {
+            plansBadge.textContent = plansNew;
+            plansBadge.style.display = plansNew > 0 ? 'inline' : 'none';
+        }
+    }
+
+    // =========================================
+    // VISITORS TAB
+    // =========================================
+    function renderVisitorsTable() {
+        const container = $('#visitors-table-body');
+        const countEl = $('#visitors-count');
+        if (!container) return;
+        
+        const visitors = DataStore.listVisitors();
+        const filtered = filterData(visitors, state.searchFilters.visitors, ['visitorId', 'userAgent', 'referrer']);
+        
+        if (countEl) {
+            countEl.textContent = `${filtered.length} visitor${filtered.length !== 1 ? 's' : ''}`;
+        }
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<tr><td colspan="5" class="empty-state">No visitors yet</td></tr>';
+            return;
+        }
+        
+        container.innerHTML = filtered.map(v => `
+            <tr>
+                <td><code style="font-size: 10px;">${v.visitorId?.substring(0, 8) || 'Unknown'}...</code></td>
+                <td>${formatDate(v.firstSeen)}</td>
+                <td>${formatDate(v.lastSeen)}</td>
+                <td>${v.sessions || 1}</td>
+                <td>${v.pageViews || 0}</td>
+            </tr>
+        `).join('');
+        
+        // Set up search
+        initTableSearch('visitors-search', 'visitors');
+    }
+
+    // =========================================
+    // EVENTS TAB
+    // =========================================
+    function renderEventsTable() {
+        const container = $('#events-table-body');
+        const countEl = $('#events-count');
+        if (!container) return;
+        
+        const events = DataStore.listEvents();
+        const typeFilter = state.statusFilters.events;
+        let filtered = events;
+        
+        if (typeFilter && typeFilter !== 'all') {
+            filtered = filtered.filter(e => e.eventType === typeFilter);
+        }
+        
+        filtered = filterData(filtered, state.searchFilters.events, ['eventType', 'page', 'data']);
+        
+        if (countEl) {
+            countEl.textContent = `${filtered.length} event${filtered.length !== 1 ? 's' : ''}`;
+        }
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<tr><td colspan="5" class="empty-state">No events yet</td></tr>';
+            return;
+        }
+        
+        container.innerHTML = filtered.slice(0, 100).map(e => {
+            const typeClass = e.eventType || '';
+            const dataStr = e.data ? JSON.stringify(e.data).substring(0, 50) : '-';
+            
+            return `
+                <tr>
+                    <td>${formatDateTime(e.timestamp)}</td>
+                    <td><span class="event-type ${typeClass}">${e.eventType || 'unknown'}</span></td>
+                    <td>${e.page || '-'}</td>
+                    <td title="${escapeHtml(JSON.stringify(e.data || {}))}">${escapeHtml(dataStr)}</td>
+                    <td><code style="font-size: 10px;">${e.visitorId?.substring(0, 8) || '?'}...</code></td>
+                </tr>
+            `;
+        }).join('');
+        
+        // Set up search and filter
+        initTableSearch('events-search', 'events');
+        initTypeFilter();
+    }
+
+    function initTypeFilter() {
+        const select = $('#events-type-filter');
+        if (!select) return;
+        
+        select.addEventListener('change', (e) => {
+            state.statusFilters.events = e.target.value;
+            renderEventsTable();
+        });
+    }
+
+    // =========================================
+    // LEADS TAB
+    // =========================================
+    function renderLeadsTable() {
+        const container = $('#leads-table-body');
+        const countEl = $('#leads-count');
+        if (!container) return;
+        
+        const leads = DataStore.listLeads();
+        const statusFilter = state.statusFilters.leads;
+        let filtered = leads;
+        
+        if (statusFilter && statusFilter !== 'all') {
+            filtered = filtered.filter(l => l.status === statusFilter);
+        }
+        
+        filtered = filterData(filtered, state.searchFilters.leads, ['name', 'email', 'phone', 'message']);
+        
+        if (countEl) {
+            countEl.textContent = `${filtered.length} lead${filtered.length !== 1 ? 's' : ''}`;
+        }
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<tr><td colspan="6" class="empty-state">No leads yet</td></tr>';
+            return;
+        }
+        
+        container.innerHTML = filtered.map(lead => `
+            <tr>
+                <td>${formatDateTime(lead.createdAt)}</td>
+                <td>${escapeHtml(lead.name || '-')}</td>
+                <td>
+                    ${lead.email ? `<a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a>` : '-'}
+                </td>
+                <td>
+                    ${lead.phone ? `<a href="tel:${escapeHtml(lead.phone)}">${escapeHtml(lead.phone)}</a>` : '-'}
+                </td>
+                <td><span class="status-badge ${lead.status || 'new'}">${lead.status || 'new'}</span></td>
+                <td>
+                    <button class="action-btn" onclick="window.AdminApp.viewLead('${lead.id}')">View</button>
+                </td>
+            </tr>
+        `).join('');
+        
+        // Set up search and filter
+        initTableSearch('leads-search', 'leads');
+        initLeadsStatusFilter();
+    }
+
+    function initLeadsStatusFilter() {
+        const select = $('#leads-status-filter');
+        if (!select) return;
+        
+        select.removeEventListener('change', handleLeadsStatusChange);
+        select.addEventListener('change', handleLeadsStatusChange);
+    }
+
+    function handleLeadsStatusChange(e) {
+        state.statusFilters.leads = e.target.value;
+        renderLeadsTable();
+    }
+
+    function viewLead(id) {
+        const leads = DataStore.listLeads();
+        const lead = leads.find(l => l.id === id);
+        if (!lead) return;
+        
+        const modal = $('#detail-modal');
+        const title = $('#detail-modal-title');
+        const body = $('#detail-modal-body');
+        
+        if (!modal || !body) return;
+        
+        title.textContent = 'Lead Details';
+        
+        body.innerHTML = `
+            <div class="detail-grid">
+                <div class="detail-row">
+                    <span class="detail-label">Name</span>
+                    <span class="detail-value">${escapeHtml(lead.name || '-')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">
+                        ${lead.email ? `<a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a>` : '-'}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">
+                        ${lead.phone ? `<a href="tel:${escapeHtml(lead.phone)}">${escapeHtml(lead.phone)}</a>` : '-'}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Submitted</span>
+                    <span class="detail-value">${formatDateTime(lead.createdAt)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Source</span>
+                    <span class="detail-value">${escapeHtml(lead.source || 'Unknown')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Message</span>
+                    <span class="detail-value">${escapeHtml(lead.message || '-')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <select class="form-control status-select" id="lead-status-select">
+                        <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
+                        <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                        <option value="booked" ${lead.status === 'booked' ? 'selected' : ''}>Booked</option>
+                        <option value="archived" ${lead.status === 'archived' ? 'selected' : ''}>Archived</option>
+                    </select>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Notes</span>
+                    <textarea class="form-control notes-textarea" id="lead-notes">${escapeHtml(lead.notes || '')}</textarea>
+                </div>
+            </div>
+        `;
+        
+        // Add footer with save button
+        const footer = modal.querySelector('.modal-footer');
+        if (footer) {
+            footer.innerHTML = `
+                <button class="btn btn-secondary" onclick="window.AdminApp.closeModal('detail-modal')">Close</button>
+                <button class="btn btn-primary" onclick="window.AdminApp.saveLead('${lead.id}')">Save Changes</button>
+            `;
+        }
+        
+        openModal('detail-modal');
+    }
+
+    function saveLead(id) {
+        const statusSelect = $('#lead-status-select');
+        const notesTextarea = $('#lead-notes');
+        
+        if (statusSelect && notesTextarea) {
+            DataStore.updateLead(id, {
+                status: statusSelect.value,
+                notes: notesTextarea.value
+            });
+            
+            closeModal('detail-modal');
+            renderLeadsTable();
+            renderDashboard();
+        }
+    }
+
+    // =========================================
+    // PLAN REQUESTS TAB
+    // =========================================
+    function renderPlanRequestsTable() {
+        const container = $('#plan-requests-table-body');
+        const countEl = $('#plan-requests-count');
+        if (!container) return;
+        
+        const requests = DataStore.listPlanRequests();
+        const statusFilter = state.statusFilters.planRequests;
+        let filtered = requests;
+        
+        if (statusFilter && statusFilter !== 'all') {
+            filtered = filtered.filter(r => r.status === statusFilter);
+        }
+        
+        filtered = filterData(filtered, state.searchFilters.planRequests, ['name', 'email', 'phone', 'plan']);
+        
+        if (countEl) {
+            countEl.textContent = `${filtered.length} request${filtered.length !== 1 ? 's' : ''}`;
+        }
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<tr><td colspan="7" class="empty-state">No plan requests yet</td></tr>';
+            return;
+        }
+        
+        container.innerHTML = filtered.map(req => `
+            <tr>
+                <td>${formatDateTime(req.createdAt)}</td>
+                <td>${escapeHtml(req.plan || '-')}</td>
+                <td>${escapeHtml(req.name || '-')}</td>
+                <td>
+                    ${req.email ? `<a href="mailto:${escapeHtml(req.email)}">${escapeHtml(req.email)}</a>` : '-'}
+                </td>
+                <td>
+                    ${req.phone ? `<a href="tel:${escapeHtml(req.phone)}">${escapeHtml(req.phone)}</a>` : '-'}
+                </td>
+                <td><span class="status-badge ${req.status || 'new'}">${req.status || 'new'}</span></td>
+                <td>
+                    <button class="action-btn" onclick="window.AdminApp.viewPlanRequest('${req.id}')">View</button>
+                </td>
+            </tr>
+        `).join('');
+        
+        // Set up search and filter
+        initTableSearch('plan-requests-search', 'planRequests');
+        initPlanRequestsStatusFilter();
+    }
+
+    function initPlanRequestsStatusFilter() {
+        const select = $('#plan-requests-status-filter');
+        if (!select) return;
+        
+        select.removeEventListener('change', handlePlanRequestsStatusChange);
+        select.addEventListener('change', handlePlanRequestsStatusChange);
+    }
+
+    function handlePlanRequestsStatusChange(e) {
+        state.statusFilters.planRequests = e.target.value;
+        renderPlanRequestsTable();
+    }
+
+    function viewPlanRequest(id) {
+        const requests = DataStore.listPlanRequests();
+        const req = requests.find(r => r.id === id);
+        if (!req) return;
+        
+        const modal = $('#detail-modal');
+        const title = $('#detail-modal-title');
+        const body = $('#detail-modal-body');
+        
+        if (!modal || !body) return;
+        
+        title.textContent = 'Plan Request Details';
+        
+        body.innerHTML = `
+            <div class="detail-grid">
+                <div class="detail-row">
+                    <span class="detail-label">Plan</span>
+                    <span class="detail-value" style="font-weight: 600; color: var(--primary-color);">${escapeHtml(req.plan || '-')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Name</span>
+                    <span class="detail-value">${escapeHtml(req.name || '-')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">
+                        ${req.email ? `<a href="mailto:${escapeHtml(req.email)}">${escapeHtml(req.email)}</a>` : '-'}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">
+                        ${req.phone ? `<a href="tel:${escapeHtml(req.phone)}">${escapeHtml(req.phone)}</a>` : '-'}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Submitted</span>
+                    <span class="detail-value">${formatDateTime(req.createdAt)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Additional Info</span>
+                    <span class="detail-value">${escapeHtml(req.additionalInfo || '-')}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <select class="form-control status-select" id="plan-request-status-select">
+                        <option value="new" ${req.status === 'new' ? 'selected' : ''}>New</option>
+                        <option value="contacted" ${req.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                        <option value="booked" ${req.status === 'booked' ? 'selected' : ''}>Booked</option>
+                        <option value="archived" ${req.status === 'archived' ? 'selected' : ''}>Archived</option>
+                    </select>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Notes</span>
+                    <textarea class="form-control notes-textarea" id="plan-request-notes">${escapeHtml(req.notes || '')}</textarea>
+                </div>
+            </div>
+        `;
+        
+        // Add footer with save button
+        const footer = modal.querySelector('.modal-footer');
+        if (footer) {
+            footer.innerHTML = `
+                <button class="btn btn-secondary" onclick="window.AdminApp.closeModal('detail-modal')">Close</button>
+                <button class="btn btn-primary" onclick="window.AdminApp.savePlanRequest('${req.id}')">Save Changes</button>
+            `;
+        }
+        
+        openModal('detail-modal');
+    }
+
+    function savePlanRequest(id) {
+        const statusSelect = $('#plan-request-status-select');
+        const notesTextarea = $('#plan-request-notes');
+        
+        if (statusSelect && notesTextarea) {
+            DataStore.updatePlanRequest(id, {
+                status: statusSelect.value,
+                notes: notesTextarea.value
+            });
+            
+            closeModal('detail-modal');
+            renderPlanRequestsTable();
+            renderDashboard();
+        }
+    }
+
+    // =========================================
+    // SETTINGS TAB
+    // =========================================
+    function renderSettings() {
+        // Storage info
+        const storageContainer = $('#storage-info');
+        if (storageContainer && typeof DataStore !== 'undefined') {
+            const visitors = DataStore.listVisitors().length;
+            const events = DataStore.listEvents().length;
+            const leads = DataStore.listLeads().length;
+            const planRequests = DataStore.listPlanRequests().length;
+            
+            storageContainer.innerHTML = `
+                <div class="storage-item">
+                    <span>Visitors</span>
+                    <strong>${visitors}</strong>
+                </div>
+                <div class="storage-item">
+                    <span>Events</span>
+                    <strong>${events}</strong>
+                </div>
+                <div class="storage-item">
+                    <span>Leads</span>
+                    <strong>${leads}</strong>
+                </div>
+                <div class="storage-item">
+                    <span>Plan Requests</span>
+                    <strong>${planRequests}</strong>
+                </div>
+            `;
+        }
+    }
+
+    // =========================================
+    // EXPORTS
+    // =========================================
+    function initExports() {
+        // JSON exports
+        $('#export-all-json')?.addEventListener('click', () => exportJSON('all'));
+        $('#export-visitors-json')?.addEventListener('click', () => exportJSON('visitors'));
+        $('#export-events-json')?.addEventListener('click', () => exportJSON('events'));
+        $('#export-leads-json')?.addEventListener('click', () => exportJSON('leads'));
+        $('#export-plans-json')?.addEventListener('click', () => exportJSON('planRequests'));
+        
+        // CSV exports
+        $('#export-leads-csv')?.addEventListener('click', () => exportCSV('leads'));
+        $('#export-plans-csv')?.addEventListener('click', () => exportCSV('planRequests'));
+        $('#export-events-csv')?.addEventListener('click', () => exportCSV('events'));
+    }
+
+    function exportJSON(type) {
+        let data, filename;
+        
+        switch (type) {
+            case 'all':
+                data = DataStore.exportAllData();
+                filename = 'bossbooker-all-data.json';
+                break;
+            case 'visitors':
+                data = DataStore.listVisitors();
+                filename = 'bossbooker-visitors.json';
+                break;
+            case 'events':
+                data = DataStore.listEvents();
+                filename = 'bossbooker-events.json';
+                break;
+            case 'leads':
+                data = DataStore.listLeads();
+                filename = 'bossbooker-leads.json';
+                break;
+            case 'planRequests':
+                data = DataStore.listPlanRequests();
+                filename = 'bossbooker-plan-requests.json';
+                break;
+            default:
+                return;
+        }
+        
+        downloadFile(JSON.stringify(data, null, 2), filename, 'application/json');
+    }
+
+    function exportCSV(type) {
+        let csv, filename;
+        
+        switch (type) {
+            case 'leads':
+                csv = DataStore.exportToCSV('leads');
+                filename = 'bossbooker-leads.csv';
+                break;
+            case 'planRequests':
+                csv = DataStore.exportToCSV('planRequests');
+                filename = 'bossbooker-plan-requests.csv';
+                break;
+            case 'events':
+                csv = DataStore.exportToCSV('events');
+                filename = 'bossbooker-events.csv';
+                break;
+            default:
+                return;
+        }
+        
+        downloadFile(csv, filename, 'text/csv');
+    }
+
+    function downloadFile(content, filename, type) {
+        const blob = new Blob([content], { type });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // =========================================
+    // DANGER ZONE
+    // =========================================
+    function initDangerZone() {
+        $('#clear-all-data')?.addEventListener('click', () => {
+            showConfirmModal(
+                'Clear All Data',
+                'Are you sure you want to delete ALL data? This cannot be undone.',
+                () => {
+                    DataStore.clearAllData();
+                    refreshData();
+                    closeModal('confirm-modal');
+                }
+            );
+        });
+    }
+
+    // =========================================
+    // MODALS
+    // =========================================
+    function initModals() {
+        // Close buttons
+        $$('.modal-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = btn.closest('.modal-overlay');
+                if (modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+        
+        // Click outside to close
+        $$('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    function openModal(id) {
+        const modal = $(`#${id}`);
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+
+    function closeModal(id) {
+        const modal = $(`#${id}`);
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    }
+
+    function showConfirmModal(title, message, onConfirm) {
+        const modal = $('#confirm-modal');
+        const titleEl = $('#confirm-modal-title');
+        const messageEl = $('#confirm-modal-message');
+        const confirmBtn = $('#confirm-modal-confirm');
+        
+        if (!modal) return;
+        
+        if (titleEl) titleEl.textContent = title;
+        if (messageEl) messageEl.textContent = message;
+        
+        if (confirmBtn) {
+            // Remove old listeners
+            const newBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+            newBtn.addEventListener('click', onConfirm);
+        }
+        
+        openModal('confirm-modal');
+    }
+
+    // =========================================
+    // TABLE HELPERS
+    // =========================================
+    function initTableSearch(inputId, dataType) {
+        const input = $(`#${inputId}`);
+        if (!input) return;
+        
+        // Remove old listener
+        input.removeEventListener('input', handleSearchInput);
+        input.dataset.dataType = dataType;
+        input.addEventListener('input', handleSearchInput);
+    }
+
+    function handleSearchInput(e) {
+        const dataType = e.target.dataset.dataType;
+        state.searchFilters[dataType] = e.target.value;
+        refreshTabData(state.currentTab);
+    }
+
+    function filterData(data, searchTerm, fields) {
+        if (!searchTerm) return data;
+        
+        const term = searchTerm.toLowerCase();
+        return data.filter(item => {
+            return fields.some(field => {
+                const value = item[field];
+                if (typeof value === 'string') {
+                    return value.toLowerCase().includes(term);
+                }
+                if (typeof value === 'object') {
+                    return JSON.stringify(value).toLowerCase().includes(term);
+                }
+                return false;
+            });
+        });
+    }
+
+    // =========================================
+    // UTILITY FUNCTIONS
+    // =========================================
+    function formatNumber(num) {
+        if (typeof num !== 'number') return '0';
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toString();
+    }
+
+    function formatDate(timestamp) {
+        if (!timestamp) return '-';
+        return new Date(timestamp).toLocaleDateString();
+    }
+
+    function formatDateTime(timestamp) {
+        if (!timestamp) return '-';
+        const d = new Date(timestamp);
+        return `${d.toLocaleDateString()} ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    function formatRelativeTime(timestamp) {
+        if (!timestamp) return '';
+        
+        const now = Date.now();
+        const diff = now - timestamp;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        
+        if (days > 0) return `${days}d ago`;
+        if (hours > 0) return `${hours}h ago`;
+        if (minutes > 0) return `${minutes}m ago`;
+        return 'Just now';
+    }
+
+    function formatEventText(event) {
+        const type = event.eventType || 'event';
+        const page = event.page || '';
+        
+        switch (type) {
+            case 'page_view':
+                return `Page view: ${page}`;
+            case 'click':
+                return `Click: ${event.data?.element || 'element'}`;
+            case 'cta_click':
+                return `CTA click: ${event.data?.cta || 'button'}`;
+            case 'lead_submit':
+                return `Lead submitted: ${event.data?.email || 'contact form'}`;
+            case 'plan_request':
+                return `Plan requested: ${event.data?.plan || 'unknown'}`;
+            case 'quiz_start':
+                return 'Quiz started';
+            case 'quiz_complete':
+                return 'Quiz completed';
+            default:
+                return `${type} on ${page}`;
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // =========================================
+    // EXPOSE PUBLIC API
+    // =========================================
+    window.AdminApp = {
+        viewLead,
+        saveLead,
+        viewPlanRequest,
+        savePlanRequest,
+        closeModal,
+        refreshData
+    };
+
+})();

@@ -237,3 +237,49 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// Analytics Integration
+document.addEventListener('DOMContentLoaded', function() {
+    // Track page view
+    if (typeof Analytics !== 'undefined') {
+        Analytics.trackPageView();
+    }
+    
+    // Track CTA clicks
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackCTA(this.textContent?.trim() || 'button', {
+                    page: window.location.pathname
+                });
+            }
+        });
+    });
+    
+    // Track quiz interactions
+    const quizForm = document.getElementById('quizForm');
+    if (quizForm) {
+        // Track quiz start
+        const quizOpeners = document.querySelectorAll('#openQuizTop, #openQuizHero, #openQuizSticky');
+        quizOpeners.forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    if (typeof Analytics !== 'undefined') {
+                        Analytics.trackQuiz('start', {
+                            trigger: this.id
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Track quiz submission
+        quizForm.addEventListener('submit', function() {
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackQuiz('complete', {
+                    page: window.location.pathname
+                });
+            }
+        });
+    }
+});
