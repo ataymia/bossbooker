@@ -50,7 +50,7 @@
 - All UI elements styled consistently
 
 ### 7. Email Update ✅
-- Changed to `bossbookerinfo@gmail.com` everywhere:
+- Changed to `help@bossbooker.com` everywhere:
   - Contact page display
   - Contact form success message
   - Service request confirmation
@@ -223,7 +223,7 @@ The admin portal uses the existing Boss Booker CSS variables:
 1. User fills out contact form on `/contact.html`
 2. Submits form
 3. Data saved to `bossbooker_contacts` in localStorage
-4. Success message shows with email: bossbookerinfo@gmail.com
+4. Success message shows with email: help@bossbooker.com
 5. Admin sees submission in "Contact Submissions" tab
 6. Admin clicks "Accept & Add to Clients"
 7. Contact moves to "Client List" tab

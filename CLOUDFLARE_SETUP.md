@@ -422,4 +422,4 @@ If you encounter issues:
 
 **Last Updated:** January 2025
 
-For questions or issues specific to Boss Booker, contact: bossbookerinfo@gmail.com
+For questions or issues specific to Boss Booker, contact: help@bossbooker.com

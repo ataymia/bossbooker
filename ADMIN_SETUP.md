@@ -117,7 +117,7 @@ When you click "Accept & Add to Clients" on either a contact submission or servi
 
 ## Email Configuration
 
-The site uses the following contact email: **bossbookerinfo@gmail.com**
+The site uses the following contact email: **help@bossbooker.com**
 
 This email is displayed on:
 - Contact page
@@ -164,7 +164,7 @@ For production use, consider:
 ## Support
 
 For questions or issues:
-- Email: bossbookerinfo@gmail.com
+- Email: help@bossbooker.com
 - Review the code in `admin.js` for implementation details
 - Check browser console for error messages
 

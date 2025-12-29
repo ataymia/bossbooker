@@ -5,7 +5,7 @@ A modern, magenta-themed website for Boss Booker - Professional booking and sche
 ## 📞 Contact
 
 **Phone:** (602) 842-2772  
-**Email:** bossbookerinfo@gmail.com
+**Email:** help@bossbooker.com
 
 ---
 
@@ -51,7 +51,7 @@ A modern, magenta-themed website for Boss Booker - Professional booking and sche
 ### Contact Page
 - Multi-field contact form with validation
 - Direct phone: (602) 842-2772
-- Email: bossbookerinfo@gmail.com
+- Email: help@bossbooker.com
 - Form submissions saved via DataStore
 - Analytics tracking on form submit
 
