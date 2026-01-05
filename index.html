@@ -29,6 +29,187 @@
       .nav-links a {padding:6px 8px;font-size:13px;}
       .nav-links button {padding:6px 10px;font-size:13px;}
     }
+
+    /* ========== ANIMATIONS ========== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 46, 190, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 46, 190, 0.6); }
+    }
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce-in {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+      50% { opacity: 1; transform: scale(1) rotate(180deg); }
+    }
+    
+    /* Hero with animated gradient */
+    .hero-animated {
+      background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f0f23, #1a1a2e);
+      background-size: 400% 400%;
+      animation: gradient-shift 15s ease infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-animated::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,46,190,0.1) 0%, transparent 50%);
+      animation: float 8s ease-in-out infinite;
+    }
+    
+    /* Floating decorative elements */
+    .floating-icon {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .floating-icon:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+    .floating-icon:nth-child(2) { top: 20%; right: 8%; animation-delay: 1s; }
+    .floating-icon:nth-child(3) { bottom: 30%; left: 10%; animation-delay: 2s; }
+    .floating-icon:nth-child(4) { bottom: 15%; right: 5%; animation-delay: 0.5s; }
+    
+    /* Animated cards */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease-out;
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Glowing CTA */
+    .btn-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    /* Stats counter section */
+    .stat-box {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: var(--background-alt);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+    .stat-box:hover {
+      transform: scale(1.05);
+      border-color: var(--primary-color);
+    }
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary-color), #ff6b35);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+    
+    /* Testimonial/Trust badges */
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .trust-badge:hover {
+      border-color: var(--primary-color);
+      background: rgba(255,46,190,0.1);
+    }
+    
+    /* Journey path visual */
+    .journey-step {
+      position: relative;
+      padding: 1.5rem;
+      background: var(--background-alt);
+      border-radius: 16px;
+      border: 2px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+    .journey-step:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-4px);
+    }
+    .journey-step .step-number {
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      background: var(--primary-color);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .journey-step .step-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    /* Marquee for social proof */
+    .marquee-container {
+      overflow: hidden;
+      background: var(--background-alt);
+      padding: 1rem 0;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .marquee {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 30s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-item {
+      flex-shrink: 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     
     /* modal overlay & dialog */
     #quizModal.modal-overlay{
@@ -166,24 +347,114 @@
   </nav>
 
   <!-- Hero -->
-  <header class="hero section">
-    <div class="container">
-      <div class="card">
-        <h1>Build the Brand. Book the Clients. Be a Boss.</h1>
-        <p>Boss Booker gives service businesses the tools to launch, convert, and grow—websites, CRM systems, follow-up automation, and operator support so you can focus on the work while we handle the pipeline.</p>
+  <header class="hero section hero-animated">
+    <!-- Floating decorative icons -->
+    <span class="floating-icon">🚀</span>
+    <span class="floating-icon">⚡</span>
+    <span class="floating-icon">💼</span>
+    <span class="floating-icon">✨</span>
+    
+    <div class="container" style="position:relative;z-index:1;">
+      <div class="card" style="animation: slide-up 0.8s ease-out;">
+        <h1 style="background: linear-gradient(135deg, #fff, var(--primary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Build the Brand. Book the Clients. Be a Boss.</h1>
+        <p style="font-size:1.1rem;">Whether you're just starting out, ready to grow, or scaling to the top—Boss Booker gives you the tools, systems, and support to get there. Websites, CRM, automation, marketing, and a team that's got your back.</p>
+        
+        <!-- Trust badges -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin:1.5rem 0;">
+          <span class="trust-badge">✅ No long-term contracts</span>
+          <span class="trust-badge">⚡ Launch in days, not months</span>
+          <span class="trust-badge">🤝 Real humans, real support</span>
+        </div>
+        
         <div class="clarifier-note">
-          <strong>What's a "booking"?</strong> Whatever a new client looks like for you—appointments, quote requests, orders, consultations, or DMs. We help you convert inquiries into real business.
+          <strong>Boss Booker is for every stage:</strong> Just starting? We'll help you launch. Growing? We'll help you convert. Already great? We'll help you dominate.
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
-          <button class="btn btn-primary" id="openQuizHero">Get Started</button>
-          <a class="btn btn-secondary" href="plans.html">See Packages</a>
+          <button class="btn btn-primary btn-glow" id="openQuizHero">Find Your Package →</button>
+          <a class="btn btn-secondary" href="plans.html">See All Packages</a>
         </div>
       </div>
     </div>
   </header>
 
+  <!-- Social proof marquee -->
+  <div class="marquee-container">
+    <div class="marquee">
+      <span class="marquee-item">💅 Beauty & Wellness</span>
+      <span class="marquee-item">🏠 Home Services</span>
+      <span class="marquee-item">⚖️ Legal Professionals</span>
+      <span class="marquee-item">🏥 Healthcare</span>
+      <span class="marquee-item">🏡 Real Estate</span>
+      <span class="marquee-item">✨ Creative Pros</span>
+      <span class="marquee-item">🏢 B2B Consultants</span>
+      <span class="marquee-item">💅 Beauty & Wellness</span>
+      <span class="marquee-item">🏠 Home Services</span>
+      <span class="marquee-item">⚖️ Legal Professionals</span>
+      <span class="marquee-item">🏥 Healthcare</span>
+      <span class="marquee-item">🏡 Real Estate</span>
+      <span class="marquee-item">✨ Creative Pros</span>
+      <span class="marquee-item">🏢 B2B Consultants</span>
+    </div>
+  </div>
+
   <!-- Packages -->
   <main class="container">
+    <!-- Stats Section -->
+    <section class="section">
+      <div class="grid-3">
+        <div class="stat-box animate-on-scroll">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Packages for every stage</div>
+        </div>
+        <div class="stat-box animate-on-scroll">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Automation working for you</div>
+        </div>
+        <div class="stat-box animate-on-scroll">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Focused on your growth</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Your Journey Section -->
+    <section class="section">
+      <h2 class="section-title">Where Are You on Your Journey?</h2>
+      <p style="text-align:center;color:var(--text-secondary);margin-bottom:2rem;max-width:600px;margin-left:auto;margin-right:auto;">Boss Booker meets you where you are and helps you get where you want to be.</p>
+      <div class="grid-3">
+        <div class="journey-step animate-on-scroll">
+          <span class="step-number">1</span>
+          <div class="step-icon">🌱</div>
+          <h3 style="color:var(--primary-color);margin-bottom:0.5rem;">Just Starting Out</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem;">Need to get online and look professional? We'll build your brand foundation—website, CRM, and the basics to start capturing interest.</p>
+          <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);">
+            <strong style="color:var(--text-muted);font-size:0.8rem;">PERFECT FOR:</strong>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.25rem;">New businesses, side hustles going full-time, rebrands</p>
+          </div>
+        </div>
+        <div class="journey-step animate-on-scroll" style="border-color:var(--primary-color);">
+          <span class="step-number">2</span>
+          <div class="step-icon">🔥</div>
+          <h3 style="color:var(--primary-color);margin-bottom:0.5rem;">Ready to Grow</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem;">Have leads but losing them? We'll install systems that convert—automated follow-ups, outreach, and marketing that works while you sleep.</p>
+          <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);">
+            <strong style="color:var(--text-muted);font-size:0.8rem;">PERFECT FOR:</strong>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.25rem;">Established businesses ready to scale, busy owners</p>
+          </div>
+        </div>
+        <div class="journey-step animate-on-scroll">
+          <span class="step-number">3</span>
+          <div class="step-icon">👑</div>
+          <h3 style="color:var(--primary-color);margin-bottom:0.5rem;">Already Great, Want the Best</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem;">You're successful but want more. We become your growth partner—full management, optimization, and a team dedicated to your pipeline.</p>
+          <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-color);">
+            <strong style="color:var(--text-muted);font-size:0.8rem;">PERFECT FOR:</strong>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.25rem;">Multi-location, high-volume, domination mode</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <h2 class="section-title">Choose Your Path</h2>
       <p style="text-align:center;color:var(--text-secondary);margin-bottom:2rem;">Three packages designed for where you are and where you're going.</p>
@@ -212,48 +483,99 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" style="background:var(--background-alt);margin:2rem -1rem;padding:3rem 1rem;border-radius:20px;">
       <h2 class="section-title">How it works</h2>
       <div class="grid-3">
-        <div class="feature-card">
-          <div class="pill">1</div>
-          <strong>Take the quiz</strong>
+        <div class="feature-card animate-on-scroll" style="text-align:center;">
+          <div style="font-size:3rem;margin-bottom:1rem;">📝</div>
+          <div class="pill" style="display:inline-block;margin-bottom:0.5rem;">Step 1</div>
+          <strong style="display:block;font-size:1.1rem;">Take the quiz</strong>
           <p style="color:var(--text-secondary)">60 seconds. We'll recommend the right package for your stage and goals.</p>
         </div>
-        <div class="feature-card">
-          <div class="pill">2</div>
-          <strong>We build your system</strong>
+        <div class="feature-card animate-on-scroll" style="text-align:center;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🛠️</div>
+          <div class="pill" style="display:inline-block;margin-bottom:0.5rem;">Step 2</div>
+          <strong style="display:block;font-size:1.1rem;">We build your system</strong>
           <p style="color:var(--text-secondary)">Website, CRM, automations, and tracking—tailored to your business.</p>
         </div>
-        <div class="feature-card">
-          <div class="pill">3</div>
-          <strong>You convert inquiries into clients</strong>
-          <p style="color:var(--text-secondary)">Leads come in, follow-ups go out, clients get booked. Like a boss.</p>
+        <div class="feature-card animate-on-scroll" style="text-align:center;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🎉</div>
+          <div class="pill" style="display:inline-block;margin-bottom:0.5rem;">Step 3</div>
+          <strong style="display:block;font-size:1.1rem;">You grow like a boss</strong>
+          <p style="color:var(--text-secondary)">Leads come in, follow-ups go out, clients get booked. Watch your business thrive.</p>
         </div>
+      </div>
+      <div style="text-align:center;margin-top:2rem;">
+        <button class="btn btn-primary btn-glow" onclick="document.getElementById('openQuizHero').click()">Start Your Journey →</button>
       </div>
     </section>
 
     <section class="section">
       <h2 class="section-title">Package Overview</h2>
       <div class="grid-3">
-        <div class="card">
-          <strong>🚀 Starter Pack</strong>
+        <div class="card animate-on-scroll" style="transition-delay:0.1s;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🚀</div>
+          <strong>Starter Pack</strong>
           <p style="color:var(--text-secondary)">Launch fast with a website + CRM basics. Starting at $499.</p>
           <a class="btn btn-secondary" href="plans.html#starter-pack">See details</a>
         </div>
-        <div class="card" style="border-color:var(--primary-color);">
-          <strong>⚡ Growth Engine</strong>
-          <p style="color:var(--text-secondary)">Add client outreach, follow-ups, and marketing channels. From $999/mo.</p>
+        <div class="card animate-on-scroll" style="border-color:var(--primary-color);transition-delay:0.2s;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">⚡</div>
+          <strong>Growth Engine</strong>
+          <p style="color:var(--text-secondary)">Add client outreach, follow-ups, and marketing channels. From $599/mo.</p>
           <a class="btn btn-secondary" href="plans.html#growth-engine">See details</a>
         </div>
-        <div class="card">
-          <strong>🤝 Operator</strong>
-          <p style="color:var(--text-secondary)">Full-service management and optimization. From $1,899/mo.</p>
+        <div class="card animate-on-scroll" style="transition-delay:0.3s;">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🤝</div>
+          <strong>Operator</strong>
+          <p style="color:var(--text-secondary)">Full-service management and optimization. From $2,999/mo.</p>
           <a class="btn btn-secondary" href="plans.html#operator">See details</a>
         </div>
       </div>
     </section>
+
+    <!-- Why Boss Booker Section -->
+    <section class="section">
+      <div class="card" style="text-align:center;padding:3rem 2rem;background:linear-gradient(135deg, rgba(255,46,190,0.1), rgba(255,107,53,0.05));border:2px solid var(--primary-color);">
+        <h2 style="color:var(--text-primary);margin-bottom:1rem;">Why Boss Booker?</h2>
+        <p style="color:var(--text-secondary);max-width:600px;margin:0 auto 1.5rem;font-size:1.1rem;">Because your business deserves more than a DIY website and crossed fingers. We're not just building tools—we're building your future.</p>
+        <div class="grid-2" style="max-width:800px;margin:0 auto;gap:1rem;text-align:left;">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <span style="font-size:1.5rem;">🎯</span>
+            <div><strong style="color:var(--text-primary);">Results-focused</strong><p style="color:var(--text-secondary);font-size:0.9rem;margin-top:0.25rem;">We measure success by your growth, not vanity metrics.</p></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <span style="font-size:1.5rem;">🤝</span>
+            <div><strong style="color:var(--text-primary);">Real partnership</strong><p style="color:var(--text-secondary);font-size:0.9rem;margin-top:0.25rem;">We're in it with you—strategy calls, support, and guidance.</p></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <span style="font-size:1.5rem;">💪</span>
+            <div><strong style="color:var(--text-primary);">Built for small business</strong><p style="color:var(--text-secondary);font-size:0.9rem;margin-top:0.25rem;">Pricing and packages designed for real entrepreneurs.</p></div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <span style="font-size:1.5rem;">⚡</span>
+            <div><strong style="color:var(--text-primary);">Fast implementation</strong><p style="color:var(--text-secondary);font-size:0.9rem;margin-top:0.25rem;">Launch in days, not months. No endless waiting.</p></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:2rem;" onclick="document.getElementById('openQuizHero').click()">Let's Build Your Future →</button>
+      </div>
+    </section>
   </main>
+
+  <!-- Scroll animation observer -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    });
+  </script>
 
   <!-- Footer -->
   <footer class="footer">
