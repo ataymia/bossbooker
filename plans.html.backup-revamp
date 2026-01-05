@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boss Booker — Packages & Plans</title>
+    <meta name="description" content="Choose your path: Starter Pack to launch, Growth Engine to convert, or Operator for full-service management. Boss Booker packages for service businesses.">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/plans.css">
+    <script src="/api-config.js"></script>
+    <style>
+        /* Package Tabs */
+        .package-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin: 2rem 0;
+            background: var(--background-alt);
+            border-radius: 12px;
+            padding: 6px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .package-tab {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .package-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 46, 190, 0.1);
+        }
+        .package-tab.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 46, 190, 0.3);
+        }
+        .package-tab .tab-icon {
+            font-size: 1.5rem;
+        }
+        .package-tab .tab-label {
+            font-size: 0.85rem;
+        }
+        
+        /* Package Content */
+        .package-content {
+            display: none;
+        }
+        .package-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Tier Cards Grid */
+        .tier-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .tier-card {
+            background: var(--background-alt);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s ease;
+        }
+        .tier-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(255, 46, 190, 0.15);
+        }
+        .tier-card.featured {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(255, 46, 190, 0.05), rgba(255, 107, 53, 0.05));
+        }
+        .tier-card .tier-badge {
+            align-self: flex-start;
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .tier-card h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .tier-card .tier-who {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .tier-card .tier-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .tier-card .tier-price small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+        .tier-card .tier-timeline {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tier-card .tier-features {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+            flex: 1;
+        }
+        .tier-card .tier-features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .tier-card .tier-features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        .tier-card .btn {
+            margin-top: auto;
+        }
+        
+        /* Recommended banner */
+        .recommended-banner {
+            background: linear-gradient(135deg, var(--primary-color), #ff6b35);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .recommended-banner.show {
+            display: flex;
+        }
+        .recommended-banner strong {
+            font-size: 1.1rem;
+        }
+        .recommended-banner p {
+            flex: 1;
+            margin: 0;
+            min-width: 200px;
+        }
+        
+        /* Advanced Builder Collapsible */
+        .advanced-builder {
+            margin-top: 3rem;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .advanced-builder-header {
+            background: var(--background-alt);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .advanced-builder-header:hover {
+            background: rgba(255, 46, 190, 0.05);
+        }
+        .advanced-builder-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .advanced-builder-header .toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        .advanced-builder.open .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .advanced-builder-content {
+            display: none;
+            padding: 1.5rem;
+        }
+        .advanced-builder.open .advanced-builder-content {
+            display: block;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .package-tabs {
+                flex-direction: column;
+                max-width: 100%;
+            }
+            .package-tab {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .recommended-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-weight:800;">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:56px;width:56px;border-radius:10px;display:block;">
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a class="active" href="plans.html">Plans</a>
+                <a href="about.html">About</a>
+                <a href="faq.html">FAQ</a>
+                <a href="referrals.html">Referrals</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sale Banner (from pricing admin) -->
+    <div id="saleBanner" class="sale-banner" style="display:none;">
+        <div class="container">
+            <span class="sale-badge">🔥 SALE</span>
+            <span id="saleText">Limited Time Offer!</span>
+            <span id="saleTimer" class="sale-timer"></span>
+        </div>
+    </div>
+
+    <main class="container section">
+        <h1 class="section-title">Choose Your Package</h1>
+        <p class="pill" style="max-width:600px;margin:0 auto 1rem;">Three paths to get more clients. Pick the one that fits your stage and goals.</p>
+
+        <!-- Recommended banner (shown when coming from quiz) -->
+        <div id="recommendedBanner" class="recommended-banner">
+            <strong>🎯 Recommended for you:</strong>
+            <p id="recommendedText">Based on your quiz, we think this is the best fit.</p>
+        </div>
+
+        <!-- Package Tabs -->
+        <div class="package-tabs" role="tablist">
+            <button class="package-tab active" role="tab" data-tab="starter-pack" aria-selected="true" id="tab-starter-pack">
+                <span class="tab-icon">🚀</span>
+                <span class="tab-label">Starter Pack</span>
+            </button>
+            <button class="package-tab" role="tab" data-tab="growth-engine" aria-selected="false" id="tab-growth-engine">
+                <span class="tab-icon">⚡</span>
+                <span class="tab-label">Growth Engine</span>
+            </button>
+            <button class="package-tab" role="tab" data-tab="operator" aria-selected="false" id="tab-operator">
+                <span class="tab-icon">🤝</span>
+                <span class="tab-label">Operator</span>
+            </button>
+        </div>
+
+        <!-- STARTER PACK Content -->
+        <div id="starter-pack" class="package-content active" role="tabpanel">
+            <h2 style="text-align:center;color:var(--text-primary);">🚀 Starter Pack — Launch</h2>
+            <p style="text-align:center;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem;">
+                Get your brand online and start capturing inquiries. Perfect for new businesses or those needing a fresh start.
+            </p>
+            
+            <div class="tier-cards">
+                <div class="tier-card">
+                    <h3>Starter Lite</h3>
+                    <p class="tier-who">For solopreneurs testing the waters</p>
+                    <div class="tier-price">$499 <small>one-time</small></div>
+                    <div class="tier-timeline">⏱️ Launch in 3–5 days</div>
+                    <ul class="tier-features">
+                        <li>1-page website (mobile-optimized)</li>
+                        <li>Basic contact form</li>
+                        <li>Google Business Profile setup</li>
+                        <li>Social links integration</li>
+                        <li>1 revision round</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="startPackage('starter-lite', 499, true)">Start Lite →</button>
+                </div>
+                
+                <div class="tier-card featured">
+                    <span class="tier-badge">Most Popular</span>
+                    <h3>Starter Standard</h3>
+                    <p class="tier-who">For businesses ready to capture leads</p>
+                    <div class="tier-price">$999 <small>one-time</small></div>
+                    <div class="tier-timeline">⏱️ Launch in 5–7 days</div>
+                    <ul class="tier-features">
+                        <li>3-page website with booking/contact</li>
+                        <li>CRM setup (pipeline + basic automation)</li>
+                        <li>Google Business Profile optimization</li>
+                        <li>Missed-call text-back</li>
+                        <li>2 revision rounds</li>
+                        <li>30-day support</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="startPackage('starter-standard', 999, true)">Start Standard →</button>
+                </div>
+                
+                <div class="tier-card">
+                    <h3>Starter Plus</h3>
+                    <p class="tier-who">For businesses wanting the full foundation</p>
+                    <div class="tier-price">$1,499 <small>one-time</small></div>
+                    <div class="tier-timeline">⏱️ Launch in 7–10 days</div>
+                    <ul class="tier-features">
+                        <li>5-page website with booking</li>
+                        <li>Full CRM setup + automations</li>
+                        <li>Google Business Profile + basic SEO</li>
+                        <li>SMS templates + missed-call text-back</li>
+                        <li>Analytics dashboard</li>
+                        <li>3 revision rounds</li>
+                        <li>60-day support</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="startPackage('starter-plus', 1499, true)">Start Plus →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GROWTH ENGINE Content -->
+        <div id="growth-engine" class="package-content" role="tabpanel">
+            <h2 style="text-align:center;color:var(--text-primary);">⚡ Growth Engine — Convert</h2>
+            <p style="text-align:center;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem;">
+                Turn inquiries into clients. Automated follow-ups, outreach, and marketing channels that work while you sleep.
+            </p>
+            
+            <div class="tier-cards">
+                <div class="tier-card">
+                    <h3>Growth Lite</h3>
+                    <p class="tier-who">For businesses ready to automate follow-ups</p>
+                    <div class="tier-price">$599 <small>/month</small></div>
+                    <div class="tier-timeline">⏱️ Setup in 5–7 days</div>
+                    <ul class="tier-features">
+                        <li>Automated follow-up sequences (3-touch)</li>
+                        <li>Client booking outreach (60 attempts/mo)</li>
+                        <li>CRM pipeline management</li>
+                        <li>Missed-call text-back</li>
+                        <li>Weekly KPI email</li>
+                        <li>15-min monthly strategy call</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="startPackage('growth-lite', 599, false)">Start Lite →</button>
+                </div>
+                
+                <div class="tier-card featured">
+                    <span class="tier-badge">Best Value</span>
+                    <h3>Growth Standard</h3>
+                    <p class="tier-who">For businesses scaling their client acquisition</p>
+                    <div class="tier-price">$999 <small>/month</small></div>
+                    <div class="tier-timeline">⏱️ Setup in 7–10 days</div>
+                    <ul class="tier-features">
+                        <li>Automated follow-ups (4-touch + rules)</li>
+                        <li>Client booking outreach (150 attempts/mo)</li>
+                        <li>Pick 1: Google Ads OR Local SEO</li>
+                        <li>SMS assistant + templates</li>
+                        <li>Analytics dashboard</li>
+                        <li>30-min monthly strategy call</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="startPackage('growth-standard', 999, false)">Start Standard →</button>
+                </div>
+                
+                <div class="tier-card">
+                    <h3>Growth Plus</h3>
+                    <p class="tier-who">For aggressive growth and multi-channel marketing</p>
+                    <div class="tier-price">$1,899 <small>/month</small></div>
+                    <div class="tier-timeline">⏱️ Setup in 10–14 days</div>
+                    <ul class="tier-features">
+                        <li>Advanced follow-ups (5-touch + smart rules)</li>
+                        <li>Client booking outreach (300 attempts/mo)</li>
+                        <li>Google Ads + Local SEO included</li>
+                        <li>Website included or 50% credit</li>
+                        <li>AI chat widget</li>
+                        <li>45-min monthly strategy call</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="startPackage('growth-plus', 1899, false)">Start Plus →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPERATOR Content -->
+        <div id="operator" class="package-content" role="tabpanel">
+            <h2 style="text-align:center;color:var(--text-primary);">🤝 Operator — Monthly Partner</h2>
+            <p style="text-align:center;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem;">
+                We run it for you. Full-service management, optimization, and a dedicated team keeping your pipeline full.
+            </p>
+            
+            <div class="tier-cards">
+                <div class="tier-card">
+                    <h3>Operator Standard</h3>
+                    <p class="tier-who">For busy owners wanting hands-off operation</p>
+                    <div class="tier-price">$2,999 <small>/month</small></div>
+                    <div class="tier-timeline">⏱️ Onboarding: 2 weeks</div>
+                    <ul class="tier-features">
+                        <li>Everything in Growth Plus</li>
+                        <li>Client booking outreach (600 attempts/mo)</li>
+                        <li>Dedicated success manager</li>
+                        <li>Bi-weekly strategy calls</li>
+                        <li>Monthly performance reports</li>
+                        <li>Campaign optimization</li>
+                        <li>Priority support (same-day response)</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="startPackage('operator-standard', 2999, false)">Start Standard →</button>
+                </div>
+                
+                <div class="tier-card featured">
+                    <span class="tier-badge">Full Service</span>
+                    <h3>Operator Pro</h3>
+                    <p class="tier-who">For growth-focused businesses wanting it all</p>
+                    <div class="tier-price">$4,199 <small>/month</small></div>
+                    <div class="tier-timeline">⏱️ Onboarding: 2 weeks</div>
+                    <ul class="tier-features">
+                        <li>Everything in Operator Standard</li>
+                        <li>Client booking outreach (1,200 attempts/mo)</li>
+                        <li>Multi-location support</li>
+                        <li>Advanced ads management (Google + Meta)</li>
+                        <li>Content calendar + social posting</li>
+                        <li>Quarterly exec reviews</li>
+                        <li>Custom integrations</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="startPackage('operator-pro', 4199, false)">Start Pro →</button>
+                </div>
+                
+                <div class="tier-card">
+                    <h3>Operator Enterprise</h3>
+                    <p class="tier-who">For multi-location or high-volume businesses</p>
+                    <div class="tier-price">Custom</div>
+                    <div class="tier-timeline">⏱️ Let's talk scope</div>
+                    <ul class="tier-features">
+                        <li>Everything in Operator Pro</li>
+                        <li>Unlimited outreach attempts</li>
+                        <li>Dedicated account team</li>
+                        <li>Custom SLAs</li>
+                        <li>White-label options</li>
+                        <li>API access + integrations</li>
+                        <li>On-premise options</li>
+                    </ul>
+                    <button class="btn btn-secondary" onclick="openServiceRequestModal('enterprise')">Contact Us →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Builder (collapsed by default) -->
+        <div class="advanced-builder" id="advancedBuilder">
+            <div class="advanced-builder-header" onclick="toggleAdvancedBuilder()">
+                <h3>🔧 Advanced Builder <span style="font-weight:400;color:var(--text-muted);font-size:0.9rem;">(Customize your package)</span></h3>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="advanced-builder-content">
+                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">
+                    Power users: build a custom package from our full menu. Includes legacy bundles (Nano → Enterprise), GLAM plans, and à la carte add-ons.
+                </p>
+                
+                <!-- Base plans selection -->
+                <div class="card" style="margin-bottom:1.5rem;">
+                    <h3>Base Bundles</h3>
+                    <div id="basePlansContainer" class="radio-group"></div>
+                </div>
+
+                <!-- GLAM Plans Section -->
+                <section id="glamSection" style="margin-bottom:1.5rem;">
+                    <h3 class="section-title" style="font-size:1.25rem;">GLAM by Boss Booker — Beauty & Creator Services</h3>
+                    <p class="pill" style="margin-bottom:12px;font-size:0.85rem;">Stylists, MUAs, braiders, nail artists and creators — DM-driven bookings, fast turnarounds. Sparkle included ✨</p>
+                    <div class="card">
+                        <div id="glamPlansContainer" class="radio-group"></div>
+                    </div>
+                </section>
+
+                <!-- Customize + summary -->
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Tiered Add-ons</h3>
+                        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Select one tier per category (optional)</p>
+                        <div id="tieredAddonsContainer"></div>
+
+                        <h3 style="margin-top:24px;">Additional Services</h3>
+                        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Select any that apply</p>
+                        <div id="flatAddonsContainer" class="checkbox-group"></div>
+                    </div>
+
+                    <aside class="summary-card">
+                        <h3>Summary</h3>
+                        <div class="summary-content">
+                            <div class="summary-line">
+                                <span>Base Plan:</span>
+                                <strong id="summaryPlanName">—</strong>
+                            </div>
+                            <div class="summary-line" id="summaryOriginalRow" style="display:none;">
+                                <span>Original Price:</span>
+                                <span id="summaryOriginalPrice" style="text-decoration:line-through;color:var(--text-muted);">$0</span>
+                            </div>
+                            <div class="summary-line">
+                                <span>Monthly Total:</span>
+                                <strong class="price-highlight" id="summaryMonthly">$0</strong>
+                            </div>
+                            <div class="summary-line" id="summarySetupRow">
+                                <span>One-time Setup:</span>
+                                <strong id="summarySetup">$0</strong>
+                            </div>
+                            <div class="summary-line summary-total">
+                                <span>First Month Due:</span>
+                                <strong class="price-highlight" id="summaryFirstMonth">$0</strong>
+                            </div>
+                            
+                            <div id="summaryAddons" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-color);display:none;">
+                                <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Selected Add-ons:</div>
+                                <div id="summaryAddonsList"></div>
+                            </div>
+                            
+                            <p style="color:var(--text-secondary);font-size:11px;margin-top:16px;">
+                                Note: Bundles include platform setup, quiet-hours compliance, basic analytics and weekly KPI email. Carrier fees billed at cost.
+                            </p>
+                            
+                            <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+                                <button class="btn-primary" onclick="copyQuote()">📋 Copy Quote</button>
+                                <button class="btn-secondary" onclick="openServiceRequestModal()">Submit Plan for Review</button>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:20px;width:20px;border-radius:4px;">
+                    <p style="margin:0;">© 2025 Boss Booker. All rights reserved.</p>
+                </div>
+                <span style="color:var(--border-color);">|</span>
+                <a href="tel:+16028422772" class="phone-link" style="display:flex;align-items:center;gap:6px;color:var(--primary-color);text-decoration:none;font-weight:500;">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/></svg>
+                    (602) 842-2772
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Service Request Modal -->
+    <div id="serviceRequestModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Submit Plan for Review</h2>
+                <button onclick="closeServiceRequestModal()" class="modal-close">&times;</button>
+            </div>
+            <form id="serviceRequestForm">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Company Name *</label>
+                        <input type="text" name="companyName" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Your Name *</label>
+                        <input type="text" name="contactName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input type="tel" name="phone" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Company Size</label>
+                        <select name="companySize">
+                            <option value="">Select...</option>
+                            <option>Solo / 1 person</option>
+                            <option>2-5 employees</option>
+                            <option>6-15 employees</option>
+                            <option>16-50 employees</option>
+                            <option>50+ employees</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Additional Notes</label>
+                        <textarea name="notes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <div class="plan-summary-box">
+                            <div class="summary-label">Selected Package:</div>
+                            <div id="modalPlanSummary"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Submit Request</button>
+                    <button type="button" onclick="closeServiceRequestModal()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/datastore.js"></script>
+    <script src="/pricing-admin.js"></script>
+    <script src="/analytics.js"></script>
+    <script>
+    /**
+     * Plans Page - Tab Navigation + Dynamic Pricing
+     */
+    (function() {
+        'use strict';
+        
+        let pricing = null;
+        let sale = null;
+        let selectedPlan = null;
+        let selectedPackage = null; // For tier card selection
+        let selectedAddons = {
+            tiered: {},
+            flat: []
+        };
+        
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', init);
+        
+        function init() {
+            loadPricing();
+            setupTabs();
+            handleDeepLinks();
+            renderAdvancedBuilder();
+            updateSummary();
+            
+            // Form submission
+            const form = document.getElementById('serviceRequestForm');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
+            }
+            
+            // Track page view
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackPageView();
+            }
+        }
+        
+        function loadPricing() {
+            if (typeof PricingAdmin !== 'undefined') {
+                pricing = PricingAdmin.getPricing();
+                sale = PricingAdmin.getSale();
+            } else {
+                pricing = getDefaultPricing();
+            }
+        }
+        
+        function getDefaultPricing() {
+            return {
+                sale: { active: false },
+                plans: [
+                    { id: 'starter', name: 'Starter', price: 1899, setup: 0, featured: true, description: 'Most popular plan' }
+                ],
+                glamPlans: [],
+                tieredAddons: [],
+                flatAddons: []
+            };
+        }
+        
+        // ============================================
+        // TAB NAVIGATION
+        // ============================================
+        
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.package-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.dataset.tab;
+                    switchTab(tabId);
+                    
+                    // Track tab switch
+                    if (typeof Analytics !== 'undefined') {
+                        Analytics.trackCTA('tab_switch', { tab: tabId });
+                    }
+                });
+            });
+        }
+        
+        function switchTab(tabId) {
+            // Update tab buttons
+            document.querySelectorAll('.package-tab').forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            const activeTab = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+                activeTab.setAttribute('aria-selected', 'true');
+            }
+            
+            // Update content
+            document.querySelectorAll('.package-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            const activeContent = document.getElementById(tabId);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
+            
+            // Update URL hash without scrolling
+            history.replaceState(null, null, `#${tabId}`);
+        }
+        
+        // ============================================
+        // DEEP LINKS & RECOMMENDATIONS
+        // ============================================
+        
+        function handleDeepLinks() {
+            const hash = window.location.hash.slice(1);
+            const params = new URLSearchParams(window.location.search);
+            const rec = params.get('rec');
+            
+            // If coming from quiz with recommendation
+            if (rec) {
+                switchTab(rec);
+                showRecommendedBanner(rec);
+            } else if (hash && ['starter-pack', 'growth-engine', 'operator'].includes(hash)) {
+                switchTab(hash);
+            }
+        }
+        
+        function showRecommendedBanner(packageId) {
+            const banner = document.getElementById('recommendedBanner');
+            const text = document.getElementById('recommendedText');
+            if (!banner) return;
+            
+            const names = {
+                'starter-pack': 'Starter Pack',
+                'growth-engine': 'Growth Engine',
+                'operator': 'Operator'
+            };
+            
+            text.textContent = `Based on your quiz answers, ${names[packageId] || packageId} looks like the best fit for your business.`;
+            banner.classList.add('show');
+        }
+        
+        // ============================================
+        // PACKAGE SELECTION (from tier cards)
+        // ============================================
+        
+        window.startPackage = function(packageId, price, isOneTime) {
+            selectedPackage = { id: packageId, price: price, isOneTime: isOneTime };
+            
+            // Pre-fill modal
+            const summary = document.getElementById('modalPlanSummary');
+            if (summary) {
+                const formattedPrice = isOneTime ? `$${price.toLocaleString()} one-time` : `$${price.toLocaleString()}/mo`;
+                summary.innerHTML = `<strong>${formatPackageName(packageId)}</strong> — ${formattedPrice}`;
+            }
+            
+            // Open modal
+            openServiceRequestModal(packageId);
+            
+            // Track
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackCTA('start_package', { package: packageId, price: price });
+            }
+        };
+        
+        function formatPackageName(id) {
+            const names = {
+                'starter-lite': 'Starter Lite',
+                'starter-standard': 'Starter Standard',
+                'starter-plus': 'Starter Plus',
+                'growth-lite': 'Growth Lite',
+                'growth-standard': 'Growth Standard',
+                'growth-plus': 'Growth Plus',
+                'operator-standard': 'Operator Standard',
+                'operator-pro': 'Operator Pro',
+                'enterprise': 'Enterprise'
+            };
+            return names[id] || id;
+        }
+        
+        // ============================================
+        // ADVANCED BUILDER
+        // ============================================
+        
+        window.toggleAdvancedBuilder = function() {
+            const builder = document.getElementById('advancedBuilder');
+            builder.classList.toggle('open');
+            
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackCTA('toggle_advanced_builder', { open: builder.classList.contains('open') });
+            }
+        };
+        
+        function renderAdvancedBuilder() {
+            renderSaleBanner();
+            renderBasePlans();
+            renderGlamPlans();
+            renderTieredAddons();
+            renderFlatAddons();
+        }
+        
+        function renderSaleBanner() {
+            const banner = document.getElementById('saleBanner');
+            if (!banner) return;
+            
+            if (sale && sale.active) {
+                banner.style.display = 'block';
+                document.getElementById('saleText').textContent = 
+                    `${sale.name || 'Sale'} — ${sale.discount}% OFF all plans!`;
+                
+                if (sale.endDate) {
+                    updateSaleTimer(sale.endDate);
+                }
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+        
+        function updateSaleTimer(endDate) {
+            const timer = document.getElementById('saleTimer');
+            if (!timer) return;
+            
+            function update() {
+                const now = new Date();
+                const end = new Date(endDate);
+                const diff = end - now;
+                
+                if (diff <= 0) {
+                    timer.textContent = 'Sale ended';
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                if (days > 0) {
+                    timer.textContent = `Ends in ${days}d ${hours}h`;
+                } else {
+                    timer.textContent = `Ends in ${hours}h ${mins}m`;
+                }
+            }
+            
+            update();
+            setInterval(update, 60000);
+        }
+        
+        function renderBasePlans() {
+            const container = document.getElementById('basePlansContainer');
+            if (!container || !pricing.plans) return;
+            
+            container.innerHTML = pricing.plans.map((plan, index) => {
+                const displayPrice = getDisplayPrice(plan.price);
+                const originalPrice = plan.price;
+                const hasDiscount = sale && sale.active && !plan.custom;
+                
+                return `
+                    <label class="radio-option ${plan.featured ? 'featured' : ''} ${plan.special ? 'special' : ''}" data-plan-id="${plan.id}">
+                        <input type="radio" name="basePlan" value="${plan.id}" 
+                            data-price="${displayPrice}" 
+                            data-original="${originalPrice}"
+                            data-setup="${plan.setup}" 
+                            ${plan.custom ? 'data-custom="true"' : ''}
+                            onchange="window.PlansPage.selectPlan('${plan.id}')"
+                            ${index === 0 || plan.featured ? 'checked' : ''}>
+                        <span class="plan-content">
+                            <span class="plan-header">
+                                <strong>${escHtml(plan.name)}</strong>
+                                ${plan.featured ? '<span class="badge">Most Popular</span>' : ''}
+                                ${plan.special ? '<span class="badge special">Special</span>' : ''}
+                                ${hasDiscount ? '<span class="badge sale">' + sale.discount + '% OFF</span>' : ''}
+                            </span>
+                            <span class="plan-price">
+                                ${plan.custom ? 'Custom pricing' : `
+                                    ${hasDiscount ? '<span class="original-price">$' + formatNumber(originalPrice) + '</span>' : ''}
+                                    <span class="current-price">$${formatNumber(displayPrice)}/mo</span>
+                                    ${plan.setup > 0 ? '<span class="setup-price">+ $' + formatNumber(plan.setup) + ' setup</span>' : ''}
+                                `}
+                            </span>
+                            <small class="plan-desc">${escHtml(plan.description || '')}</small>
+                        </span>
+                    </label>
+                `;
+            }).join('');
+            
+            const featured = pricing.plans.find(p => p.featured) || pricing.plans[0];
+            if (featured) selectPlan(featured.id);
+        }
+        
+        function renderGlamPlans() {
+            const container = document.getElementById('glamPlansContainer');
+            const section = document.getElementById('glamSection');
+            if (!container || !pricing.glamPlans || pricing.glamPlans.length === 0) {
+                if (section) section.style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = pricing.glamPlans.map(plan => {
+                const displayPrice = getDisplayPrice(plan.price);
+                const hasDiscount = sale && sale.active;
+                
+                return `
+                    <label class="radio-option glam" data-plan-id="${plan.id}">
+                        <input type="radio" name="basePlan" value="${plan.id}" 
+                            data-price="${displayPrice}" 
+                            data-original="${plan.price}"
+                            data-setup="${plan.setup}"
+                            onchange="window.PlansPage.selectPlan('${plan.id}')">
+                        <span class="plan-content">
+                            <span class="plan-header">
+                                <strong>${escHtml(plan.name)}</strong>
+                                ${hasDiscount ? '<span class="badge sale">' + sale.discount + '% OFF</span>' : ''}
+                            </span>
+                            <span class="plan-price">
+                                ${hasDiscount ? '<span class="original-price">$' + formatNumber(plan.price) + '</span>' : ''}
+                                <span class="current-price">$${formatNumber(displayPrice)}/mo</span>
+                                ${plan.setup > 0 ? '<span class="setup-price">+ $' + formatNumber(plan.setup) + ' setup</span>' : ''}
+                            </span>
+                            <small class="plan-desc">${escHtml(plan.description || '')}</small>
+                        </span>
+                    </label>
+                `;
+            }).join('');
+        }
+        
+        function renderTieredAddons() {
+            const container = document.getElementById('tieredAddonsContainer');
+            if (!container || !pricing.tieredAddons) return;
+            
+            container.innerHTML = pricing.tieredAddons.map(category => `
+                <div class="addon-category" data-category="${category.id}">
+                    <div class="addon-category-title">${escHtml(category.name)}</div>
+                    <div class="radio-group compact">
+                        <label class="radio-option small">
+                            <input type="radio" name="addon_${category.id}" value="" checked
+                                onchange="window.PlansPage.selectTieredAddon('${category.id}', '')">
+                            <span>None</span>
+                        </label>
+                        ${category.tiers.map(tier => `
+                            <label class="radio-option small">
+                                <input type="radio" name="addon_${category.id}" value="${tier.id}"
+                                    data-price="${tier.price}"
+                                    data-onetime="${tier.onetime || false}"
+                                    onchange="window.PlansPage.selectTieredAddon('${category.id}', '${tier.id}')">
+                                <span>
+                                    ${escHtml(tier.name)} — 
+                                    <strong>$${formatNumber(tier.price)}</strong>
+                                    ${tier.onetime ? '<small>(one-time)</small>' : '<small>/mo</small>'}
+                                </span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function renderFlatAddons() {
+            const container = document.getElementById('flatAddonsContainer');
+            if (!container || !pricing.flatAddons) return;
+            
+            container.innerHTML = pricing.flatAddons.map(addon => `
+                <label class="checkbox-option">
+                    <input type="checkbox" value="${addon.id}"
+                        data-price="${addon.price}"
+                        data-onetime="${addon.onetime || false}"
+                        onchange="window.PlansPage.toggleFlatAddon('${addon.id}')">
+                    <span>
+                        ${escHtml(addon.name)} — 
+                        <strong>$${formatNumber(addon.price)}</strong>
+                        ${addon.onetime ? '(one-time)' : '/mo'}
+                    </span>
+                </label>
+            `).join('');
+        }
+        
+        // ============================================
+        // SELECTION HANDLERS
+        // ============================================
+        
+        function selectPlan(planId) {
+            selectedPlan = pricing.plans.find(p => p.id === planId) || 
+                          pricing.glamPlans.find(p => p.id === planId);
+            updateSummary();
+            
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackCTA('select_plan', { plan: planId });
+            }
+        }
+        
+        function selectTieredAddon(categoryId, tierId) {
+            if (tierId) {
+                const category = pricing.tieredAddons.find(c => c.id === categoryId);
+                const tier = category?.tiers.find(t => t.id === tierId);
+                if (tier) {
+                    selectedAddons.tiered[categoryId] = { ...tier, categoryName: category.name };
+                }
+            } else {
+                delete selectedAddons.tiered[categoryId];
+            }
+            updateSummary();
+        }
+        
+        function toggleFlatAddon(addonId) {
+            const idx = selectedAddons.flat.indexOf(addonId);
+            if (idx >= 0) {
+                selectedAddons.flat.splice(idx, 1);
+            } else {
+                selectedAddons.flat.push(addonId);
+            }
+            updateSummary();
+        }
+        
+        // ============================================
+        // SUMMARY & PRICING
+        // ============================================
+        
+        function getDisplayPrice(price) {
+            if (sale && sale.active && price > 0) {
+                return Math.round(price * (1 - sale.discount / 100));
+            }
+            return price;
+        }
+        
+        function updateSummary() {
+            if (!selectedPlan) return;
+            
+            const hasDiscount = sale && sale.active && !selectedPlan.custom;
+            
+            document.getElementById('summaryPlanName').textContent = selectedPlan.name;
+            
+            const originalRow = document.getElementById('summaryOriginalRow');
+            if (hasDiscount) {
+                originalRow.style.display = 'flex';
+                document.getElementById('summaryOriginalPrice').textContent = '$' + formatNumber(selectedPlan.price);
+            } else {
+                originalRow.style.display = 'none';
+            }
+            
+            let monthlyTotal = getDisplayPrice(selectedPlan.price);
+            let onetimeTotal = selectedPlan.setup || 0;
+            let addonsList = [];
+            
+            Object.values(selectedAddons.tiered).forEach(addon => {
+                if (addon.onetime) {
+                    onetimeTotal += addon.price;
+                } else {
+                    monthlyTotal += addon.price;
+                }
+                addonsList.push(`${addon.categoryName}: ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+            });
+            
+            selectedAddons.flat.forEach(addonId => {
+                const addon = pricing.flatAddons.find(a => a.id === addonId);
+                if (addon) {
+                    if (addon.onetime) {
+                        onetimeTotal += addon.price;
+                    } else {
+                        monthlyTotal += addon.price;
+                    }
+                    addonsList.push(`${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+                }
+            });
+            
+            document.getElementById('summaryMonthly').textContent = 
+                selectedPlan.custom ? 'Custom' : '$' + formatNumber(monthlyTotal);
+            
+            document.getElementById('summarySetup').textContent = '$' + formatNumber(onetimeTotal);
+            document.getElementById('summarySetupRow').style.display = onetimeTotal > 0 ? 'flex' : 'none';
+            
+            document.getElementById('summaryFirstMonth').textContent = 
+                selectedPlan.custom ? 'Contact us' : '$' + formatNumber(monthlyTotal + onetimeTotal);
+            
+            const addonsSection = document.getElementById('summaryAddons');
+            const addonListEl = document.getElementById('summaryAddonsList');
+            if (addonsList.length > 0) {
+                addonsSection.style.display = 'block';
+                addonListEl.innerHTML = addonsList.map(a => `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">• ${escHtml(a)}</div>`).join('');
+            } else {
+                addonsSection.style.display = 'none';
+            }
+        }
+        
+        // ============================================
+        // ACTIONS
+        // ============================================
+        
+        window.copyQuote = function() {
+            if (!selectedPlan) return;
+            
+            const hasDiscount = sale && sale.active && !selectedPlan.custom;
+            let quote = `Boss Booker Quote\n${'='.repeat(30)}\n\n`;
+            quote += `Plan: ${selectedPlan.name}\n`;
+            
+            if (hasDiscount) {
+                quote += `Original: $${formatNumber(selectedPlan.price)}/mo\n`;
+                quote += `Sale Price: $${formatNumber(getDisplayPrice(selectedPlan.price))}/mo (${sale.discount}% off)\n`;
+            } else if (!selectedPlan.custom) {
+                quote += `Monthly: $${formatNumber(getDisplayPrice(selectedPlan.price))}/mo\n`;
+            }
+            
+            if (selectedPlan.setup > 0) {
+                quote += `Setup: $${formatNumber(selectedPlan.setup)}\n`;
+            }
+            
+            const addonLines = [];
+            Object.values(selectedAddons.tiered).forEach(addon => {
+                addonLines.push(`  - ${addon.categoryName}: ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+            });
+            selectedAddons.flat.forEach(addonId => {
+                const addon = pricing.flatAddons.find(a => a.id === addonId);
+                if (addon) {
+                    addonLines.push(`  - ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+                }
+            });
+            
+            if (addonLines.length > 0) {
+                quote += `\nAdd-ons:\n${addonLines.join('\n')}\n`;
+            }
+            
+            quote += `\n${'='.repeat(30)}\n`;
+            quote += `Generated: ${new Date().toLocaleDateString()}\n`;
+            quote += `Contact: (602) 842-2772 | help@bossbooker.com`;
+            
+            navigator.clipboard.writeText(quote).then(() => {
+                alert('Quote copied to clipboard!');
+            }).catch(() => {
+                prompt('Copy this quote:', quote);
+            });
+        };
+        
+        window.openServiceRequestModal = function(packageId) {
+            const modal = document.getElementById('serviceRequestModal');
+            if (!modal) return;
+            
+            const summary = document.getElementById('modalPlanSummary');
+            if (summary) {
+                if (selectedPackage) {
+                    const formattedPrice = selectedPackage.isOneTime ? 
+                        `$${selectedPackage.price.toLocaleString()} one-time` : 
+                        `$${selectedPackage.price.toLocaleString()}/mo`;
+                    summary.innerHTML = `<strong>${formatPackageName(selectedPackage.id)}</strong> — ${formattedPrice}`;
+                } else if (selectedPlan) {
+                    summary.innerHTML = `
+                        <strong>${selectedPlan.name}</strong> — 
+                        ${selectedPlan.custom ? 'Custom pricing' : '$' + formatNumber(getDisplayPrice(selectedPlan.price)) + '/mo'}
+                        ${Object.keys(selectedAddons.tiered).length + selectedAddons.flat.length > 0 ? 
+                            ' + ' + (Object.keys(selectedAddons.tiered).length + selectedAddons.flat.length) + ' add-on(s)' : ''}
+                    `;
+                } else if (packageId === 'enterprise') {
+                    summary.innerHTML = `<strong>Enterprise</strong> — Custom pricing`;
+                }
+            }
+            
+            modal.style.display = 'flex';
+        };
+        
+        window.closeServiceRequestModal = function() {
+            const modal = document.getElementById('serviceRequestModal');
+            if (modal) modal.style.display = 'none';
+            selectedPackage = null; // Reset
+        };
+        
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            const planInfo = selectedPackage || selectedPlan;
+            
+            const data = {
+                companyName: formData.get('companyName'),
+                contactName: formData.get('contactName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                companySize: formData.get('companySize'),
+                notes: formData.get('notes'),
+                plan: selectedPackage ? formatPackageName(selectedPackage.id) : (selectedPlan?.name || 'Unknown'),
+                monthlyTotal: selectedPackage ? 
+                    (selectedPackage.isOneTime ? `$${selectedPackage.price} one-time` : `$${selectedPackage.price}/mo`) :
+                    (selectedPlan?.custom ? 'Custom' : '$' + formatNumber(getDisplayPrice(selectedPlan?.price || 0))),
+                setupFee: selectedPlan ? '$' + formatNumber(selectedPlan.setup || 0) : '$0',
+                addons: [
+                    ...Object.values(selectedAddons.tiered).map(a => a.name),
+                    ...selectedAddons.flat.map(id => pricing.flatAddons.find(a => a.id === id)?.name).filter(Boolean)
+                ],
+                source: 'plans_page'
+            };
+            
+            if (typeof DataStore !== 'undefined') {
+                DataStore.savePlanRequest({
+                    ...data,
+                    status: 'new',
+                    createdAt: Date.now()
+                });
+            }
+            
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackCTA('plan_request', { plan: data.plan });
+            }
+            
+            closeServiceRequestModal();
+            alert('Thank you! Your plan request has been submitted. We\'ll be in touch within 24 hours.');
+            form.reset();
+        }
+        
+        // ============================================
+        // UTILITIES
+        // ============================================
+        
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+        
+        function escHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        // ============================================
+        // EXPOSE TO GLOBAL
+        // ============================================
+        
+        window.PlansPage = {
+            selectPlan,
+            selectTieredAddon,
+            toggleFlatAddon
+        };
+        
+    })();
+    </script>
+</body>
+</html>
