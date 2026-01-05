@@ -248,6 +248,7 @@
                 <a href="faq.html">FAQ</a>
                 <a href="referrals.html">Referrals</a>
                 <a href="contact.html">Contact</a>
+                <a href="/portal" class="btn btn-primary" style="padding:8px 16px;font-size:14px;" data-track-cta="nav-login">Login</a>
             </nav>
         </div>
     </header>
@@ -557,8 +558,8 @@
                             </p>
                             
                             <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
-                                <button class="btn-primary" onclick="copyQuote()">📋 Copy Quote</button>
-                                <button class="btn-secondary" onclick="openServiceRequestModal()">Submit Plan for Review</button>
+                                <button class="btn-primary" onclick="copyQuote()" data-track-cta="copy-quote">📋 Copy Quote</button>
+                                <button class="btn-secondary" onclick="openServiceRequestModal()" data-track-cta="submit-plan-for-review">Submit Plan for Review</button>
                             </div>
                         </div>
                     </aside>
@@ -726,7 +727,7 @@
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button type="submit" class="btn-primary">Submit Request</button>
+                    <button type="submit" class="btn-primary" data-track-cta="plan-request-submit">Submit Request</button>
                     <button type="button" onclick="closeServiceRequestModal()" class="btn-secondary">Cancel</button>
                 </div>
             </form>
@@ -1474,5 +1475,6 @@
         }
     };
     </script>
+    <script src="js/portal-analytics.js"></script>
 </body>
 </html>

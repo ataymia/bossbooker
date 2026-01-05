@@ -362,6 +362,30 @@ async function handleServiceRequestSubmit(e) {
     });
   }
   
+  // 3b. Submit to Portal Analytics
+  if (typeof PortalAnalytics !== 'undefined') {
+    try {
+      await PortalAnalytics.submitPlanRequest({
+        name: requestData.contactName,
+        email: requestData.email,
+        phone: requestData.phone,
+        company: requestData.companyName,
+        companySize: requestData.companySize,
+        address: requestData.address,
+        plan: requestData.planName,
+        monthlyTotal: requestData.monthlyTotal,
+        setupFee: requestData.setupFee,
+        firstMonthTotal: requestData.firstMonthTotal,
+        businessCards: requestData.businessCardSelection,
+        additionalNotes: requestData.notes,
+        source: 'plans_page'
+      });
+      success = true;
+    } catch (error) {
+      console.warn('Portal Analytics plan request failed:', error);
+    }
+  }
+  
   // 4. Fallback to direct localStorage
   if (!success) {
     try {

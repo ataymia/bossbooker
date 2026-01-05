@@ -85,6 +85,24 @@
             });
         }
         
+        // 3b. Submit to Portal Analytics
+        if (typeof PortalAnalytics !== 'undefined') {
+            try {
+                await PortalAnalytics.submitLead({
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    company: data.company,
+                    subject: 'Contact Form',
+                    message: data.message,
+                    source: 'contact_form'
+                });
+                success = true;
+            } catch (error) {
+                console.warn('Portal Analytics lead submission failed:', error);
+            }
+        }
+        
         // 4. Fallback to direct localStorage
         if (!success) {
             try {
