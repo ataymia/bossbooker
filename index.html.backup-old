@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Boss Booker - Professional booking and scheduling services tailored for your business"/>
+  <title>Boss Booker — Get booked like a boss.</title>
+  <link rel="stylesheet" href="/styles.css"/>
+  <style>
+    /* tiny page-local helpers so we don't touch your global CSS */
+    .nav-brand {display:flex;align-items:center;gap:10px;font-weight:800;flex-shrink:0;}
+    .nav-brand img {height:56px;width:56px;border-radius:10px;display:block;}
+    .nav-container {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:8px 0;flex-wrap:wrap;}
+    .nav-links {display:flex;align-items:center;gap:12px;list-style:none;margin:0;padding:0;flex-wrap:wrap;justify-content:flex-end;}
+    .nav-links li {margin:0;}
+    .nav-links a, .nav-links button {white-space:nowrap;}
+    
+    /* Mobile navigation adjustments */
+    @media (max-width: 768px) {
+      .nav-container {gap:8px;}
+      .nav-links {gap:8px;font-size:14px;}
+      .nav-links a {padding:6px 10px;font-size:14px;}
+      .nav-links button {padding:8px 10px;font-size:14px;}
+    }
+    
+    @media (max-width: 480px) {
+      .nav-container {justify-content:center;}
+      .nav-links {width:100%;justify-content:center;gap:4px;flex-wrap:wrap;}
+      .nav-links a {padding:6px 8px;font-size:13px;}
+      .nav-links button {padding:6px 10px;font-size:13px;}
+    }
+    
+    /* modal overlay & dialog */
+    #quizModal.modal-overlay{
+      position:fixed;inset:0;z-index:1000;display:none;
+      background:rgba(0,0,0,0.85);
+      overflow:auto;               /* <-- overlay scrolls if needed */
+      -webkit-overflow-scrolling: touch;
+      padding:5vh 0;               /* breathing room so dialog isn't glued to edges */
+    }
+    .modal-dialog{
+      max-width:720px;width:92%;margin:0 auto;
+      background: var(--background-alt);
+      border:1px solid var(--border-color);
+      border-radius:14px;padding:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.6);
+      max-height:calc(100vh - 10vh); /* <-- dialog itself scrolls if taller than viewport */
+      overflow:auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;">
+        <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo">
+      </a>
+      <ul class="nav-links">
+        <li><a class="active" href="index.html">Home</a></li>
+        <li><a href="plans.html">Plans</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="referrals.html">Referrals</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero section">
+    <div class="container">
+      <div class="card">
+        <h1>Get booked like a boss.</h1>
+        <p>Boss Booker turns leads into confirmed bookings with sites, CRM flows, and follow-ups—so you can focus on the work.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
+          <button class="btn btn-primary" id="openQuizHero">Get Started</button>
+          <a class="btn btn-secondary" href="plans.html">See Plans</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features -->
+  <main class="container">
+    <section class="section">
+      <h2 class="section-title">What we automate</h2>
+      <div class="grid-3">
+        <div class="feature-card">
+          <strong>Appointment setting</strong>
+          <p style="color:var(--text-secondary)">Outbound + follow-ups to keep your calendar full.</p>
+        </div>
+        <div class="feature-card">
+          <strong>Lead-capture websites</strong>
+          <p style="color:var(--text-secondary)">Fast and built to convert.</p>
+        </div>
+        <div class="feature-card">
+          <strong>SMS assistants & CRM</strong>
+          <p style="color:var(--text-secondary)">Templates and automations that scale your time.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">How it works</h2>
+      <div class="grid-3">
+        <div class="feature-card"><div class="pill">1</div><strong>Tell us your goals</strong><p style="color:var(--text-secondary)">60–90 sec quiz.</p></div>
+        <div class="feature-card"><div class="pill">2</div><strong>We set up your flows</strong><p style="color:var(--text-secondary)">Web, CRM, SMS & tracking.</p></div>
+        <div class="feature-card"><div class="pill">3</div><strong>You get bookings</strong><p style="color:var(--text-secondary)">Appointments on the calendar.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Integrations</h2>
+      <div class="grid-3">
+        <div class="feature-card"><span class="pill">Google Calendar</span></div>
+        <div class="feature-card"><span class="pill">Outlook</span></div>
+        <div class="feature-card"><span class="pill">HubSpot</span></div>
+        <div class="feature-card"><span class="pill">GoHighLevel</span></div>
+        <div class="feature-card"><span class="pill">Stripe</span></div>
+        <div class="feature-card"><span class="pill">Meta Ads + Google Ads</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Plan preview</h2>
+      <div class="grid-3">
+        <div class="card"><strong>Starter</strong><p style="color:var(--text-secondary)">Launch fast with the essentials.</p><a class="btn btn-secondary" href="plans.html">See details</a></div>
+        <div class="card"><strong>Growth</strong><p style="color:var(--text-secondary)">Add appointment setting + dashboards.</p><a class="btn btn-secondary" href="plans.html">See details</a></div>
+        <div class="card"><strong>Scale</strong><p style="color:var(--text-secondary)">Multi-location and pro marketing.</p><a class="btn btn-secondary" href="plans.html">See details</a></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:20px;width:20px;border-radius:4px;">
+          <p style="margin:0;">© 2025 Boss Booker. All rights reserved.</p>
+        </div>
+        <span style="color:var(--border-color);">|</span>
+        <a href="tel:+16028422772" class="phone-link" style="display:flex;align-items:center;gap:6px;color:var(--primary-color);text-decoration:none;font-weight:500;">
+          <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/></svg>
+          (602) 842-2772
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky CTA -->
+  <div class="sticky-cta" id="stickyCta" style="position:sticky;bottom:0;width:100%;display:flex;justify-content:center;padding:10px;background:transparent;">
+    <button class="btn btn-primary" id="openQuizSticky">Get Started</button>
+  </div>
+
+  <!-- ===== Questionnaire Modal (scrollable & brand-safe) ===== -->
+  <div id="quizModal" class="modal-overlay" aria-hidden="true">
+    <div role="dialog" aria-modal="true" aria-labelledby="quizTitle" class="modal-dialog">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <h2 id="quizTitle" class="section-title" style="margin:0;">Get Started — Quick Questionnaire</h2>
+        <button class="btn btn-secondary" id="closeQuiz" aria-label="Close">Close</button>
+      </div>
+
+      <form id="quizForm" style="margin-top:12px;">
+        <!-- Step 1: Business basics -->
+        <fieldset class="card" style="margin:0 0 12px;">
+          <legend class="pill">Business basics</legend>
+          <div class="grid-2">
+            <div>
+              <label for="bizName">Business name</label>
+              <input id="bizName" name="bizName" placeholder="Your business LLC" required />
+            </div>
+            <div>
+              <label for="industry">Industry</label>
+              <select id="industry" name="industry" required>
+                <option value="">Select…</option>
+                <option>Home Services</option>
+                <option>Legal</option>
+                <option>Medical / Wellness</option>
+                <option>Beauty / Fitness</option>
+                <option>B2B / Consulting</option>
+                <option>Real Estate</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="teamSize">Team size</label>
+              <select id="teamSize" name="teamSize" required>
+                <option value="">Select…</option>
+                <option>Solo</option>
+                <option>2–5</option>
+                <option>6–15</option>
+                <option>16–50</option>
+                <option>50+</option>
+              </select>
+            </div>
+            <div>
+              <label for="locations">Locations</label>
+              <select id="locations" name="locations" required>
+                <option value="">Select…</option>
+                <option>Single</option>
+                <option>Multi-location</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Step 2: Goals -->
+        <fieldset class="card" style="margin:0 0 12px;">
+          <legend class="pill">Goals</legend>
+          <div class="grid-2">
+            <div>
+              <label>What do you need? (choose all that apply)</label>
+              <div class="checkbox-group">
+                <label class="checkbox-option"><input type="checkbox" name="needs" value="website"/> Website / landing page</label>
+                <label class="checkbox-option"><input type="checkbox" name="needs" value="crm"/> CRM setup / pipelines</label>
+                <label class="checkbox-option"><input type="checkbox" name="needs" value="sms"/> SMS assistant / templates</label>
+                <label class="checkbox-option"><input type="checkbox" name="needs" value="appt"/> Appointment setting</label>
+                <label class="checkbox-option"><input type="checkbox" name="needs" value="seo"/> SEO</label>
+                <label class="checkbox-option"><input type="checkbox" name="needs" value="ads"/> Ads management</label>
+                <label class="checkbox-option"><input type="checkbox" name="needs" value="social"/> Social media mgmt</label>
+              </div>
+            </div>
+            <div>
+              <label for="goalBookings">Goal: bookings per month</label>
+              <select id="goalBookings" name="goalBookings" required>
+                <option value="">Select…</option>
+                <option>0–25</option>
+                <option>26–50</option>
+                <option>51–100</option>
+                <option>100+</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Step 3: Budget & timeline -->
+        <fieldset class="card" style="margin:0 0 12px;">
+          <legend class="pill">Budget & timeline</legend>
+          <div class="grid-2">
+            <div>
+              <label for="budgetMonthly">Monthly budget (tools + services)</label>
+              <select id="budgetMonthly" name="budgetMonthly" required>
+                <option value="">Select…</option>
+                <option>Under $200</option>
+                <option>$200 – $700</option>
+                <option>$700 – $2,000</option>
+                <option>$2,000+</option>
+              </select>
+            </div>
+            <div>
+              <label for="timeline">When do you want to start?</label>
+              <select id="timeline" name="timeline" required>
+                <option value="">Select…</option>
+                <option>ASAP</option>
+                <option>This month</option>
+                <option>Next 2–3 months</option>
+                <option>Just exploring</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Submit -->
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button class="btn btn-primary" type="submit">See my recommended plan</button>
+          <button class="btn btn-secondary" type="button" id="cancelQuiz">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/datastore.js"></script>
+  <script src="/analytics.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // ===== Modal handlers with body scroll lock =====
+    const modal = document.getElementById('quizModal');
+    const openers = [document.getElementById('openQuizTop'), document.getElementById('openQuizHero'), document.getElementById('openQuizSticky')].filter(Boolean);
+    const closeBtn = document.getElementById('closeQuiz');
+    const cancelBtn = document.getElementById('cancelQuiz');
+
+    const lockBody = () => { document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden'; };
+    const unlockBody = () => { document.documentElement.style.overflow=''; document.body.style.overflow=''; };
+
+    const showModal = () => {
+      if (!modal) return;
+      modal.style.display = 'block';
+      modal.setAttribute('aria-hidden','false');
+      lockBody();
+      if (window.openQuiz) window.openQuiz();
+    };
+    const hideModal = () => {
+      if (!modal) return;
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden','true');
+      unlockBody();
+      if (window.closeQuiz) window.closeQuiz();
+    };
+
+    openers.forEach(btn => btn.addEventListener('click', showModal));
+    closeBtn?.addEventListener('click', hideModal);
+    cancelBtn?.addEventListener('click', hideModal);
+    modal?.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+
+    // Submit: dispatch event for your existing logic to catch
+    document.getElementById('quizForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(e.target);
+      const payload = {
+        bizName: data.get('bizName') || '',
+        industry: data.get('industry') || '',
+        teamSize: data.get('teamSize') || '',
+        locations: data.get('locations') || '',
+        needs: data.getAll('needs'),
+        goalBookings: data.get('goalBookings') || '',
+        budgetMonthly: data.get('budgetMonthly') || '',
+        timeline: data.get('timeline') || ''
+      };
+      document.dispatchEvent(new CustomEvent('bossbooker:quizSubmit', { detail: payload }));
+      if (typeof window.onQuizSubmit === 'function') window.onQuizSubmit(payload);
+      hideModal();
+    });
+  </script>
+</body>
+</html>

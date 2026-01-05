@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Boss Booker - Professional booking and scheduling services tailored for your business"/>
-  <title>Boss Booker — Get booked like a boss.</title>
+  <meta name="description" content="Boss Booker — Build your brand, book your clients, and run your business like a boss. Websites, CRM, and conversion systems for service businesses."/>
+  <title>Boss Booker — Build the Brand. Book the Clients. Be a Boss.</title>
   <link rel="stylesheet" href="/styles.css"/>
   <style>
     /* tiny page-local helpers so we don't touch your global CSS */
@@ -34,9 +34,9 @@
     #quizModal.modal-overlay{
       position:fixed;inset:0;z-index:1000;display:none;
       background:rgba(0,0,0,0.85);
-      overflow:auto;               /* <-- overlay scrolls if needed */
+      overflow:auto;
       -webkit-overflow-scrolling: touch;
-      padding:5vh 0;               /* breathing room so dialog isn't glued to edges */
+      padding:5vh 0;
     }
     .modal-dialog{
       max-width:720px;width:92%;margin:0 auto;
@@ -44,8 +44,106 @@
       border:1px solid var(--border-color);
       border-radius:14px;padding:18px;
       box-shadow:0 20px 60px rgba(0,0,0,.6);
-      max-height:calc(100vh - 10vh); /* <-- dialog itself scrolls if taller than viewport */
+      max-height:calc(100vh - 10vh);
       overflow:auto;
+    }
+
+    /* Package cards on homepage */
+    .package-card {
+      background: var(--background-alt);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .package-card:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(255, 46, 190, 0.15);
+    }
+    .package-card .package-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .package-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    .package-card .package-tagline {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .package-card p {
+      color: var(--text-secondary);
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+    .package-card .btn {
+      align-self: flex-start;
+    }
+
+    /* Quiz recommendation result */
+    .quiz-result {
+      text-align: center;
+      padding: 1rem 0;
+    }
+    .quiz-result h3 {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .quiz-result .recommendation-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary-color), #ff6b35);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin: 1rem 0;
+    }
+    .quiz-result .why-list {
+      text-align: left;
+      background: var(--background);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+    }
+    .quiz-result .why-list li {
+      color: var(--text-secondary);
+      margin: 0.5rem 0;
+      padding-left: 0.5rem;
+    }
+    .quiz-result .contact-capture {
+      background: var(--background);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .quiz-result .contact-capture label {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .quiz-result .contact-capture input {
+      width: 100%;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Clarifier note */
+    .clarifier-note {
+      background: var(--background-alt);
+      border-left: 3px solid var(--primary-color);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
     }
   </style>
 </head>
@@ -71,32 +169,45 @@
   <header class="hero section">
     <div class="container">
       <div class="card">
-        <h1>Get booked like a boss.</h1>
-        <p>Boss Booker turns leads into confirmed bookings with sites, CRM flows, and follow-ups—so you can focus on the work.</p>
+        <h1>Build the Brand. Book the Clients. Be a Boss.</h1>
+        <p>Boss Booker gives service businesses the tools to launch, convert, and grow—websites, CRM systems, follow-up automation, and operator support so you can focus on the work while we handle the pipeline.</p>
+        <div class="clarifier-note">
+          <strong>What's a "booking"?</strong> Whatever a new client looks like for you—appointments, quote requests, orders, consultations, or DMs. We help you convert inquiries into real business.
+        </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
           <button class="btn btn-primary" id="openQuizHero">Get Started</button>
-          <a class="btn btn-secondary" href="plans.html">See Plans</a>
+          <a class="btn btn-secondary" href="plans.html">See Packages</a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Features -->
+  <!-- Packages -->
   <main class="container">
     <section class="section">
-      <h2 class="section-title">What we automate</h2>
+      <h2 class="section-title">Choose Your Path</h2>
+      <p style="text-align:center;color:var(--text-secondary);margin-bottom:2rem;">Three packages designed for where you are and where you're going.</p>
       <div class="grid-3">
-        <div class="feature-card">
-          <strong>Appointment setting</strong>
-          <p style="color:var(--text-secondary)">Outbound + follow-ups to keep your calendar full.</p>
+        <div class="package-card">
+          <span class="package-icon">🚀</span>
+          <h3>Starter Pack</h3>
+          <span class="package-tagline">Launch</span>
+          <p>Get your brand online fast. Website, basic CRM setup, and the essentials to start capturing inquiries.</p>
+          <a class="btn btn-secondary" href="plans.html#starter-pack">Start Here →</a>
         </div>
-        <div class="feature-card">
-          <strong>Lead-capture websites</strong>
-          <p style="color:var(--text-secondary)">Fast and built to convert.</p>
+        <div class="package-card" style="border-color:var(--primary-color);">
+          <span class="package-icon">⚡</span>
+          <h3>Growth Engine</h3>
+          <span class="package-tagline">Convert</span>
+          <p>Turn inquiries into clients. Automated follow-ups, client outreach, SEO or ads, and conversion systems that work 24/7.</p>
+          <a class="btn btn-primary" href="plans.html#growth-engine">Grow Now →</a>
         </div>
-        <div class="feature-card">
-          <strong>SMS assistants & CRM</strong>
-          <p style="color:var(--text-secondary)">Templates and automations that scale your time.</p>
+        <div class="package-card">
+          <span class="package-icon">🤝</span>
+          <h3>Operator</h3>
+          <span class="package-tagline">Monthly Partner</span>
+          <p>We run it for you. Ongoing management, optimization, reporting, and a dedicated team keeping your pipeline full.</p>
+          <a class="btn btn-secondary" href="plans.html#operator">Let's Talk →</a>
         </div>
       </div>
     </section>
@@ -104,30 +215,42 @@
     <section class="section">
       <h2 class="section-title">How it works</h2>
       <div class="grid-3">
-        <div class="feature-card"><div class="pill">1</div><strong>Tell us your goals</strong><p style="color:var(--text-secondary)">60–90 sec quiz.</p></div>
-        <div class="feature-card"><div class="pill">2</div><strong>We set up your flows</strong><p style="color:var(--text-secondary)">Web, CRM, SMS & tracking.</p></div>
-        <div class="feature-card"><div class="pill">3</div><strong>You get bookings</strong><p style="color:var(--text-secondary)">Appointments on the calendar.</p></div>
+        <div class="feature-card">
+          <div class="pill">1</div>
+          <strong>Take the quiz</strong>
+          <p style="color:var(--text-secondary)">60 seconds. We'll recommend the right package for your stage and goals.</p>
+        </div>
+        <div class="feature-card">
+          <div class="pill">2</div>
+          <strong>We build your system</strong>
+          <p style="color:var(--text-secondary)">Website, CRM, automations, and tracking—tailored to your business.</p>
+        </div>
+        <div class="feature-card">
+          <div class="pill">3</div>
+          <strong>You convert inquiries into clients</strong>
+          <p style="color:var(--text-secondary)">Leads come in, follow-ups go out, clients get booked. Like a boss.</p>
+        </div>
       </div>
     </section>
 
     <section class="section">
-      <h2 class="section-title">Integrations</h2>
+      <h2 class="section-title">Package Overview</h2>
       <div class="grid-3">
-        <div class="feature-card"><span class="pill">Google Calendar</span></div>
-        <div class="feature-card"><span class="pill">Outlook</span></div>
-        <div class="feature-card"><span class="pill">HubSpot</span></div>
-        <div class="feature-card"><span class="pill">GoHighLevel</span></div>
-        <div class="feature-card"><span class="pill">Stripe</span></div>
-        <div class="feature-card"><span class="pill">Meta Ads + Google Ads</span></div>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2 class="section-title">Plan preview</h2>
-      <div class="grid-3">
-        <div class="card"><strong>Starter</strong><p style="color:var(--text-secondary)">Launch fast with the essentials.</p><a class="btn btn-secondary" href="plans.html">See details</a></div>
-        <div class="card"><strong>Growth</strong><p style="color:var(--text-secondary)">Add appointment setting + dashboards.</p><a class="btn btn-secondary" href="plans.html">See details</a></div>
-        <div class="card"><strong>Scale</strong><p style="color:var(--text-secondary)">Multi-location and pro marketing.</p><a class="btn btn-secondary" href="plans.html">See details</a></div>
+        <div class="card">
+          <strong>🚀 Starter Pack</strong>
+          <p style="color:var(--text-secondary)">Launch fast with a website + CRM basics. Starting at $499.</p>
+          <a class="btn btn-secondary" href="plans.html#starter-pack">See details</a>
+        </div>
+        <div class="card" style="border-color:var(--primary-color);">
+          <strong>⚡ Growth Engine</strong>
+          <p style="color:var(--text-secondary)">Add client outreach, follow-ups, and marketing channels. From $999/mo.</p>
+          <a class="btn btn-secondary" href="plans.html#growth-engine">See details</a>
+        </div>
+        <div class="card">
+          <strong>🤝 Operator</strong>
+          <p style="color:var(--text-secondary)">Full-service management and optimization. From $1,899/mo.</p>
+          <a class="btn btn-secondary" href="plans.html#operator">See details</a>
+        </div>
       </div>
     </section>
   </main>
@@ -162,103 +285,96 @@
         <button class="btn btn-secondary" id="closeQuiz" aria-label="Close">Close</button>
       </div>
 
+      <!-- Quiz Questions Form -->
       <form id="quizForm" style="margin-top:12px;">
-        <!-- Step 1: Business basics -->
+        <!-- Step 1: Business Stage -->
         <fieldset class="card" style="margin:0 0 12px;">
-          <legend class="pill">Business basics</legend>
-          <div class="grid-2">
-            <div>
-              <label for="bizName">Business name</label>
-              <input id="bizName" name="bizName" placeholder="Your business LLC" required />
-            </div>
-            <div>
-              <label for="industry">Industry</label>
-              <select id="industry" name="industry" required>
-                <option value="">Select…</option>
-                <option>Home Services</option>
-                <option>Legal</option>
-                <option>Medical / Wellness</option>
-                <option>Beauty / Fitness</option>
-                <option>B2B / Consulting</option>
-                <option>Real Estate</option>
-                <option>Other</option>
-              </select>
-            </div>
+          <legend class="pill">About Your Business</legend>
+          <div style="margin-bottom:1rem;">
+            <label for="bizName">Business name</label>
+            <input id="bizName" name="bizName" placeholder="Your business name" required />
           </div>
-          <div class="grid-2">
-            <div>
-              <label for="teamSize">Team size</label>
-              <select id="teamSize" name="teamSize" required>
-                <option value="">Select…</option>
-                <option>Solo</option>
-                <option>2–5</option>
-                <option>6–15</option>
-                <option>16–50</option>
-                <option>50+</option>
-              </select>
-            </div>
-            <div>
-              <label for="locations">Locations</label>
-              <select id="locations" name="locations" required>
-                <option value="">Select…</option>
-                <option>Single</option>
-                <option>Multi-location</option>
-              </select>
+          <div style="margin-bottom:1rem;">
+            <label>Where are you in your business journey?</label>
+            <div class="radio-group" style="margin-top:0.5rem;">
+              <label class="radio-option"><input type="radio" name="stage" value="new" required /> Brand new — just getting started</label>
+              <label class="radio-option"><input type="radio" name="stage" value="inconsistent" /> Existing but inconsistent — need more clients</label>
+              <label class="radio-option"><input type="radio" name="stage" value="established" /> Established & busy — need to systemize</label>
             </div>
           </div>
         </fieldset>
 
-        <!-- Step 2: Goals -->
+        <!-- Step 2: What they want more of -->
         <fieldset class="card" style="margin:0 0 12px;">
-          <legend class="pill">Goals</legend>
-          <div class="grid-2">
-            <div>
-              <label>What do you need? (choose all that apply)</label>
-              <div class="checkbox-group">
-                <label class="checkbox-option"><input type="checkbox" name="needs" value="website"/> Website / landing page</label>
-                <label class="checkbox-option"><input type="checkbox" name="needs" value="crm"/> CRM setup / pipelines</label>
-                <label class="checkbox-option"><input type="checkbox" name="needs" value="sms"/> SMS assistant / templates</label>
-                <label class="checkbox-option"><input type="checkbox" name="needs" value="appt"/> Appointment setting</label>
-                <label class="checkbox-option"><input type="checkbox" name="needs" value="seo"/> SEO</label>
-                <label class="checkbox-option"><input type="checkbox" name="needs" value="ads"/> Ads management</label>
-                <label class="checkbox-option"><input type="checkbox" name="needs" value="social"/> Social media mgmt</label>
-              </div>
-            </div>
-            <div>
-              <label for="goalBookings">Goal: bookings per month</label>
-              <select id="goalBookings" name="goalBookings" required>
-                <option value="">Select…</option>
-                <option>0–25</option>
-                <option>26–50</option>
-                <option>51–100</option>
-                <option>100+</option>
-              </select>
+          <legend class="pill">Your Goals</legend>
+          <div style="margin-bottom:1rem;">
+            <label>What are you trying to get more of? (select all that apply)</label>
+            <div class="checkbox-group" style="margin-top:0.5rem;">
+              <label class="checkbox-option"><input type="checkbox" name="goals" value="calls" /> Phone calls / inquiries</label>
+              <label class="checkbox-option"><input type="checkbox" name="goals" value="quotes" /> Quote requests</label>
+              <label class="checkbox-option"><input type="checkbox" name="goals" value="appointments" /> Appointments / consultations</label>
+              <label class="checkbox-option"><input type="checkbox" name="goals" value="orders" /> Orders / purchases</label>
+              <label class="checkbox-option"><input type="checkbox" name="goals" value="dms" /> DMs / messages</label>
             </div>
           </div>
         </fieldset>
 
-        <!-- Step 3: Budget & timeline -->
+        <!-- Step 3: Current setup -->
         <fieldset class="card" style="margin:0 0 12px;">
-          <legend class="pill">Budget & timeline</legend>
+          <legend class="pill">Current Setup</legend>
           <div class="grid-2">
             <div>
-              <label for="budgetMonthly">Monthly budget (tools + services)</label>
-              <select id="budgetMonthly" name="budgetMonthly" required>
+              <label>Do you have a website?</label>
+              <select name="hasWebsite" required style="margin-top:0.5rem;">
                 <option value="">Select…</option>
-                <option>Under $200</option>
-                <option>$200 – $700</option>
-                <option>$700 – $2,000</option>
-                <option>$2,000+</option>
+                <option value="no">No website yet</option>
+                <option value="kinda">Have one, but it's outdated</option>
+                <option value="yes">Yes, and it's decent</option>
               </select>
             </div>
             <div>
-              <label for="timeline">When do you want to start?</label>
-              <select id="timeline" name="timeline" required>
+              <label>Google/online presence?</label>
+              <select name="hasPresence" required style="margin-top:0.5rem;">
                 <option value="">Select…</option>
-                <option>ASAP</option>
-                <option>This month</option>
-                <option>Next 2–3 months</option>
-                <option>Just exploring</option>
+                <option value="no">Not really</option>
+                <option value="kinda">Some, but not optimized</option>
+                <option value="yes">Good — GMB, reviews, etc.</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:1rem;">
+            <label>How fast do you respond to inquiries today?</label>
+            <select name="responseTime" required style="margin-top:0.5rem;">
+              <option value="">Select…</option>
+              <option value="immediate">Immediately (within minutes)</option>
+              <option value="hours">Within a few hours</option>
+              <option value="nextday">Next business day</option>
+              <option value="inconsistent">Not consistent</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <!-- Step 4: Budget & involvement -->
+        <fieldset class="card" style="margin:0 0 12px;">
+          <legend class="pill">Budget & Involvement</legend>
+          <div class="grid-2">
+            <div>
+              <label>Monthly budget comfort</label>
+              <select name="budget" required style="margin-top:0.5rem;">
+                <option value="">Select…</option>
+                <option value="under500">Under $500/mo</option>
+                <option value="500to1500">$500 – $1,500/mo</option>
+                <option value="1500to3000">$1,500 – $3,000/mo</option>
+                <option value="3000plus">$3,000+/mo</option>
+              </select>
+            </div>
+            <div>
+              <label>How hands-on do you want to be?</label>
+              <select name="involvement" required style="margin-top:0.5rem;">
+                <option value="">Select…</option>
+                <option value="diy">I'll do it with guidance</option>
+                <option value="buildit">Build it, I'll run it</option>
+                <option value="runit">You run it for me</option>
               </select>
             </div>
           </div>
@@ -266,10 +382,35 @@
 
         <!-- Submit -->
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-          <button class="btn btn-primary" type="submit">See my recommended plan</button>
+          <button class="btn btn-primary" type="submit">See my recommended package</button>
           <button class="btn btn-secondary" type="button" id="cancelQuiz">Cancel</button>
         </div>
       </form>
+
+      <!-- Quiz Result (hidden by default) -->
+      <div id="quizResult" style="display:none;">
+        <div class="quiz-result">
+          <h3>Your Recommended Package</h3>
+          <div class="recommendation-badge" id="recommendedPackage">Growth Engine</div>
+          <p style="color:var(--text-secondary);">Based on your answers, here's why this is right for you:</p>
+          <ul class="why-list" id="recommendationReasons">
+            <li>Loading...</li>
+          </ul>
+          
+          <!-- Optional contact capture -->
+          <div class="contact-capture">
+            <label>Want us to reach out? (optional)</label>
+            <input type="text" id="leadName" placeholder="Your name" />
+            <input type="email" id="leadEmail" placeholder="Email" />
+            <input type="tel" id="leadPhone" placeholder="Phone" />
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:1.5rem; justify-content:center;">
+            <a class="btn btn-primary" id="viewPackageBtn" href="plans.html#growth-engine">View My Recommended Package</a>
+            <button class="btn btn-secondary" id="retakeQuiz">Retake Quiz</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -277,53 +418,236 @@
   <script src="/analytics.js"></script>
   <script src="script.js"></script>
   <script>
-    // ===== Modal handlers with body scroll lock =====
-    const modal = document.getElementById('quizModal');
-    const openers = [document.getElementById('openQuizTop'), document.getElementById('openQuizHero'), document.getElementById('openQuizSticky')].filter(Boolean);
-    const closeBtn = document.getElementById('closeQuiz');
-    const cancelBtn = document.getElementById('cancelQuiz');
+    // ===== Quiz Recommendation Engine =====
+    (function() {
+      const modal = document.getElementById('quizModal');
+      const quizForm = document.getElementById('quizForm');
+      const quizResult = document.getElementById('quizResult');
+      const openers = [document.getElementById('openQuizHero'), document.getElementById('openQuizSticky')].filter(Boolean);
+      const closeBtn = document.getElementById('closeQuiz');
+      const cancelBtn = document.getElementById('cancelQuiz');
+      const retakeBtn = document.getElementById('retakeQuiz');
 
-    const lockBody = () => { document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden'; };
-    const unlockBody = () => { document.documentElement.style.overflow=''; document.body.style.overflow=''; };
+      const lockBody = () => { document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden'; };
+      const unlockBody = () => { document.documentElement.style.overflow=''; document.body.style.overflow=''; };
 
-    const showModal = () => {
-      if (!modal) return;
-      modal.style.display = 'block';
-      modal.setAttribute('aria-hidden','false');
-      lockBody();
-      if (window.openQuiz) window.openQuiz();
-    };
-    const hideModal = () => {
-      if (!modal) return;
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden','true');
-      unlockBody();
-      if (window.closeQuiz) window.closeQuiz();
-    };
-
-    openers.forEach(btn => btn.addEventListener('click', showModal));
-    closeBtn?.addEventListener('click', hideModal);
-    cancelBtn?.addEventListener('click', hideModal);
-    modal?.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
-
-    // Submit: dispatch event for your existing logic to catch
-    document.getElementById('quizForm')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const data = new FormData(e.target);
-      const payload = {
-        bizName: data.get('bizName') || '',
-        industry: data.get('industry') || '',
-        teamSize: data.get('teamSize') || '',
-        locations: data.get('locations') || '',
-        needs: data.getAll('needs'),
-        goalBookings: data.get('goalBookings') || '',
-        budgetMonthly: data.get('budgetMonthly') || '',
-        timeline: data.get('timeline') || ''
+      const showModal = () => {
+        if (!modal) return;
+        modal.style.display = 'block';
+        modal.setAttribute('aria-hidden','false');
+        lockBody();
+        // Track quiz start
+        if (typeof Analytics !== 'undefined') {
+          Analytics.trackQuiz('start', { trigger: 'modal_open' });
+        }
       };
-      document.dispatchEvent(new CustomEvent('bossbooker:quizSubmit', { detail: payload }));
-      if (typeof window.onQuizSubmit === 'function') window.onQuizSubmit(payload);
-      hideModal();
-    });
+
+      const hideModal = () => {
+        if (!modal) return;
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden','true');
+        unlockBody();
+      };
+
+      const resetQuiz = () => {
+        quizForm.reset();
+        quizForm.style.display = 'block';
+        quizResult.style.display = 'none';
+      };
+
+      openers.forEach(btn => btn.addEventListener('click', showModal));
+      closeBtn?.addEventListener('click', hideModal);
+      cancelBtn?.addEventListener('click', hideModal);
+      retakeBtn?.addEventListener('click', resetQuiz);
+      modal?.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+
+      // Quiz recommendation logic
+      quizForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(quizForm);
+        
+        const payload = {
+          bizName: data.get('bizName') || '',
+          stage: data.get('stage') || '',
+          goals: data.getAll('goals'),
+          hasWebsite: data.get('hasWebsite') || '',
+          hasPresence: data.get('hasPresence') || '',
+          responseTime: data.get('responseTime') || '',
+          budget: data.get('budget') || '',
+          involvement: data.get('involvement') || ''
+        };
+
+        // Calculate recommendation
+        const result = calculateRecommendation(payload);
+        
+        // Display result
+        displayRecommendation(result, payload);
+        
+        // Track completion
+        if (typeof Analytics !== 'undefined') {
+          Analytics.trackQuiz('complete', { 
+            recommendation: result.package,
+            stage: payload.stage,
+            budget: payload.budget
+          });
+        }
+      });
+
+      function calculateRecommendation(payload) {
+        let starterScore = 0;
+        let growthScore = 0;
+        let operatorScore = 0;
+        const reasons = [];
+
+        // Stage scoring
+        if (payload.stage === 'new') {
+          starterScore += 3;
+          reasons.push("You're just getting started — Starter Pack gets you launched fast.");
+        } else if (payload.stage === 'inconsistent') {
+          growthScore += 3;
+          reasons.push("You need more consistent clients — Growth Engine drives conversions.");
+        } else if (payload.stage === 'established') {
+          operatorScore += 2;
+          growthScore += 1;
+          reasons.push("You're established but need to systemize — let us handle the operations.");
+        }
+
+        // Website/presence scoring
+        if (payload.hasWebsite === 'no' || payload.hasPresence === 'no') {
+          starterScore += 2;
+          reasons.push("You need foundational assets like a website and online presence.");
+        } else if (payload.hasWebsite === 'kinda' || payload.hasPresence === 'kinda') {
+          growthScore += 1;
+        }
+
+        // Response time scoring
+        if (payload.responseTime === 'inconsistent' || payload.responseTime === 'nextday') {
+          growthScore += 2;
+          operatorScore += 1;
+          reasons.push("Slow response time costs you clients — automation ensures instant follow-up.");
+        }
+
+        // Budget scoring
+        if (payload.budget === 'under500') {
+          starterScore += 2;
+        } else if (payload.budget === '500to1500') {
+          growthScore += 2;
+        } else if (payload.budget === '1500to3000') {
+          growthScore += 1;
+          operatorScore += 2;
+        } else if (payload.budget === '3000plus') {
+          operatorScore += 3;
+          reasons.push("Your budget allows for full-service management.");
+        }
+
+        // Involvement scoring
+        if (payload.involvement === 'diy') {
+          starterScore += 2;
+        } else if (payload.involvement === 'buildit') {
+          growthScore += 2;
+          reasons.push("We'll build the system, you run your business.");
+        } else if (payload.involvement === 'runit') {
+          operatorScore += 3;
+          reasons.push("You want hands-off operation — Operator is your monthly partner.");
+        }
+
+        // Goals analysis
+        if (payload.goals.length >= 3) {
+          growthScore += 1;
+          operatorScore += 1;
+          reasons.push("Multiple conversion goals = you need a comprehensive system.");
+        }
+
+        // Determine winner
+        let recommendation = 'growth-engine';
+        let packageName = 'Growth Engine';
+        const maxScore = Math.max(starterScore, growthScore, operatorScore);
+        
+        if (starterScore === maxScore) {
+          recommendation = 'starter-pack';
+          packageName = 'Starter Pack';
+        } else if (operatorScore === maxScore) {
+          recommendation = 'operator';
+          packageName = 'Operator';
+        }
+
+        // Ensure we have at least 2-3 reasons
+        if (reasons.length < 2) {
+          if (recommendation === 'starter-pack') {
+            reasons.push("Launch quickly with the essentials you need.");
+          } else if (recommendation === 'growth-engine') {
+            reasons.push("Convert more inquiries into paying clients.");
+          } else {
+            reasons.push("Get a dedicated team managing your growth.");
+          }
+        }
+
+        return {
+          package: recommendation,
+          packageName: packageName,
+          reasons: reasons.slice(0, 4), // Max 4 reasons
+          scores: { starter: starterScore, growth: growthScore, operator: operatorScore }
+        };
+      }
+
+      function displayRecommendation(result, payload) {
+        // Hide form, show result
+        quizForm.style.display = 'none';
+        quizResult.style.display = 'block';
+
+        // Update UI
+        document.getElementById('recommendedPackage').textContent = result.packageName;
+        document.getElementById('recommendationReasons').innerHTML = 
+          result.reasons.map(r => `<li>${r}</li>`).join('');
+        
+        const viewBtn = document.getElementById('viewPackageBtn');
+        viewBtn.href = `plans.html?rec=${result.package}#${result.package}`;
+        viewBtn.textContent = `View ${result.packageName} →`;
+
+        // Track recommendation
+        if (typeof Analytics !== 'undefined') {
+          Analytics.trackQuiz('recommendation', { 
+            package: result.package,
+            scores: result.scores
+          });
+        }
+      }
+
+      // Handle "View Package" click with optional lead capture
+      document.getElementById('viewPackageBtn')?.addEventListener('click', function(e) {
+        const name = document.getElementById('leadName')?.value?.trim();
+        const email = document.getElementById('leadEmail')?.value?.trim();
+        const phone = document.getElementById('leadPhone')?.value?.trim();
+        
+        // If any contact info provided, save as lead
+        if (name || email || phone) {
+          const recommendation = document.getElementById('recommendedPackage')?.textContent || 'Unknown';
+          
+          if (typeof DataStore !== 'undefined') {
+            DataStore.saveLead({
+              name: name || '',
+              email: email || '',
+              phone: phone || '',
+              subject: 'Quiz Recommendation',
+              message: `Recommended package: ${recommendation}`,
+              source: 'quiz',
+              createdAt: Date.now()
+            });
+          }
+
+          if (typeof Analytics !== 'undefined') {
+            Analytics.trackCTA('quiz_lead_capture', { 
+              recommendation: recommendation,
+              hasEmail: !!email,
+              hasPhone: !!phone
+            });
+          }
+        }
+        
+        hideModal();
+      });
+
+    })();
   </script>
 </body>
 </html>

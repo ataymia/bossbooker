@@ -42,6 +42,12 @@
     document.addEventListener('DOMContentLoaded', init);
 
     function init() {
+        // Always attach form handler first to prevent default submission
+        const loginForm = $('#loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', handleLogin);
+        }
+        
         if (isLockedOut()) {
             showLockoutError();
             return;
@@ -158,11 +164,6 @@
         
         if (loginScreen) loginScreen.style.display = 'flex';
         if (dashboard) dashboard.style.display = 'none';
-        
-        const loginForm = $('#loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', handleLogin);
-        }
     }
 
     function showDashboard() {
@@ -234,6 +235,7 @@
             leads: 'Leads',
             requests: 'Plan Requests',
             exports: 'Export Data',
+            pricing: 'Pricing & Plans',
             settings: 'Settings'
         };
         const pageTitle = $('#pageTitle');
@@ -262,6 +264,11 @@
                 break;
             case 'requests':
                 renderRequests();
+                break;
+            case 'pricing':
+                if (typeof PricingAdmin !== 'undefined') {
+                    PricingAdmin.render();
+                }
                 break;
             case 'settings':
                 renderSettings();
@@ -881,5 +888,132 @@
         div.textContent = str;
         return div.innerHTML;
     }
+
+    // =========================================
+    // DEMO DATA GENERATOR
+    // =========================================
+    window.generateDemoData = function() {
+        if (typeof DataStore === 'undefined') {
+            alert('DataStore not loaded');
+            return;
+        }
+        
+        const now = Date.now();
+        const DAY = 24 * 60 * 60 * 1000;
+        
+        // Sample data arrays
+        const firstNames = ['James', 'Sarah', 'Michael', 'Emily', 'David', 'Jessica', 'Chris', 'Amanda', 'Ryan', 'Ashley', 'Brandon', 'Nicole', 'Justin', 'Stephanie', 'Kevin'];
+        const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Wilson', 'Anderson', 'Taylor', 'Thomas', 'Moore'];
+        const companies = ['Phoenix Auto Detailing', 'Mesa Car Care', 'Scottsdale Mobile Wash', 'Tempe Auto Spa', 'Gilbert Clean Cars', 'Chandler Detailers', 'Glendale Auto Pro', 'Peoria Car Works', 'Surprise Detail Co', 'Avondale Auto'];
+        const pages = ['/', '/plans.html', '/contact.html', '/about.html', '/faq.html'];
+        const referrers = ['https://google.com', 'https://facebook.com', 'https://instagram.com', 'https://yelp.com', 'Direct', 'Direct', 'Direct'];
+        const userAgents = [
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15',
+            'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/119.0',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Safari/605.1',
+            'Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X) AppleWebKit/605.1.15'
+        ];
+        const plans = ['Starter', 'Growth', 'Pro', 'Enterprise'];
+        const ctaButtons = ['Get Started', 'View Plans', 'Contact Us', 'Learn More', 'Schedule Demo'];
+        
+        function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function generateId() { return 'demo_' + Math.random().toString(36).substr(2, 12); }
+        
+        // Generate visitors
+        const visitorCount = randomInt(15, 25);
+        const visitors = [];
+        for (let i = 0; i < visitorCount; i++) {
+            const visitorId = generateId();
+            const daysAgo = randomInt(0, 14);
+            const firstSeen = now - (daysAgo * DAY) - randomInt(0, DAY);
+            const lastSeen = firstSeen + randomInt(0, Math.min(daysAgo * DAY, 3 * DAY));
+            
+            const visitor = {
+                visitorId,
+                firstSeen,
+                lastSeen,
+                pageViews: randomInt(1, 12),
+                referrer: randomFrom(referrers),
+                userAgent: randomFrom(userAgents)
+            };
+            visitors.push(visitor);
+            DataStore.saveVisitor(visitor);
+        }
+        
+        // Generate events
+        const eventCount = randomInt(80, 150);
+        for (let i = 0; i < eventCount; i++) {
+            const visitor = randomFrom(visitors);
+            const daysAgo = randomInt(0, 14);
+            const timestamp = now - (daysAgo * DAY) - randomInt(0, DAY);
+            const page = randomFrom(pages);
+            
+            const eventTypes = ['page_view', 'page_view', 'page_view', 'click', 'cta_click', 'nav_click'];
+            const eventType = randomFrom(eventTypes);
+            
+            let data = {};
+            if (eventType === 'click') data = { element: randomFrom(['hero-btn', 'nav-link', 'footer-link', 'social-icon']) };
+            if (eventType === 'cta_click') data = { cta: randomFrom(ctaButtons) };
+            if (eventType === 'nav_click') data = { page: randomFrom(pages) };
+            
+            DataStore.logEvent({
+                eventType,
+                page,
+                timestamp,
+                visitorId: visitor.visitorId,
+                sessionId: 'session_' + generateId(),
+                data
+            });
+        }
+        
+        // Generate leads
+        const leadCount = randomInt(5, 12);
+        for (let i = 0; i < leadCount; i++) {
+            const firstName = randomFrom(firstNames);
+            const lastName = randomFrom(lastNames);
+            const daysAgo = randomInt(0, 10);
+            
+            DataStore.saveLead({
+                name: `${firstName} ${lastName}`,
+                email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@email.com`,
+                phone: `(602) ${randomInt(200, 999)}-${randomInt(1000, 9999)}`,
+                company: randomFrom(companies),
+                message: 'I would like more information about your booking services.',
+                source: 'contact_form',
+                status: randomFrom(['new', 'new', 'new', 'contacted', 'booked']),
+                createdAt: now - (daysAgo * DAY) - randomInt(0, DAY)
+            });
+        }
+        
+        // Generate plan requests
+        const requestCount = randomInt(3, 8);
+        for (let i = 0; i < requestCount; i++) {
+            const firstName = randomFrom(firstNames);
+            const lastName = randomFrom(lastNames);
+            const plan = randomFrom(plans);
+            const daysAgo = randomInt(0, 10);
+            
+            const pricing = { Starter: '$99', Growth: '$199', Pro: '$349', Enterprise: '$499+' };
+            const setup = { Starter: '$149', Growth: '$249', Pro: '$399', Enterprise: 'Custom' };
+            
+            DataStore.savePlanRequest({
+                plan,
+                monthlyTotal: pricing[plan],
+                setupFee: setup[plan],
+                name: `${firstName} ${lastName}`,
+                email: `${firstName.toLowerCase()}@${randomFrom(['gmail.com', 'yahoo.com', 'outlook.com'])}`,
+                phone: `(480) ${randomInt(200, 999)}-${randomInt(1000, 9999)}`,
+                company: randomFrom(companies),
+                additionalInfo: 'Looking forward to getting started!',
+                status: randomFrom(['new', 'new', 'contacted']),
+                createdAt: now - (daysAgo * DAY) - randomInt(0, DAY)
+            });
+        }
+        
+        alert(`Demo data generated!\n\n• ${visitorCount} visitors\n• ${eventCount} events\n• ${leadCount} leads\n• ${requestCount} plan requests`);
+        refreshData();
+    };
 
 })();

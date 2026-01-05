@@ -17,7 +17,7 @@
                 <h1>Admin Portal</h1>
                 <p>Enter your password to continue</p>
             </div>
-            <form id="loginForm" class="login-form">
+            <form id="loginForm" class="login-form" onsubmit="return false;">
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter admin password" autocomplete="current-password" required>
@@ -65,6 +65,10 @@
                 <button class="nav-item" data-tab="exports">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                     Export Data
+                </button>
+                <button class="nav-item" data-tab="pricing">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Pricing
                 </button>
                 <button class="nav-item" data-tab="settings">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -156,6 +160,85 @@
                 </div>
             </div>
 
+            <!-- Pricing Tab -->
+            <div id="pricingTab" class="tab-content">
+                <div class="pricing-admin">
+                    <!-- Sale Banner Controls -->
+                    <div class="card" style="border: 2px solid var(--primary-color);">
+                        <h3 style="display:flex;align-items:center;gap:10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            Sale / Promotion
+                        </h3>
+                        <div style="display:grid;gap:15px;margin-top:15px;">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="saleActive" onchange="PricingAdmin.toggleSale()">
+                                <span class="toggle-switch"></span>
+                                <span>Enable Site-wide Sale</span>
+                            </label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Sale Name</label>
+                                    <input type="text" id="saleName" placeholder="e.g., New Year Special" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Discount %</label>
+                                    <input type="number" id="saleDiscount" value="10" min="1" max="50" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>End Date</label>
+                                    <input type="date" id="saleEndDate" class="form-control">
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="PricingAdmin.saveSale()" style="width:fit-content;">Save Sale Settings</button>
+                        </div>
+                    </div>
+
+                    <!-- Base Plans Section -->
+                    <div class="card" style="margin-top:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                            <h3>Base Plans</h3>
+                            <button class="btn-secondary" onclick="PricingAdmin.addPlan()">+ Add Plan</button>
+                        </div>
+                        <div id="plansContainer" class="pricing-items-grid"></div>
+                    </div>
+
+                    <!-- GLAM Plans Section -->
+                    <div class="card" style="margin-top:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                            <h3>GLAM Plans (Beauty & Creator)</h3>
+                            <button class="btn-secondary" onclick="PricingAdmin.addGlamPlan()">+ Add GLAM Plan</button>
+                        </div>
+                        <div id="glamPlansContainer" class="pricing-items-grid"></div>
+                    </div>
+
+                    <!-- Tiered Add-ons Section -->
+                    <div class="card" style="margin-top:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                            <h3>Tiered Add-ons</h3>
+                            <button class="btn-secondary" onclick="PricingAdmin.addAddonCategory()">+ Add Category</button>
+                        </div>
+                        <div id="tieredAddonsContainer"></div>
+                    </div>
+
+                    <!-- Flat Add-ons Section -->
+                    <div class="card" style="margin-top:20px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                            <h3>Flat-rate Add-ons</h3>
+                            <button class="btn-secondary" onclick="PricingAdmin.addFlatAddon()">+ Add Add-on</button>
+                        </div>
+                        <div id="flatAddonsContainer" class="pricing-items-grid"></div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card" style="margin-top:20px;display:flex;gap:15px;flex-wrap:wrap;">
+                        <button class="btn-primary" onclick="PricingAdmin.saveAll()">💾 Save All Changes</button>
+                        <button class="btn-secondary" onclick="PricingAdmin.resetToDefaults()">↺ Reset to Defaults</button>
+                        <button class="btn-secondary" onclick="PricingAdmin.exportPricing()">📤 Export Pricing</button>
+                        <button class="btn-secondary" onclick="PricingAdmin.importPricing()">📥 Import Pricing</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Settings Tab -->
             <div id="settingsTab" class="tab-content">
                 <div class="settings-grid">
@@ -165,6 +248,11 @@
                     </div>
                     <div class="card"><h3>Data Storage</h3>
                         <div class="storage-info"><div class="storage-item"><span>Visitors:</span><strong id="storageVisitors">0</strong></div><div class="storage-item"><span>Events:</span><strong id="storageEvents">0</strong></div><div class="storage-item"><span>Leads:</span><strong id="storageLeads">0</strong></div><div class="storage-item"><span>Plan Requests:</span><strong id="storageRequests">0</strong></div><div class="storage-item"><span>Total Size:</span><strong id="storageSize">0 KB</strong></div></div>
+                    </div>
+                    <div class="card"><h3>Demo Data</h3>
+                        <p class="setting-desc" style="margin-bottom:15px;">Generate sample data to preview dashboard functionality. This will add fake visitors, events, leads, and plan requests.</p>
+                        <button class="btn-primary" onclick="generateDemoData()" style="margin-right:10px;">Generate Demo Data</button>
+                        <button class="btn-danger" onclick="confirmClearData()">Clear All Data</button>
                     </div>
                     <div class="card"><h3>LocalStorage Keys</h3><ul class="keys-list"><li><code>bb_visitors</code> - Visitor profiles</li><li><code>bb_events</code> - Analytics events</li><li><code>bb_leads</code> - Contact form submissions</li><li><code>bb_plan_requests</code> - Plan requests</li><li><code>bb_visitor_id</code> - Current visitor ID</li><li><code>bb_session_id</code> - Current session ID</li></ul></div>
                 </div>
@@ -191,6 +279,7 @@
     </div>
 
     <script src="/datastore.js"></script>
+    <script src="/pricing-admin.js"></script>
     <script src="/admin.js"></script>
 </body>
 </html>

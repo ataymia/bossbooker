@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boss Booker — Plans</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/plans.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="/api-config.js"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-weight:800;">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:56px;width:56px;border-radius:10px;display:block;">
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a class="active" href="plans.html">Plans</a>
+                <a href="about.html">About</a>
+                <a href="faq.html">FAQ</a>
+                <a href="referrals.html">Referrals</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Sale Banner (shown when sale is active) -->
+    <div id="saleBanner" class="sale-banner" style="display:none;">
+        <div class="container">
+            <span class="sale-badge">🔥 SALE</span>
+            <span id="saleText">Limited Time Offer!</span>
+            <span id="saleTimer" class="sale-timer"></span>
+        </div>
+    </div>
+
+    <main class="container section">
+        <h1 class="section-title">Plans that start smart and scale up</h1>
+        <p class="pill">A tightened, scaled lineup from Nano → Micro → Starter → Pro → Scale → Enterprise. Small Business Starter Kit remains a special standalone option.</p>
+
+        <!-- Base plans selection -->
+        <div class="card" style="margin-top:14px">
+            <h2>Pick a bundle</h2>
+            <div id="basePlansContainer" class="radio-group"></div>
+        </div>
+
+        <!-- GLAM Plans Section -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">GLAM by Boss Booker — Beauty & Creator Services</h2>
+            <p class="pill" style="margin-bottom:12px;">Stylists, MUAs, braiders, nail artists and creators — DM-driven bookings, fast turnarounds. Sparkle included ✨</p>
+            <div class="card">
+                <div id="glamPlansContainer" class="radio-group"></div>
+            </div>
+        </section>
+
+        <!-- Compare table -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">What's included by bundle (at a glance)</h2>
+            <div class="card">
+                <div style="overflow:auto;">
+                <table class="compare" style="min-width:900px;">
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Nano</th>
+                            <th>Micro</th>
+                            <th>Starter</th>
+                            <th>Pro</th>
+                            <th>Scale</th>
+                            <th>Enterprise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Core Automation tier</td><td>Nano</td><td>Micro</td><td>Starter</td><td>Pro</td><td>Scale</td><td>Custom</td></tr>
+                        <tr><td>Missed-call text-back</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                        <tr><td>Follow-up depth</td><td>2-touch</td><td>3-touch</td><td>3–4</td><td>4–5</td><td>4–5 + rules</td><td>Custom</td></tr>
+                        <tr><td>Pipelines</td><td>1</td><td>2</td><td>4</td><td>Multi-loc lite</td><td>Multi-loc + adv.</td><td>Custom</td></tr>
+                        <tr><td>KPI email (weekly)</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                        <tr><td>Strategy/review cadence</td><td>15m/mo</td><td>30m/mo</td><td>45m/mo</td><td>Bi-weekly</td><td>Quarterly exec</td><td>Custom</td></tr>
+                        <tr><td>Appt Setting attempts</td><td>60</td><td>120</td><td>300</td><td>1,200</td><td>1,200 + 300 buffer</td><td>Custom</td></tr>
+                        <tr><td>PPC management</td><td>Pick 1</td><td>Pick 1</td><td>Starter</td><td>Pro</td><td>Pro</td><td>12% (>$10k)</td></tr>
+                        <tr><td>SEO management</td><td>Pick 1</td><td>Pick 1</td><td>Micro</td><td>Pro</td><td>Pro/Scale</td><td>Scale/Custom</td></tr>
+                        <tr><td>Site perk/credit</td><td>—</td><td>—</td><td>50% off LP</td><td>LP included (1x/yr)</td><td>Mini-site −50% or $1.2k credit</td><td>Full-site −50% or credit</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customize + summary -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">Customize your package</h2>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Tiered Add-ons</h3>
+                    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Select one tier per category (optional)</p>
+                    
+                    <div id="tieredAddonsContainer"></div>
+
+                    <h3 style="margin-top:24px;">Additional Services</h3>
+                    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Select any that apply</p>
+                    
+                    <div id="flatAddonsContainer" class="checkbox-group"></div>
+                </div>
+
+                <aside class="summary-card">
+                    <h3>Summary</h3>
+                    <div class="summary-content">
+                        <div class="summary-line">
+                            <span>Base Plan:</span>
+                            <strong id="summaryPlanName">—</strong>
+                        </div>
+                        <div class="summary-line" id="summaryOriginalRow" style="display:none;">
+                            <span>Original Price:</span>
+                            <span id="summaryOriginalPrice" style="text-decoration:line-through;color:var(--text-muted);">$0</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Monthly Total:</span>
+                            <strong class="price-highlight" id="summaryMonthly">$0</strong>
+                        </div>
+                        <div class="summary-line" id="summarySetupRow">
+                            <span>One-time Setup:</span>
+                            <strong id="summarySetup">$0</strong>
+                        </div>
+                        <div class="summary-line summary-total">
+                            <span>First Month Due:</span>
+                            <strong class="price-highlight" id="summaryFirstMonth">$0</strong>
+                        </div>
+                        
+                        <div id="summaryAddons" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-color);display:none;">
+                            <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Selected Add-ons:</div>
+                            <div id="summaryAddonsList"></div>
+                        </div>
+                        
+                        <p style="color:var(--text-secondary);font-size:11px;margin-top:16px;">
+                            Note: Bundles include platform setup, quiet-hours compliance, basic analytics and weekly KPI email. Carrier fees billed at cost.
+                        </p>
+                        
+                        <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+                            <button class="btn-primary" onclick="copyQuote()">📋 Copy Quote</button>
+                            <button class="btn-secondary" onclick="openServiceRequestModal()">Submit Plan for Review</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:20px;width:20px;border-radius:4px;">
+                    <p style="margin:0;">© 2025 Boss Booker. All rights reserved.</p>
+                </div>
+                <span style="color:var(--border-color);">|</span>
+                <a href="tel:+16028422772" class="phone-link" style="display:flex;align-items:center;gap:6px;color:var(--primary-color);text-decoration:none;font-weight:500;">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/></svg>
+                    (602) 842-2772
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Service Request Modal -->
+    <div id="serviceRequestModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Submit Plan for Review</h2>
+                <button onclick="closeServiceRequestModal()" class="modal-close">&times;</button>
+            </div>
+            <form id="serviceRequestForm">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Company Name *</label>
+                        <input type="text" name="companyName" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Your Name *</label>
+                        <input type="text" name="contactName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone *</label>
+                        <input type="tel" name="phone" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Company Size</label>
+                        <select name="companySize">
+                            <option value="">Select...</option>
+                            <option>Solo / 1 person</option>
+                            <option>2-5 employees</option>
+                            <option>6-15 employees</option>
+                            <option>16-50 employees</option>
+                            <option>50+ employees</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Additional Notes</label>
+                        <textarea name="notes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <div class="plan-summary-box">
+                            <div class="summary-label">Selected Plan Summary:</div>
+                            <div id="modalPlanSummary"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Submit Request</button>
+                    <button type="button" onclick="closeServiceRequestModal()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/datastore.js"></script>
+    <script src="/pricing-admin.js"></script>
+    <script src="/analytics.js"></script>
+    <script>
+    /**
+     * Plans Page - Dynamic Pricing
+     * Loads pricing from admin configuration
+     */
+    (function() {
+        'use strict';
+        
+        let pricing = null;
+        let sale = null;
+        let selectedPlan = null;
+        let selectedAddons = {
+            tiered: {},
+            flat: []
+        };
+        
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', init);
+        
+        function init() {
+            loadPricing();
+            renderAll();
+            updateSummary();
+            
+            // Form submission
+            const form = document.getElementById('serviceRequestForm');
+            if (form) {
+                form.addEventListener('submit', handleFormSubmit);
+            }
+        }
+        
+        function loadPricing() {
+            if (typeof PricingAdmin !== 'undefined') {
+                pricing = PricingAdmin.getPricing();
+                sale = PricingAdmin.getSale();
+            } else {
+                // Fallback to defaults if PricingAdmin not loaded
+                pricing = getDefaultPricing();
+            }
+        }
+        
+        function getDefaultPricing() {
+            // Minimal fallback
+            return {
+                sale: { active: false },
+                plans: [
+                    { id: 'starter', name: 'Starter', price: 1899, setup: 0, featured: true, description: 'Most popular plan' }
+                ],
+                glamPlans: [],
+                tieredAddons: [],
+                flatAddons: []
+            };
+        }
+        
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+        
+        function renderAll() {
+            renderSaleBanner();
+            renderBasePlans();
+            renderGlamPlans();
+            renderTieredAddons();
+            renderFlatAddons();
+        }
+        
+        function renderSaleBanner() {
+            const banner = document.getElementById('saleBanner');
+            if (!banner) return;
+            
+            if (sale && sale.active) {
+                banner.style.display = 'block';
+                document.getElementById('saleText').textContent = 
+                    `${sale.name || 'Sale'} — ${sale.discount}% OFF all plans!`;
+                
+                if (sale.endDate) {
+                    updateSaleTimer(sale.endDate);
+                }
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+        
+        function updateSaleTimer(endDate) {
+            const timer = document.getElementById('saleTimer');
+            if (!timer) return;
+            
+            function update() {
+                const now = new Date();
+                const end = new Date(endDate);
+                const diff = end - now;
+                
+                if (diff <= 0) {
+                    timer.textContent = 'Sale ended';
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                if (days > 0) {
+                    timer.textContent = `Ends in ${days}d ${hours}h`;
+                } else {
+                    timer.textContent = `Ends in ${hours}h ${mins}m`;
+                }
+            }
+            
+            update();
+            setInterval(update, 60000);
+        }
+        
+        function renderBasePlans() {
+            const container = document.getElementById('basePlansContainer');
+            if (!container || !pricing.plans) return;
+            
+            container.innerHTML = pricing.plans.map((plan, index) => {
+                const displayPrice = getDisplayPrice(plan.price);
+                const originalPrice = plan.price;
+                const hasDiscount = sale && sale.active && !plan.custom;
+                
+                return `
+                    <label class="radio-option ${plan.featured ? 'featured' : ''} ${plan.special ? 'special' : ''}" data-plan-id="${plan.id}">
+                        <input type="radio" name="basePlan" value="${plan.id}" 
+                            data-price="${displayPrice}" 
+                            data-original="${originalPrice}"
+                            data-setup="${plan.setup}" 
+                            ${plan.custom ? 'data-custom="true"' : ''}
+                            onchange="window.PlansPage.selectPlan('${plan.id}')"
+                            ${index === 0 || plan.featured ? 'checked' : ''}>
+                        <span class="plan-content">
+                            <span class="plan-header">
+                                <strong>${escHtml(plan.name)}</strong>
+                                ${plan.featured ? '<span class="badge">Most Popular</span>' : ''}
+                                ${plan.special ? '<span class="badge special">Special</span>' : ''}
+                                ${hasDiscount ? '<span class="badge sale">' + sale.discount + '% OFF</span>' : ''}
+                            </span>
+                            <span class="plan-price">
+                                ${plan.custom ? 'Custom pricing' : `
+                                    ${hasDiscount ? '<span class="original-price">$' + formatNumber(originalPrice) + '</span>' : ''}
+                                    <span class="current-price">$${formatNumber(displayPrice)}/mo</span>
+                                    ${plan.setup > 0 ? '<span class="setup-price">+ $' + formatNumber(plan.setup) + ' setup</span>' : ''}
+                                `}
+                            </span>
+                            <small class="plan-desc">${escHtml(plan.description || '')}</small>
+                        </span>
+                    </label>
+                `;
+            }).join('');
+            
+            // Select first/featured plan
+            const featured = pricing.plans.find(p => p.featured) || pricing.plans[0];
+            if (featured) selectPlan(featured.id);
+        }
+        
+        function renderGlamPlans() {
+            const container = document.getElementById('glamPlansContainer');
+            if (!container || !pricing.glamPlans || pricing.glamPlans.length === 0) {
+                // Hide the section if no GLAM plans
+                const section = container?.closest('section');
+                if (section) section.style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = pricing.glamPlans.map(plan => {
+                const displayPrice = getDisplayPrice(plan.price);
+                const hasDiscount = sale && sale.active;
+                
+                return `
+                    <label class="radio-option glam" data-plan-id="${plan.id}">
+                        <input type="radio" name="basePlan" value="${plan.id}" 
+                            data-price="${displayPrice}" 
+                            data-original="${plan.price}"
+                            data-setup="${plan.setup}"
+                            onchange="window.PlansPage.selectPlan('${plan.id}')">
+                        <span class="plan-content">
+                            <span class="plan-header">
+                                <strong>${escHtml(plan.name)}</strong>
+                                ${hasDiscount ? '<span class="badge sale">' + sale.discount + '% OFF</span>' : ''}
+                            </span>
+                            <span class="plan-price">
+                                ${hasDiscount ? '<span class="original-price">$' + formatNumber(plan.price) + '</span>' : ''}
+                                <span class="current-price">$${formatNumber(displayPrice)}/mo</span>
+                                ${plan.setup > 0 ? '<span class="setup-price">+ $' + formatNumber(plan.setup) + ' setup</span>' : ''}
+                            </span>
+                            <small class="plan-desc">${escHtml(plan.description || '')}</small>
+                        </span>
+                    </label>
+                `;
+            }).join('');
+        }
+        
+        function renderTieredAddons() {
+            const container = document.getElementById('tieredAddonsContainer');
+            if (!container || !pricing.tieredAddons) return;
+            
+            container.innerHTML = pricing.tieredAddons.map(category => `
+                <div class="addon-category" data-category="${category.id}">
+                    <div class="addon-category-title">${escHtml(category.name)}</div>
+                    <div class="radio-group compact">
+                        <label class="radio-option small">
+                            <input type="radio" name="addon_${category.id}" value="" checked
+                                onchange="window.PlansPage.selectTieredAddon('${category.id}', '')">
+                            <span>None</span>
+                        </label>
+                        ${category.tiers.map(tier => `
+                            <label class="radio-option small">
+                                <input type="radio" name="addon_${category.id}" value="${tier.id}"
+                                    data-price="${tier.price}"
+                                    data-onetime="${tier.onetime || false}"
+                                    onchange="window.PlansPage.selectTieredAddon('${category.id}', '${tier.id}')">
+                                <span>
+                                    ${escHtml(tier.name)} — 
+                                    <strong>$${formatNumber(tier.price)}</strong>
+                                    ${tier.onetime ? '<small>(one-time)</small>' : '<small>/mo</small>'}
+                                </span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function renderFlatAddons() {
+            const container = document.getElementById('flatAddonsContainer');
+            if (!container || !pricing.flatAddons) return;
+            
+            container.innerHTML = pricing.flatAddons.map(addon => `
+                <label class="checkbox-option">
+                    <input type="checkbox" value="${addon.id}"
+                        data-price="${addon.price}"
+                        data-onetime="${addon.onetime || false}"
+                        onchange="window.PlansPage.toggleFlatAddon('${addon.id}')">
+                    <span>
+                        ${escHtml(addon.name)} — 
+                        <strong>$${formatNumber(addon.price)}</strong>
+                        ${addon.onetime ? '(one-time)' : '/mo'}
+                    </span>
+                </label>
+            `).join('');
+        }
+        
+        // ============================================
+        // SELECTION HANDLERS
+        // ============================================
+        
+        function selectPlan(planId) {
+            // Find plan in either plans or glamPlans
+            selectedPlan = pricing.plans.find(p => p.id === planId) || 
+                          pricing.glamPlans.find(p => p.id === planId);
+            updateSummary();
+            
+            // Track analytics
+            if (typeof Analytics !== 'undefined') {
+                Analytics.track('plan_select', { plan: planId });
+            }
+        }
+        
+        function selectTieredAddon(categoryId, tierId) {
+            if (tierId) {
+                const category = pricing.tieredAddons.find(c => c.id === categoryId);
+                const tier = category?.tiers.find(t => t.id === tierId);
+                if (tier) {
+                    selectedAddons.tiered[categoryId] = { ...tier, categoryName: category.name };
+                }
+            } else {
+                delete selectedAddons.tiered[categoryId];
+            }
+            updateSummary();
+        }
+        
+        function toggleFlatAddon(addonId) {
+            const idx = selectedAddons.flat.indexOf(addonId);
+            if (idx >= 0) {
+                selectedAddons.flat.splice(idx, 1);
+            } else {
+                selectedAddons.flat.push(addonId);
+            }
+            updateSummary();
+        }
+        
+        // ============================================
+        // SUMMARY & PRICING
+        // ============================================
+        
+        function getDisplayPrice(price) {
+            if (sale && sale.active && price > 0) {
+                return Math.round(price * (1 - sale.discount / 100));
+            }
+            return price;
+        }
+        
+        function updateSummary() {
+            if (!selectedPlan) return;
+            
+            const hasDiscount = sale && sale.active && !selectedPlan.custom;
+            
+            // Plan name
+            document.getElementById('summaryPlanName').textContent = selectedPlan.name;
+            
+            // Original price row (only shown during sale)
+            const originalRow = document.getElementById('summaryOriginalRow');
+            if (hasDiscount) {
+                originalRow.style.display = 'flex';
+                document.getElementById('summaryOriginalPrice').textContent = '$' + formatNumber(selectedPlan.price);
+            } else {
+                originalRow.style.display = 'none';
+            }
+            
+            // Calculate totals
+            let monthlyTotal = getDisplayPrice(selectedPlan.price);
+            let onetimeTotal = selectedPlan.setup || 0;
+            let addonsList = [];
+            
+            // Add tiered addons
+            Object.values(selectedAddons.tiered).forEach(addon => {
+                if (addon.onetime) {
+                    onetimeTotal += addon.price;
+                } else {
+                    monthlyTotal += addon.price;
+                }
+                addonsList.push(`${addon.categoryName}: ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+            });
+            
+            // Add flat addons
+            selectedAddons.flat.forEach(addonId => {
+                const addon = pricing.flatAddons.find(a => a.id === addonId);
+                if (addon) {
+                    if (addon.onetime) {
+                        onetimeTotal += addon.price;
+                    } else {
+                        monthlyTotal += addon.price;
+                    }
+                    addonsList.push(`${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+                }
+            });
+            
+            // Update display
+            document.getElementById('summaryMonthly').textContent = 
+                selectedPlan.custom ? 'Custom' : '$' + formatNumber(monthlyTotal);
+            
+            document.getElementById('summarySetup').textContent = '$' + formatNumber(onetimeTotal);
+            document.getElementById('summarySetupRow').style.display = onetimeTotal > 0 ? 'flex' : 'none';
+            
+            document.getElementById('summaryFirstMonth').textContent = 
+                selectedPlan.custom ? 'Contact us' : '$' + formatNumber(monthlyTotal + onetimeTotal);
+            
+            // Addons list
+            const addonsSection = document.getElementById('summaryAddons');
+            const addonListEl = document.getElementById('summaryAddonsList');
+            if (addonsList.length > 0) {
+                addonsSection.style.display = 'block';
+                addonListEl.innerHTML = addonsList.map(a => `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">• ${escHtml(a)}</div>`).join('');
+            } else {
+                addonsSection.style.display = 'none';
+            }
+        }
+        
+        // ============================================
+        // ACTIONS
+        // ============================================
+        
+        function copyQuote() {
+            if (!selectedPlan) return;
+            
+            const hasDiscount = sale && sale.active && !selectedPlan.custom;
+            let quote = `Boss Booker Quote\n${'='.repeat(30)}\n\n`;
+            quote += `Plan: ${selectedPlan.name}\n`;
+            
+            if (hasDiscount) {
+                quote += `Original: $${formatNumber(selectedPlan.price)}/mo\n`;
+                quote += `Sale Price: $${formatNumber(getDisplayPrice(selectedPlan.price))}/mo (${sale.discount}% off)\n`;
+            } else if (!selectedPlan.custom) {
+                quote += `Monthly: $${formatNumber(getDisplayPrice(selectedPlan.price))}/mo\n`;
+            }
+            
+            if (selectedPlan.setup > 0) {
+                quote += `Setup: $${formatNumber(selectedPlan.setup)}\n`;
+            }
+            
+            const addonLines = [];
+            Object.values(selectedAddons.tiered).forEach(addon => {
+                addonLines.push(`  - ${addon.categoryName}: ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+            });
+            selectedAddons.flat.forEach(addonId => {
+                const addon = pricing.flatAddons.find(a => a.id === addonId);
+                if (addon) {
+                    addonLines.push(`  - ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
+                }
+            });
+            
+            if (addonLines.length > 0) {
+                quote += `\nAdd-ons:\n${addonLines.join('\n')}\n`;
+            }
+            
+            quote += `\n${'='.repeat(30)}\n`;
+            quote += `Generated: ${new Date().toLocaleDateString()}\n`;
+            quote += `Contact: (602) 842-2772 | help@bossbooker.com`;
+            
+            navigator.clipboard.writeText(quote).then(() => {
+                alert('Quote copied to clipboard!');
+            }).catch(() => {
+                prompt('Copy this quote:', quote);
+            });
+        }
+        
+        function openServiceRequestModal() {
+            const modal = document.getElementById('serviceRequestModal');
+            if (!modal) return;
+            
+            // Update modal summary
+            const summary = document.getElementById('modalPlanSummary');
+            if (summary && selectedPlan) {
+                summary.innerHTML = `
+                    <strong>${selectedPlan.name}</strong> — 
+                    ${selectedPlan.custom ? 'Custom pricing' : '$' + formatNumber(getDisplayPrice(selectedPlan.price)) + '/mo'}
+                    ${Object.keys(selectedAddons.tiered).length + selectedAddons.flat.length > 0 ? 
+                        ' + ' + (Object.keys(selectedAddons.tiered).length + selectedAddons.flat.length) + ' add-on(s)' : ''}
+                `;
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeServiceRequestModal() {
+            const modal = document.getElementById('serviceRequestModal');
+            if (modal) modal.style.display = 'none';
+        }
+        
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            const data = {
+                companyName: formData.get('companyName'),
+                contactName: formData.get('contactName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                companySize: formData.get('companySize'),
+                notes: formData.get('notes'),
+                plan: selectedPlan?.name,
+                monthlyTotal: selectedPlan?.custom ? 'Custom' : '$' + formatNumber(getDisplayPrice(selectedPlan?.price || 0)),
+                setupFee: '$' + formatNumber(selectedPlan?.setup || 0),
+                addons: [
+                    ...Object.values(selectedAddons.tiered).map(a => a.name),
+                    ...selectedAddons.flat.map(id => pricing.flatAddons.find(a => a.id === id)?.name).filter(Boolean)
+                ]
+            };
+            
+            // Save to DataStore
+            if (typeof DataStore !== 'undefined') {
+                DataStore.savePlanRequest({
+                    ...data,
+                    status: 'new',
+                    createdAt: Date.now()
+                });
+            }
+            
+            // Track analytics
+            if (typeof Analytics !== 'undefined') {
+                Analytics.track('plan_request', { plan: selectedPlan?.id });
+            }
+            
+            closeServiceRequestModal();
+            alert('Thank you! Your plan request has been submitted. We\'ll be in touch within 24 hours.');
+            form.reset();
+        }
+        
+        // ============================================
+        // UTILITIES
+        // ============================================
+        
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+        
+        function escHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        // ============================================
+        // EXPOSE TO GLOBAL
+        // ============================================
+        
+        window.PlansPage = {
+            selectPlan,
+            selectTieredAddon,
+            toggleFlatAddon
+        };
+        
+        window.copyQuote = copyQuote;
+        window.openServiceRequestModal = openServiceRequestModal;
+        window.closeServiceRequestModal = closeServiceRequestModal;
+        
+    })();
+    </script>
+</body>
+</html>

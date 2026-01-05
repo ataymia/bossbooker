@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boss Booker — Plans</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/plans.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="/api-config.js"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-weight:800;">
+                <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:56px;width:56px;border-radius:10px;display:block;">
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a class="active" href="plans.html">Plans</a>
+                <a href="about.html">About</a>
+                <a href="faq.html">FAQ</a>
+                <a href="referrals.html">Referrals</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container section">
+        <h1 class="section-title">Plans that start smart and scale up</h1>
+        <p class="pill">A tightened, scaled lineup from Nano → Micro → Starter → Pro → Scale → Enterprise. Small Business Starter Kit remains a special standalone option.</p>
+
+        <!-- Base plans selection -->
+        <div class="card" style="margin-top:14px">
+            <h2>Pick a bundle</h2>
+            <div class="feature-card">
+                <div class="radio-group">
+
+                    <label class="radio-option" title="Nano">
+                        <input type="radio" name="basePlan" value="nano" data-price="599" data-setup="0" onchange="updatePrice()">
+                        <span>
+                            <strong>Nano</strong> — $599/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">For very small teams — Core Automation Nano, Appt Setting Nano, Pick ONE channel</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="Micro">
+                        <input type="radio" name="basePlan" value="micro" data-price="799" data-setup="299" onchange="updatePrice()">
+                        <span>
+                            <strong>Micro</strong> — $799/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Light volume, growing — Core Automation Micro, Appt Setting Micro, Pick ONE channel</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="Starter">
+                        <input type="radio" name="basePlan" value="starter" data-price="1899" data-setup="0" onchange="updatePrice()" checked>
+                        <span>
+                            <strong>Starter</strong> — $1,899/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Most popular — Core Automation Starter, Appt Setting Starter, PPC Starter + SEO Micro</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="Pro">
+                        <input type="radio" name="basePlan" value="pro" data-price="3799" data-setup="0" onchange="updatePrice()">
+                        <span>
+                            <strong>Pro</strong> — $3,799/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Multi-service push or multi-location lite — Core Automation Pro, Appt Setting Pro</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="Scale">
+                        <input type="radio" name="basePlan" value="scale" data-price="4199" data-setup="1200" onchange="updatePrice()">
+                        <span>
+                            <strong>Scale</strong> — $4,199+/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Heavier ops; several locations — priority support, multi-location dashboards</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="Enterprise">
+                        <input type="radio" name="basePlan" value="enterprise" data-price="0" data-setup="0" data-custom="true" onchange="updatePrice()">
+                        <span>
+                            <strong>Enterprise</strong> — Custom pricing
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Custom SLAs, &gt;1,200 attempts, bespoke integrations. Contact us for pricing.</small>
+                        </span>
+                    </label>
+
+                    <!-- Keep Small Business Starter Kit as-is and present it clearly -->
+                    <label class="radio-option" id="smallBusinessOption" style="border:2px dashed var(--accent-color); margin-top:8px;">
+                        <input type="radio" name="basePlan" value="smallbusiness" data-price="199" data-setup="399" onchange="updatePrice()">
+                        <span>
+                            <strong>Small Business Starter Kit</strong> — $199/mo + $399 setup
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Special package — 1 custom page, setup, starter ads, CRM, appointment booking, automation, SMS, analytics, onboarding support.</small>
+                        </span>
+                    </label>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Compare table -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">What’s included by bundle (at a glance)</h2>
+            <div class="card">
+                <div style="overflow:auto;">
+                <table class="compare" style="min-width:900px;">
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Nano</th>
+                            <th>Micro</th>
+                            <th>Starter</th>
+                            <th>Pro</th>
+                            <th>Scale</th>
+                            <th>Enterprise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Core Automation tier</td><td>Nano</td><td>Micro</td><td>Starter</td><td>Pro</td><td>Scale</td><td>Custom</td></tr>
+                        <tr><td>Missed-call text-back</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                        <tr><td>Follow-up depth</td><td>2-touch</td><td>3-touch</td><td>3–4</td><td>4–5</td><td>4–5 + rules</td><td>Custom</td></tr>
+                        <tr><td>Pipelines</td><td>1</td><td>2</td><td>4</td><td>Multi-loc lite</td><td>Multi-loc + adv.</td><td>Custom</td></tr>
+                        <tr><td>KPI email (weekly)</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+                        <tr><td>Strategy/review cadence</td><td>15m/mo</td><td>30m/mo</td><td>45m/mo</td><td>Bi-weekly</td><td>Quarterly exec</td><td>Custom</td></tr>
+                        <tr><td>Appt Setting attempts</td><td>60</td><td>120</td><td>300</td><td>1,200</td><td>1,200 + 300 buffer</td><td>Custom</td></tr>
+                        <tr><td>PPC management</td><td>Pick 1</td><td>Pick 1</td><td>Starter</td><td>Pro</td><td>Pro</td><td>12% (>$10k)</td></tr>
+                        <tr><td>SEO management</td><td>Pick 1</td><td>Pick 1</td><td>Micro</td><td>Pro</td><td>Pro/Scale</td><td>Scale/Custom</td></tr>
+                        <tr><td>Site perk/credit</td><td>—</td><td>—</td><td>50% off LP</td><td>LP included (1x/yr)</td><td>Mini-site −50% or $1.2k credit</td><td>Full-site −50% or credit</td></tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- GLAM track added as selectable bundle options (GLAM Nano/Micro/Pro) -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">GLAM by Boss Booker — Beauty & Creator Services</h2>
+            <p class="pill" style="margin-bottom:12px;">Stylists, MUAs, braiders, nail artists and creators — DM-driven bookings, fast turnarounds. Sparkle included ✨</p>
+
+            <div class="card">
+                <div class="radio-group">
+                    <label class="radio-option" title="GLAM Nano">
+                        <input type="radio" name="basePlan" value="glam_nano" data-price="149" data-setup="79" onchange="updatePrice()">
+                        <span>
+                            <strong>GLAM Nano</strong> — $149/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Link-in-bio booking hub, DM auto-replies, reminders, 2 templated posts/mo. Setup $79.</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="GLAM Micro">
+                        <input type="radio" name="basePlan" value="glam_micro" data-price="299" data-setup="129" onchange="updatePrice()">
+                        <span>
+                            <strong>GLAM Micro</strong> — $299/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Everything in Nano + 8 templated posts/mo, story calendar, waitlist & slot-drop SMS. Setup $129.</small>
+                        </span>
+                    </label>
+
+                    <label class="radio-option" title="GLAM Pro">
+                        <input type="radio" name="basePlan" value="glam_pro" data-price="599" data-setup="179" onchange="updatePrice()">
+                        <span>
+                            <strong>GLAM Pro</strong> — $599/mo
+                            <small style="display:block; color:var(--text-secondary); margin-top:4px;">Everything in Micro + 20 posts/mo, 2 light clip trims/mo, boosted-post advising (up to $150 spend), Appointment Setting Nano included. Setup $179.</small>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <p style="font-size:13px; color:var(--text-secondary)">GLAM à la carte: one-page portfolio $799; policy/intake forms $149; last-minute fill blast $49/campaign; basic ad boost mgmt $150/mo (up to $300 spend).</p>
+            </div>
+        </section>
+
+        <!-- Customize + summary -->
+        <section class="section" style="margin-top:20px;">
+            <h2 class="section-title">Customize your package</h2>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Tiered Add-ons & À la carte</h3>
+
+                    <!-- Tiered add-ons group -->
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Core Automation (choose a la carte)</div>
+                        <select class="addon-select" id="addon_core" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="core_nano" data-price="149">Nano — $149/mo</option>
+                            <option value="core_micro" data-price="249">Micro — $249/mo</option>
+                            <option value="core_starter" data-price="399">Starter — $399/mo</option>
+                            <option value="core_pro" data-price="699">Pro — $699/mo</option>
+                            <option value="core_scale" data-price="1200">Scale — $1,200/mo</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Appointment Setting (Model A)</div>
+                        <select class="addon-select" id="addon_appt" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="appt_nano" data-price="199">Nano — $199 (60 attempts)</option>
+                            <option value="appt_micro" data-price="299">Micro — $299 (120 attempts)</option>
+                            <option value="appt_starter" data-price="600">Starter — $600 (300 attempts)</option>
+                            <option value="appt_pro" data-price="1400">Pro — $1,400 (1,200 attempts)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">PPC Management</div>
+                        <select class="addon-select" id="addon_ppc" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="ppc_nano" data-price="300">Nano — $300/mo</option>
+                            <option value="ppc_micro" data-price="450">Micro — $450/mo</option>
+                            <option value="ppc_starter" data-price="600">Starter — $600/mo</option>
+                            <option value="ppc_pro" data-price="900">Pro — $900/mo</option>
+                            <option value="ppc_scale" data-price="0" data-pct="12" data-min="1200">Scale — 12% of ad spend (min $1,200)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Local SEO</div>
+                        <select class="addon-select" id="addon_seo" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="seo_nano" data-price="300">Nano — $300/mo</option>
+                            <option value="seo_micro" data-price="500">Micro — $500/mo</option>
+                            <option value="seo_starter" data-price="800">Starter — $800/mo</option>
+                            <option value="seo_pro" data-price="1200">Pro — $1,200/mo</option>
+                            <option value="seo_scale" data-price="2000">Scale — $2,000+/mo</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom:10px;">
+                        <div style="font-weight:700; margin-bottom:6px;">Websites (one-time)</div>
+                        <select class="addon-select" id="addon_websites" onchange="updatePrice()">
+                            <option value="">None</option>
+                            <option value="site_onepager" data-price="799" data-onetime="true">One-pager — $799 (one-time)</option>
+                            <option value="site_lp" data-price="1200" data-onetime="true">Landing Page — $1,200 (one-time)</option>
+                            <option value="site_minisite" data-price="2800" data-onetime="true">Mini-site (3–5p) — $2,800 (one-time)</option>
+                            <option value="site_full" data-price="4800" data-onetime="true">Full site (6–10p) — $4,800 (one-time)</option>
+                        </select>
+                    </div>
+
+                    <h4 style="margin-top:12px;">Other add-ons</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option"><input type="checkbox" value="sms_assistant" data-price="99" onchange="updatePrice()"><span>SMS Assistant (text bot) — $99/month</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="ai_chat" data-price="79" onchange="updatePrice()"><span>Website AI Chat — $79/month</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="analytics" data-price="49" onchange="updatePrice()"><span>Analytics Dashboard — $49/month</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="csm" data-price="299" onchange="updatePrice()"><span>Dedicated Success Manager — $299/month</span></label>
+                    </div>
+
+                    <h4 style="margin-top:16px;">Business Card Design + Print</h4>
+                    <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-top: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Business Card Design + Print</div>
+                                <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Clean, pro business cards — template-based or fully custom. Choose single/double sided and quantity.</div>
+                                <div id="businessCardSummary" style="font-size: 12px; color: var(--text-secondary); margin-top: 8px; display: none;"></div>
+                            </div>
+                            <button type="button" class="btn-primary" onclick="openBusinessCardModal()" style="white-space: nowrap;">Configure</button>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-top:12px;">GLAM à-la-carte (available to GLAM plans)</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-option"><input type="checkbox" value="one_page_portfolio" data-price="799" data-onetime="true" onchange="updatePrice()"><span>One-page portfolio — $799 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="policy_forms" data-price="149" data-onetime="true" onchange="updatePrice()"><span>Policy / Intake forms — $149 (one-time)</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="last_minute_fill" data-price="49" onchange="updatePrice()"><span>Last-minute fill blast — $49/campaign</span></label>
+                        <label class="checkbox-option"><input type="checkbox" value="ad_boost" data-price="150" onchange="updatePrice()"><span>Basic ad boost mgmt — $150/month (up to $300 spend)</span></label>
+                    </div>
+
+                </div>
+
+                <aside class="summary-card">
+                    <h3>Summary</h3>
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="line"><span>Base Plan:</span> <strong id="basePlanName">Starter</strong></div>
+                            <div class="line"><span>Monthly Total:</span> <strong class="price-value" id="monthlyTotal">$1,899</strong></div>
+                            <div class="line" id="onetimeRow"><span>One-time Setup Fee:</span> <strong class="price-value" id="onetimeTotal">$0</strong></div>
+                            <div class="line"><span>First Month Due:</span> <strong class="price-value" id="firstMonthTotal">$1,899</strong></div>
+                        </div>
+                        <div class="card">
+                            <p style="color:var(--text-secondary); font-size:12px; margin:0">Note: Bundles include platform setup, quiet-hours compliance, basic analytics and weekly KPI email. Carrier fees billed at cost.</p>
+                            <button class="btn-primary" style="margin-top:10px" onclick="copyQuote()">Copy Quote</button>
+                            <button class="btn-secondary" style="margin-top:10px" onclick="openServiceRequestModal()">Submit Plan for Review</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:20px;width:20px;border-radius:4px;">
+                    <p style="margin:0;">© 2025 Boss Booker. All rights reserved.</p>
+                </div>
+                <span style="color:var(--border-color);">|</span>
+                <a href="tel:+16028422772" class="phone-link" style="display:flex;align-items:center;gap:6px;color:var(--primary-color);text-decoration:none;font-weight:500;">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/></svg>
+                    (602) 842-2772
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- hidden holder for PPC scale note -->
+    <div id="ppcScaleNote" style="display:none"></div>
+
+    <!-- Business Card Configurator Modal -->
+    <div id="businessCardModal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); overflow:auto; padding:20px;">
+        <div style="max-width:700px; width:100%; margin:40px auto; background:var(--background-alt); border:1px solid var(--border-color); border-radius:14px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0; color:var(--text-primary);">Business Card Design + Print</h2>
+                <button onclick="closeBusinessCardModal()" class="btn-secondary" style="padding:6px 12px;">Close</button>
+            </div>
+            
+            <form id="businessCardForm">
+                <div style="display:grid; gap:20px;">
+                    <!-- Package Toggle -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Package Type</legend>
+                        <div class="radio-group" style="gap: 10px;">
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcPackage" value="template" checked onchange="updateBusinessCardPrice()">
+                                <span><strong>Template</strong> — Choose from pre-designed templates</span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcPackage" value="custom" onchange="updateBusinessCardPrice()">
+                                <span><strong>Custom</strong> — Fully customized design from scratch</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Sides Toggle -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Card Sides</legend>
+                        <div class="radio-group" style="gap: 10px;">
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcSides" value="single" checked onchange="updateBusinessCardPrice()">
+                                <span><strong>Single-sided</strong></span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcSides" value="double" onchange="updateBusinessCardPrice()">
+                                <span><strong>Double-sided</strong></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Quantity Toggle -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Quantity</legend>
+                        <div class="radio-group" style="gap: 10px;">
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcQuantity" value="100" checked onchange="updateBusinessCardPrice()">
+                                <span><strong>100 cards</strong></span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcQuantity" value="250" onchange="updateBusinessCardPrice()">
+                                <span><strong>250 cards</strong></span>
+                            </label>
+                            <label class="radio-option" style="padding: 12px;">
+                                <input type="radio" name="bcQuantity" value="1000" onchange="updateBusinessCardPrice()">
+                                <span><strong>1,000 cards</strong></span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Add-on +100 cards -->
+                    <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
+                        <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Optional Add-on</legend>
+                        <label class="checkbox-option" style="padding: 12px;">
+                            <input type="checkbox" id="bcAddon100" onchange="updateBusinessCardPrice()">
+                            <span><strong>Add +100 more cards</strong></span>
+                        </label>
+                    </fieldset>
+
+                    <!-- Live Price Display -->
+                    <div style="background: var(--background); border: 2px solid var(--primary-color); border-radius: 10px; padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-size: 18px; font-weight: 600; color: var(--text-primary);">Total (per order):</span>
+                            <span id="bcTotalPrice" style="font-size: 24px; font-weight: bold; color: var(--primary-color);">$75</span>
+                        </div>
+                        <div id="bcBreakdown" style="font-size: 13px; color: var(--text-secondary); padding-top: 12px; border-top: 1px solid var(--border-color);">
+                            Package: Template • Sides: Single • Qty: 100 • Add-on: No
+                        </div>
+                    </div>
+
+                    <!-- Fine Print -->
+                    <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+                        <div style="margin-bottom: 6px;">• Template includes 1 revision round. Custom includes 2 revision rounds.</div>
+                        <div style="margin-bottom: 6px;">• Extra revision rounds: $25 each.</div>
+                        <div>• Rush / same-day: +$35.</div>
+                    </div>
+                </div>
+                
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="button" onclick="applyBusinessCardSelection()" class="btn-primary">Apply Selection</button>
+                    <button type="button" onclick="closeBusinessCardModal()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Service Request Modal -->
+    <div id="serviceRequestModal" style="display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); overflow:auto; padding:20px;">
+        <div style="max-width:600px; width:100%; margin:40px auto; background:var(--background-alt); border:1px solid var(--border-color); border-radius:14px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0; color:var(--text-primary);">Submit Plan for Review</h2>
+                <button onclick="closeServiceRequestModal()" class="btn-secondary" style="padding:6px 12px;">Close</button>
+            </div>
+            <form id="serviceRequestForm">
+                <div style="display:grid; gap:16px;">
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-primary); font-weight:600;">Company Name *</label>
+                        <input type="text" name="companyName" required style="width:100%; padding:10px; background:var(--background); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary);">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-primary); font-weight:600;">Your Name *</label>
+                        <input type="text" name="contactName" required style="width:100%; padding:10px; background:var(--background); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary);">
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div>
+                            <label style="display:block; margin-bottom:6px; color:var(--text-primary); font-weight:600;">Email *</label>
+                            <input type="email" name="email" required style="width:100%; padding:10px; background:var(--background); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary);">
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:6px; color:var(--text-primary); font-weight:600;">Phone *</label>
+                            <input type="tel" name="phone" required style="width:100%; padding:10px; background:var(--background); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary);">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-primary); font-weight:600;">Company Size</label>
+                        <select name="companySize" style="width:100%; padding:10px; background:var(--background); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary);">
+                            <option value="">Select...</option>
+                            <option>Solo / 1 person</option>
+                            <option>2-5 employees</option>
+                            <option>6-15 employees</option>
+                            <option>16-50 employees</option>
+                            <option>50+ employees</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-primary); font-weight:600;">Business Address</label>
+                        <input type="text" name="address" style="width:100%; padding:10px; background:var(--background); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary);">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-primary); font-weight:600;">Additional Notes</label>
+                        <textarea name="notes" rows="3" style="width:100%; padding:10px; background:var(--background); border:1px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-family:inherit;"></textarea>
+                    </div>
+                    <div style="background:var(--background); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                        <div style="font-weight:600; margin-bottom:8px; color:var(--text-primary);">Selected Plan Summary:</div>
+                        <div id="modalPlanSummary" style="color:var(--text-secondary); font-size:14px;"></div>
+                    </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button type="submit" class="btn-primary">Submit Request</button>
+                    <button type="button" onclick="closeServiceRequestModal()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/datastore.js"></script>
+    <script src="/analytics.js"></script>
+    <script src="plans.js"></script>
+</body>
+</html>

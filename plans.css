@@ -410,6 +410,496 @@
     font-weight: 600;
 }
 
+/* ============================================
+   SALE BANNER
+   ============================================ */
+.sale-banner {
+    background: linear-gradient(90deg, var(--primary-color), #ff6b35);
+    color: white;
+    padding: 12px 0;
+    text-align: center;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    animation: salePulse 2s ease-in-out infinite;
+}
+
+@keyframes salePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.9; }
+}
+
+.sale-banner .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.sale-badge {
+    background: white;
+    color: var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.sale-timer {
+    background: rgba(0,0,0,0.2);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: monospace;
+}
+
+/* ============================================
+   ENHANCED RADIO OPTIONS (COHESIVE BUBBLE UI)
+   ============================================ */
+
+.radio-option .plan-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.radio-option .plan-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.radio-option .plan-header strong {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.radio-option .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.radio-option .original-price {
+    text-decoration: line-through;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.radio-option .current-price {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.radio-option .setup-price {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.radio-option .plan-desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--primary-color);
+    color: white;
+}
+
+.badge.special {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.badge.sale {
+    background: linear-gradient(135deg, #10b981, #059669);
+    animation: badgePop 0.3s ease-out;
+}
+
+@keyframes badgePop {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Featured Plan */
+.radio-option.featured {
+    border-color: var(--primary-color);
+    background: rgba(255, 46, 190, 0.06);
+    box-shadow: 0 4px 20px rgba(255, 46, 190, 0.15);
+}
+
+/* Special Plan (e.g., Small Business Starter Kit) */
+.radio-option.special {
+    border-style: dashed;
+    border-color: var(--accent-color);
+}
+
+.radio-option.special:hover {
+    border-color: var(--accent-color);
+    background: rgba(255, 165, 0, 0.08);
+}
+
+/* GLAM Plans */
+.radio-option.glam {
+    border-color: #d946ef;
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.05), rgba(236, 72, 153, 0.05));
+}
+
+.radio-option.glam:hover {
+    border-color: #d946ef;
+    background: linear-gradient(135deg, rgba(217, 70, 239, 0.12), rgba(236, 72, 153, 0.12));
+    box-shadow: 0 8px 24px rgba(217, 70, 239, 0.2);
+}
+
+.radio-option.glam .plan-header strong::after {
+    content: ' ✨';
+}
+
+/* ============================================
+   ADDON CATEGORIES (TIERED ADDONS)
+   ============================================ */
+.addon-category {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.addon-category:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.addon-category-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.addon-category-title::before {
+    content: '›';
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Compact Radio Group (for tiered addons) */
+.radio-group.compact {
+    gap: 8px;
+}
+
+.radio-group.compact .radio-option,
+.radio-option.small {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+}
+
+.radio-option.small input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+}
+
+.radio-option.small span {
+    font-size: 0.9rem;
+}
+
+.radio-option.small span small {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* ============================================
+   SUMMARY CARD ENHANCEMENTS
+   ============================================ */
+.summary-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.summary-line:last-of-type {
+    border-bottom: none;
+}
+
+.summary-line span:first-child {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.summary-total {
+    margin-top: 12px;
+    padding-top: 16px !important;
+    border-top: 2px solid var(--primary-color) !important;
+    border-bottom: none !important;
+}
+
+.summary-total span,
+.summary-total strong {
+    font-size: 1.1rem !important;
+    color: var(--text-primary) !important;
+}
+
+.price-highlight {
+    color: var(--primary-color) !important;
+    font-weight: 700;
+}
+
+/* Selected Addons in Summary */
+#summaryAddonsList .addon-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 4px 0;
+    color: var(--text-secondary);
+}
+
+#summaryAddonsList .addon-line strong {
+    color: var(--text-primary);
+}
+
+/* ============================================
+   MODAL STYLES
+   ============================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--background);
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 0;
+    border-bottom: none;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.modal-close {
+    background: var(--background-alt);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.modal-content form {
+    padding: 24px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 14px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--background-alt);
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.plan-summary-box {
+    background: var(--background-alt);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.plan-summary-box .summary-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-actions .btn-primary,
+.modal-actions .btn-secondary {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.modal-actions .btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.modal-actions .btn-primary:hover {
+    background: var(--primary-color-dark);
+    transform: translateY(-2px);
+}
+
+.modal-actions .btn-secondary {
+    background: var(--background-alt);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.modal-actions .btn-secondary:hover {
+    border-color: var(--text-secondary);
+}
+
+/* ============================================
+   COMPARE TABLE ENHANCEMENTS
+   ============================================ */
+.compare {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.compare th,
+.compare td {
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.compare th {
+    background: var(--background-alt);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.compare th:first-child,
+.compare td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.compare tbody tr:hover {
+    background: rgba(255, 46, 190, 0.03);
+}
+
+/* ============================================
+   GRID LAYOUTS
+   ============================================ */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .builder-container {
@@ -417,6 +907,14 @@
     }
 
     .builder-summary {
+        position: static;
+    }
+    
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-card {
         position: static;
     }
 }
@@ -445,6 +943,41 @@
     .summary-card {
         padding: 1.5rem;
     }
+    
+    .sale-banner {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    
+    .sale-banner .container {
+        gap: 8px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+    
+    .modal-content {
+        margin: 10px;
+        max-height: calc(100vh - 20px);
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .compare {
+        font-size: 0.8rem;
+    }
+    
+    .compare th,
+    .compare td {
+        padding: 8px 10px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -459,5 +992,22 @@
     .radio-option,
     .checkbox-option {
         padding: 0.75rem;
+    }
+    
+    .radio-option .plan-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+    
+    .radio-option .plan-price {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .badge {
+        font-size: 10px;
+        padding: 2px 8px;
     }
 }
