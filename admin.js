@@ -783,7 +783,7 @@
         const confirmBtn = $('#confirmAction');
         if (confirmBtn) {
             confirmBtn.onclick = function() {
-                DataStore.clearAllData();
+                DataStore.clearAllData(true);
                 closeConfirmModal();
                 refreshData();
                 alert('All data has been cleared.');

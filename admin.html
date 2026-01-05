@@ -196,9 +196,10 @@
                     <!-- Base Plans Section -->
                     <div class="card" style="margin-top:20px;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-                            <h3>Base Plans</h3>
+                            <h3>Starter Pack Plans</h3>
                             <button class="btn-secondary" onclick="PricingAdmin.addPlan()">+ Add Plan</button>
                         </div>
+                        <p style="color:var(--text-muted);font-size:13px;margin-bottom:15px;">One-time setup packages for getting started</p>
                         <div id="plansContainer" class="pricing-items-grid"></div>
                     </div>
 
@@ -209,6 +210,54 @@
                             <button class="btn-secondary" onclick="PricingAdmin.addGlamPlan()">+ Add GLAM Plan</button>
                         </div>
                         <div id="glamPlansContainer" class="pricing-items-grid"></div>
+                    </div>
+
+                    <!-- Business Cards Section -->
+                    <div class="card" style="margin-top:20px;">
+                        <h3 style="margin-bottom:15px;">Business Cards Pricing</h3>
+                        <p style="color:var(--text-muted);font-size:13px;margin-bottom:15px;">Set pricing for business card orders (Template vs Custom, Single vs Double-sided)</p>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:20px;">
+                            <!-- Template Cards -->
+                            <div style="background:var(--background);padding:15px;border-radius:8px;border:1px solid var(--border-color);">
+                                <h4 style="margin-bottom:12px;color:var(--text-primary);">Template Design</h4>
+                                <div style="margin-bottom:12px;">
+                                    <strong style="font-size:12px;color:var(--text-muted);">Single-Sided</strong>
+                                    <div style="display:flex;gap:8px;margin-top:6px;">
+                                        <div><label style="font-size:11px;">100 qty</label><input type="number" id="bc_tpl_single_100" value="29" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">250 qty</label><input type="number" id="bc_tpl_single_250" value="49" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">1000 qty</label><input type="number" id="bc_tpl_single_1000" value="99" style="width:60px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <strong style="font-size:12px;color:var(--text-muted);">Double-Sided</strong>
+                                    <div style="display:flex;gap:8px;margin-top:6px;">
+                                        <div><label style="font-size:11px;">100 qty</label><input type="number" id="bc_tpl_double_100" value="39" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">250 qty</label><input type="number" id="bc_tpl_double_250" value="69" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">1000 qty</label><input type="number" id="bc_tpl_double_1000" value="129" style="width:60px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Custom Cards -->
+                            <div style="background:var(--background);padding:15px;border-radius:8px;border:1px solid var(--border-color);">
+                                <h4 style="margin-bottom:12px;color:var(--text-primary);">Custom Design</h4>
+                                <div style="margin-bottom:12px;">
+                                    <strong style="font-size:12px;color:var(--text-muted);">Single-Sided</strong>
+                                    <div style="display:flex;gap:8px;margin-top:6px;">
+                                        <div><label style="font-size:11px;">100 qty</label><input type="number" id="bc_cust_single_100" value="79" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">250 qty</label><input type="number" id="bc_cust_single_250" value="99" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">1000 qty</label><input type="number" id="bc_cust_single_1000" value="149" style="width:60px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <strong style="font-size:12px;color:var(--text-muted);">Double-Sided</strong>
+                                    <div style="display:flex;gap:8px;margin-top:6px;">
+                                        <div><label style="font-size:11px;">100 qty</label><input type="number" id="bc_cust_double_100" value="99" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">250 qty</label><input type="number" id="bc_cust_double_250" value="129" style="width:60px;"></div>
+                                        <div><label style="font-size:11px;">1000 qty</label><input type="number" id="bc_cust_double_1000" value="179" style="width:60px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Tiered Add-ons Section -->
