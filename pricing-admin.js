@@ -17,75 +17,85 @@
             endDate: null
         },
         plans: [
-            // Starter Pack tiers
-            { id: 'starter_lite', name: 'Starter Lite', price: 0, setup: 499, featured: false, category: 'starter', description: 'One-pager website, basic CRM setup, and appointment scheduling' },
-            { id: 'starter_standard', name: 'Starter Standard', price: 0, setup: 899, featured: false, category: 'starter', description: 'Multi-page website (up to 5 pages), CRM, scheduling, and basic automation' },
-            { id: 'starter_pro', name: 'Starter Pro', price: 0, setup: 1499, featured: true, category: 'starter', description: 'Full custom website, advanced CRM, automation flows, and onboarding support' },
-            // Growth Engine tiers
-            { id: 'growth_essentials', name: 'Growth Essentials', price: 599, setup: 299, featured: false, category: 'growth', description: 'SEO Starter OR PPC Starter, automated follow-ups, monthly reporting' },
-            { id: 'growth_accelerator', name: 'Growth Accelerator', price: 999, setup: 499, featured: true, category: 'growth', description: 'SEO + PPC combo, email campaigns, SMS outreach, conversion optimization' },
-            { id: 'growth_dominator', name: 'Growth Dominator', price: 1599, setup: 799, featured: false, category: 'growth', description: 'Full marketing suite, multi-channel campaigns, A/B testing, dedicated strategist' },
-            // Operator tiers
-            { id: 'operator_core', name: 'Operator Core', price: 2999, setup: 0, featured: false, category: 'operator', description: 'Full pipeline management, weekly optimization, monthly strategy calls' },
-            { id: 'operator_plus', name: 'Operator Plus', price: 4499, setup: 0, featured: true, category: 'operator', description: 'Everything in Core plus content creation, social management, priority support' },
-            { id: 'operator_elite', name: 'Operator Elite', price: 0, setup: 0, featured: false, category: 'operator', custom: true, description: 'Custom enterprise solution. Multi-location, custom integrations, dedicated team. Contact for pricing.' },
-            // Special packages
-            { id: 'smallbusiness', name: 'Small Business Starter Kit', price: 99, setup: 199, featured: false, special: true, description: 'For businesses under 10 employees. 1-page site, CRM basics, appointment booking, starter automation, 30-day support.' }
+            { id: 'nano', name: 'Nano', price: 599, setup: 199, featured: false, description: 'For very small teams — Core Automation Nano, Appt Setting Nano, Pick ONE channel' },
+            { id: 'micro', name: 'Micro', price: 799, setup: 299, featured: false, description: 'Light volume, growing — Core Automation Micro, Appt Setting Micro, Pick ONE channel' },
+            { id: 'starter', name: 'Starter', price: 1899, setup: 499, featured: true, description: 'Most popular — Core Automation Starter, Appt Setting Starter, PPC Starter + SEO Micro' },
+            { id: 'pro', name: 'Pro', price: 3799, setup: 799, featured: false, description: 'Multi-service push or multi-location lite — Core Automation Pro, Appt Setting Pro' },
+            { id: 'scale', name: 'Scale', price: 4199, setup: 1200, featured: false, description: 'Heavier ops; several locations — priority support, multi-location dashboards' },
+            { id: 'enterprise', name: 'Enterprise', price: 0, setup: 0, featured: false, custom: true, description: 'Custom SLAs, >1,200 attempts, bespoke integrations. Contact us for pricing.' },
+            { id: 'smallbusiness', name: 'Small Business Starter Kit', price: 199, setup: 399, featured: false, special: true, description: 'Special package — 1 custom page, setup, starter ads, CRM, appointment booking, automation, SMS, analytics, onboarding support.' }
         ],
         glamPlans: [
             { id: 'glam_nano', name: 'GLAM Nano', price: 149, setup: 79, description: 'Link-in-bio booking hub, DM auto-replies, reminders, 2 templated posts/mo.' },
-            { id: 'glam_micro', name: 'GLAM Micro', price: 299, setup: 129, description: 'Everything in Nano plus 8 templated posts/mo, story calendar, waitlist & slot-drop SMS.' },
-            { id: 'glam_pro', name: 'GLAM Pro', price: 599, setup: 179, description: 'Everything in Micro plus 20 posts/mo, 2 light clip trims/mo, boosted-post advising.' }
+            { id: 'glam_micro', name: 'GLAM Micro', price: 299, setup: 129, description: 'Everything in Nano + 8 templated posts/mo, story calendar, waitlist & slot-drop SMS.' },
+            { id: 'glam_pro', name: 'GLAM Pro', price: 599, setup: 179, description: 'Everything in Micro + 20 posts/mo, 2 light clip trims/mo, boosted-post advising (up to $150 spend), Appointment Setting Nano included.' }
         ],
         businessCards: {
             template: {
-                single: { qty100: 29, qty250: 49, qty1000: 99 },
-                double: { qty100: 39, qty250: 69, qty1000: 129 }
+                single: { qty100: 75, qty250: 125, qty1000: 325 },
+                double: { qty100: 95, qty250: 155, qty1000: 395 }
             },
             custom: {
-                single: { qty100: 79, qty250: 99, qty1000: 149 },
-                double: { qty100: 99, qty250: 129, qty1000: 179 }
+                single: { qty100: 165, qty250: 245, qty1000: 525 },
+                double: { qty100: 215, qty250: 315, qty1000: 625 }
+            },
+            addon: {
+                template: { single: 55, double: 75 },
+                custom: { single: 95, double: 125 }
             }
         },
         tieredAddons: [
             {
-                id: 'websites',
-                name: 'Websites (one-time)',
+                id: 'core',
+                name: 'Core Automation',
                 tiers: [
-                    { id: 'site_onepager', name: 'One-pager', price: 499, onetime: true },
-                    { id: 'site_lp', name: 'Landing Page', price: 799, onetime: true },
-                    { id: 'site_minisite', name: 'Mini-site (3-5 pages)', price: 1499, onetime: true },
-                    { id: 'site_full', name: 'Full site (6-10 pages)', price: 2999, onetime: true },
-                    { id: 'site_custom', name: 'Custom/E-commerce', price: 4999, onetime: true }
+                    { id: 'core_nano', name: 'Nano', price: 149 },
+                    { id: 'core_micro', name: 'Micro', price: 249 },
+                    { id: 'core_starter', name: 'Starter', price: 399 },
+                    { id: 'core_pro', name: 'Pro', price: 699 },
+                    { id: 'core_scale', name: 'Scale', price: 1200 }
                 ]
             },
             {
-                id: 'seo',
-                name: 'SEO Services',
+                id: 'appt',
+                name: 'Appointment Setting',
                 tiers: [
-                    { id: 'seo_starter', name: 'Starter', price: 299 },
-                    { id: 'seo_growth', name: 'Growth', price: 599 },
-                    { id: 'seo_pro', name: 'Pro', price: 999 },
-                    { id: 'seo_enterprise', name: 'Enterprise', price: 1999 }
+                    { id: 'appt_nano', name: 'Nano (60 attempts)', price: 199 },
+                    { id: 'appt_micro', name: 'Micro (120 attempts)', price: 299 },
+                    { id: 'appt_starter', name: 'Starter (300 attempts)', price: 600 },
+                    { id: 'appt_pro', name: 'Pro (1,200 attempts)', price: 1400 }
                 ]
             },
             {
                 id: 'ppc',
-                name: 'PPC/Ads Management',
+                name: 'PPC Management',
                 tiers: [
-                    { id: 'ppc_starter', name: 'Starter (up to $1k spend)', price: 299 },
-                    { id: 'ppc_growth', name: 'Growth (up to $3k spend)', price: 499 },
-                    { id: 'ppc_pro', name: 'Pro (up to $10k spend)', price: 999 },
-                    { id: 'ppc_scale', name: 'Scale (10%+ of spend)', price: 0, percentBased: true, percent: 10 }
+                    { id: 'ppc_nano', name: 'Nano', price: 300 },
+                    { id: 'ppc_micro', name: 'Micro', price: 450 },
+                    { id: 'ppc_starter', name: 'Starter', price: 600 },
+                    { id: 'ppc_pro', name: 'Pro', price: 900 },
+                    { id: 'ppc_scale', name: 'Scale (12% min $1,200)', price: 1200, percentBased: true, percent: 12 }
                 ]
             },
             {
-                id: 'automation',
-                name: 'Automation Packages',
+                id: 'seo',
+                name: 'Local SEO',
                 tiers: [
-                    { id: 'auto_basic', name: 'Basic (5 workflows)', price: 199, onetime: true },
-                    { id: 'auto_standard', name: 'Standard (15 workflows)', price: 499, onetime: true },
-                    { id: 'auto_advanced', name: 'Advanced (unlimited)', price: 999, onetime: true }
+                    { id: 'seo_nano', name: 'Nano', price: 300 },
+                    { id: 'seo_micro', name: 'Micro', price: 500 },
+                    { id: 'seo_starter', name: 'Starter', price: 800 },
+                    { id: 'seo_pro', name: 'Pro', price: 1200 },
+                    { id: 'seo_scale', name: 'Scale', price: 2000 }
+                ]
+            },
+            {
+                id: 'websites',
+                name: 'Websites (one-time)',
+                tiers: [
+                    { id: 'site_onepager', name: 'One-pager', price: 799, onetime: true },
+                    { id: 'site_lp', name: 'Landing Page', price: 1200, onetime: true },
+                    { id: 'site_minisite', name: 'Mini-site (3–5p)', price: 2800, onetime: true },
+                    { id: 'site_full', name: 'Full site (6–10p)', price: 4800, onetime: true }
                 ]
             }
         ],
@@ -93,14 +103,16 @@
             { id: 'sms_assistant', name: 'SMS Assistant (text bot)', price: 99, onetime: false },
             { id: 'ai_chat', name: 'Website AI Chat', price: 79, onetime: false },
             { id: 'analytics', name: 'Analytics Dashboard', price: 49, onetime: false },
-            { id: 'reputation', name: 'Reputation Management', price: 149, onetime: false },
+            { id: 'csm', name: 'Dedicated Success Manager', price: 299, onetime: false },
             { id: 'social_posting', name: 'Social Media Scheduling', price: 99, onetime: false },
             { id: 'email_campaigns', name: 'Email Campaign Tool', price: 79, onetime: false },
             { id: 'crm_migration', name: 'CRM Data Migration', price: 299, onetime: true },
             { id: 'training', name: '1-on-1 Training Session', price: 149, onetime: true },
             { id: 'priority_support', name: 'Priority Support', price: 199, onetime: false },
-            { id: 'one_page_portfolio', name: 'One-page Portfolio (GLAM)', price: 499, onetime: true },
-            { id: 'policy_forms', name: 'Policy/Intake Forms', price: 99, onetime: true }
+            { id: 'one_page_portfolio', name: 'One-page portfolio (GLAM)', price: 799, onetime: true },
+            { id: 'policy_forms', name: 'Policy / Intake forms (GLAM)', price: 149, onetime: true },
+            { id: 'last_minute_fill', name: 'Last-minute fill blast (GLAM)', price: 49, onetime: false, perCampaign: true },
+            { id: 'ad_boost', name: 'Basic ad boost mgmt (GLAM)', price: 150, onetime: false }
         ]
     };
 
