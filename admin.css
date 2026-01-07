@@ -36,10 +36,11 @@
 }
 
 .login-logo {
-    width: 64px;
-    height: 64px;
+    width: 80px;
+    height: 80px;
     border-radius: var(--radius-md);
     margin-bottom: var(--space-md);
+    box-shadow: 0 4px 16px rgba(255,46,190,0.25);
 }
 
 .login-header h1 {
@@ -125,9 +126,10 @@
 }
 
 .sidebar-logo {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: var(--radius-sm);
+    box-shadow: 0 2px 8px rgba(255,46,190,0.15);
 }
 
 .sidebar-title {
