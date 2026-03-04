@@ -340,6 +340,7 @@
       <ul class="nav-links">
         <li><a class="active" href="index.html">Home</a></li>
         <li><a href="plans.html">Plans</a></li>
+        <li><a href="glam.html">GLAM</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="faq.html">FAQ</a></li>
         <li><a href="referrals.html">Referrals</a></li>
@@ -483,25 +484,25 @@
       <p style="text-align:center;color:var(--text-secondary);margin-bottom:2rem;">Three packages designed for where you are and where you're going.</p>
       <div class="grid-3">
         <div class="package-card">
-          <span class="package-icon">🚀</span>
-          <h3>Starter Pack</h3>
+          <span class="package-icon">🧱</span>
+          <h3>Foundation</h3>
           <span class="package-tagline">Launch</span>
           <p>Get your brand online fast. Website, basic CRM setup, and the essentials to start capturing inquiries.</p>
-          <a class="btn btn-secondary" href="plans.html#starter-pack">Start Here →</a>
+          <a class="btn btn-secondary" href="plans.html#foundation">Start Here &rarr;</a>
         </div>
         <div class="package-card">
-          <span class="package-icon">⚡</span>
-          <h3>Growth Engine</h3>
+          <span class="package-icon">📈</span>
+          <h3>Growth</h3>
           <span class="package-tagline">Convert</span>
-          <p>Turn inquiries into clients. Automated follow-ups, client outreach, SEO or ads, and conversion systems that work 24/7.</p>
-          <a class="btn btn-primary" href="plans.html#growth-engine">Grow Now →</a>
+          <p>Turn inquiries into clients. Automated follow-ups, client outreach, and conversion systems that produce results.</p>
+          <a class="btn btn-primary" href="plans.html#growth">Grow Now &rarr;</a>
         </div>
         <div class="package-card">
-          <span class="package-icon">🤝</span>
-          <h3>Operator</h3>
-          <span class="package-tagline">Monthly Partner</span>
-          <p>We run it for you. Ongoing management, optimization, reporting, and a dedicated team keeping your pipeline full.</p>
-          <a class="btn btn-secondary" href="plans.html#operator">Let's Talk →</a>
+          <span class="package-icon">⚙️</span>
+          <h3>Automation + Ops</h3>
+          <span class="package-tagline">Scale</span>
+          <p>We run it for you. Systems, automation, and a dedicated team keeping your pipeline full.</p>
+          <a class="btn btn-secondary" href="plans.html#ops">Let's Talk &rarr;</a>
         </div>
       </div>
     </section>
@@ -727,7 +728,7 @@
           </div>
 
           <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:1.5rem; justify-content:center;">
-            <a class="btn btn-primary" id="viewPackageBtn" href="plans.html#growth-engine">View My Recommended Package</a>
+            <a class="btn btn-primary" id="viewPackageBtn" href="plans.html#growth">View My Recommended Package</a>
             <button class="btn btn-secondary" id="retakeQuiz">Retake Quiz</button>
           </div>
         </div>
@@ -880,23 +881,23 @@
         }
 
         // Determine winner
-        let recommendation = 'growth-engine';
-        let packageName = 'Growth Engine';
+        let recommendation = 'growth';
+        let packageName = 'Growth';
         const maxScore = Math.max(starterScore, growthScore, operatorScore);
         
         if (starterScore === maxScore) {
-          recommendation = 'starter-pack';
-          packageName = 'Starter Pack';
+          recommendation = 'foundation';
+          packageName = 'Foundation';
         } else if (operatorScore === maxScore) {
-          recommendation = 'operator';
-          packageName = 'Operator';
+          recommendation = 'ops';
+          packageName = 'Automation + Ops';
         }
 
         // Ensure we have at least 2-3 reasons
         if (reasons.length < 2) {
-          if (recommendation === 'starter-pack') {
+          if (recommendation === 'foundation') {
             reasons.push("Launch quickly with the essentials you need.");
-          } else if (recommendation === 'growth-engine') {
+          } else if (recommendation === 'growth') {
             reasons.push("Convert more inquiries into paying clients.");
           } else {
             reasons.push("Get a dedicated team managing your growth.");
