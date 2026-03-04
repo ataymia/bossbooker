@@ -3,44 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boss Booker — Packages & Plans</title>
-    <meta name="description" content="Choose your path: Starter Pack to launch, Growth Engine to convert, or Operator for full-service management. Boss Booker packages for service businesses.">
+    <title>Boss Booker — Packages &amp; Plans</title>
+    <meta name="description" content="Choose your path: Foundation to launch, Growth to convert, or Automation+Ops for full-service management. Boss Booker packages for service businesses.">
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/plans.css">
     <script src="/api-config.js"></script>
     <style>
         /* Nav brand logo styles */
         .nav-brand img {height:72px;width:72px;border-radius:12px;display:block;box-shadow:0 4px 12px rgba(255,46,190,0.2);}
-        
-        @media (max-width: 768px) {
-            .nav-brand img {height:60px;width:60px;}
+        @media (max-width: 768px) { .nav-brand img {height:60px;width:60px;} }
+        @media (max-width: 480px) { .nav-brand img {height:48px;width:48px;border-radius:10px;} }
+
+        /* CSS Variables */
+        :root {
+            --primary-color: #FF2EBE;
+            --background: #0E0A14;
+            --background-alt: #160E1F;
+            --text-primary: #ffffff;
+            --text-secondary: #B9B2C8;
+            --text-muted: #7A7189;
+            --border-color: rgba(255,255,255,0.12);
+            --success-color: #4ADE80;
         }
-        
-        @media (max-width: 480px) {
-            .nav-brand img {height:48px;width:48px;border-radius:10px;}
-        }
-        
+
         /* Package Tabs */
         .package-tabs {
             display: flex;
             justify-content: center;
             gap: 0;
-            margin: 2rem 0;
+            margin: 2rem auto;
             background: var(--background-alt);
             border-radius: 12px;
             padding: 6px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 800px;
+            flex-wrap: wrap;
         }
         .package-tab {
             flex: 1;
-            padding: 14px 20px;
+            min-width: 140px;
+            padding: 14px 16px;
             border: none;
             background: transparent;
             color: var(--text-secondary);
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.2s ease;
@@ -49,35 +55,17 @@
             align-items: center;
             gap: 4px;
         }
-        .package-tab:hover {
-            color: var(--text-primary);
-            background: rgba(255, 46, 190, 0.1);
-        }
-        .package-tab.active {
-            background: var(--primary-color);
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 46, 190, 0.3);
-        }
-        .package-tab .tab-icon {
-            font-size: 1.5rem;
-        }
-        .package-tab .tab-label {
-            font-size: 0.85rem;
-        }
-        
+        .package-tab:hover { color: var(--text-primary); background: rgba(255,46,190,0.1); }
+        .package-tab.active { background: var(--primary-color); color: white; box-shadow: 0 4px 12px rgba(255,46,190,0.3); }
+        .package-tab .tab-icon { font-size: 1.4rem; }
+        .package-tab .tab-label { font-size: 0.8rem; }
+        @media (max-width: 600px) { .package-tab { min-width: 100px; padding: 10px 8px; font-size: 0.8rem; } .package-tab .tab-icon { font-size: 1.1rem; } }
+
         /* Package Content */
-        .package-content {
-            display: none;
-        }
-        .package-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
+        .package-content { display: none; }
+        .package-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
         /* Tier Cards Grid */
         .tier-cards {
             display: grid;
@@ -93,490 +81,731 @@
             display: flex;
             flex-direction: column;
             transition: all 0.2s ease;
-        }
-        .tier-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(255, 46, 190, 0.15);
-        }
-        .tier-card.featured {
-            border-color: var(--primary-color);
-            background: linear-gradient(135deg, rgba(255, 46, 190, 0.05), rgba(255, 107, 53, 0.05));
-        }
-        .tier-card .tier-badge {
-            align-self: flex-start;
-            background: var(--primary-color);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .tier-card h3 {
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        .tier-card .tier-who {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-        .tier-card .tier-price {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-        .tier-card .tier-price small {
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-        }
-        .tier-card .tier-timeline {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .tier-card .tier-features {
-            list-style: none;
-            padding: 0;
-            margin: 1rem 0;
-            flex: 1;
-        }
-        .tier-card .tier-features li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
             position: relative;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
         }
-        .tier-card .tier-features li::before {
-            content: "✓";
+        .tier-card:hover { border-color: var(--primary-color); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(255,46,190,0.15); }
+        .tier-card.featured { border-color: var(--primary-color); box-shadow: 0 8px 32px rgba(255,46,190,0.2); }
+        .featured-badge {
             position: absolute;
-            left: 0;
-            color: var(--success-color);
-            font-weight: bold;
+            top: -12px; left: 50%; transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 4px 16px; border-radius: 20px; white-space: nowrap;
         }
-        .tier-card .btn {
-            margin-top: auto;
+        .tier-card h3 { color: var(--text-primary); font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .tier-card .price { font-size: 2rem; font-weight: 800; color: var(--primary-color); margin-bottom: 0.25rem; }
+        .tier-card .price-note { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .tier-card ul { list-style: none; padding: 0; margin: 0 0 1.5rem 0; flex: 1; }
+        .tier-card ul li { padding: 6px 0; color: var(--text-secondary); font-size: 0.9rem; display: flex; align-items: flex-start; gap: 8px; }
+        .tier-card ul li::before { content: "✓"; color: var(--success-color); font-weight: 700; flex-shrink: 0; }
+        .tier-card .btn-primary, .tier-card .btn-secondary {
+            display: block; width: 100%; text-align: center; padding: 12px; border-radius: 8px;
+            font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; transition: all 0.2s;
         }
-        
-        /* Recommended banner */
-        .recommended-banner {
-            background: linear-gradient(135deg, var(--primary-color), #ff6b35);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            display: none;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
+        .tier-card .btn-primary { background: var(--primary-color); color: white; }
+        .tier-card .btn-primary:hover { background: #e0189f; transform: translateY(-2px); }
+        .tier-card .btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); }
+        .tier-card .btn-secondary:hover { border-color: var(--primary-color); color: var(--primary-color); }
+
+        /* How It Works */
+        .how-it-works { padding: 3rem 0; }
+        .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .step-card {
+            background: var(--background-alt); border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 2rem; text-align: center; position: relative;
         }
-        .recommended-banner.show {
-            display: flex;
+        .step-number {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: rgba(255,46,190,0.15); color: var(--primary-color);
+            font-weight: 800; font-size: 1.2rem; margin-bottom: 1rem;
         }
-        .recommended-banner strong {
-            font-size: 1.1rem;
+        .step-card h3 { color: var(--text-primary); margin-bottom: 0.5rem; }
+        .step-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+        /* Sections */
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { color: var(--text-primary); font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-secondary); font-size: 1.05rem; max-width: 640px; margin: 0 auto; }
+        .section-divider { border: none; border-top: 1px solid var(--border-color); margin: 3rem 0; }
+
+        /* Attempt callout */
+        .attempt-callout {
+            background: rgba(255,46,190,0.06); border: 1px solid rgba(255,46,190,0.2); border-radius: 10px;
+            padding: 16px 20px; margin: 1.5rem 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;
         }
-        .recommended-banner p {
-            flex: 1;
-            margin: 0;
-            min-width: 200px;
+        .attempt-callout strong { color: var(--primary-color); }
+
+        /* Outreach Explainer */
+        .outreach-explainer {
+            background: var(--background-alt); border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 2rem; margin: 2rem 0;
         }
-        
-        /* Advanced Builder Collapsible */
-        .advanced-builder {
-            margin-top: 3rem;
-            border: 2px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
+        .outreach-explainer h3 { color: var(--text-primary); margin-bottom: 0.75rem; }
+        .outreach-explainer p { color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7; margin-bottom: 0.75rem; }
+
+        /* Website Options */
+        .website-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .website-option {
+            background: var(--background-alt); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 1.5rem; transition: border-color 0.2s;
         }
-        .advanced-builder-header {
-            background: var(--background-alt);
-            padding: 1.25rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
+        .website-option:hover { border-color: var(--primary-color); }
+        .website-option h4 { color: var(--text-primary); margin-bottom: 0.25rem; }
+        .website-option .wo-price { color: var(--primary-color); font-weight: 700; font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .website-option p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; }
+
+        /* GLAM Callout */
+        .glam-callout {
+            background: linear-gradient(135deg, rgba(255,46,190,0.1), rgba(139,92,246,0.1));
+            border: 1px solid rgba(255,46,190,0.25); border-radius: 14px;
+            padding: 2rem; text-align: center; margin: 3rem 0;
+        }
+        .glam-callout h3 { color: var(--text-primary); font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .glam-callout p { color: var(--text-secondary); margin-bottom: 1rem; }
+        .glam-callout a { color: var(--primary-color); font-weight: 600; text-decoration: none; }
+        .glam-callout a:hover { text-decoration: underline; }
+
+        /* Post-Checkout */
+        .post-checkout { padding: 3rem 0; }
+        .post-checkout-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .post-step {
+            background: var(--background-alt); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 1.5rem; text-align: center;
+        }
+        .post-step .post-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .post-step h4 { color: var(--text-primary); margin-bottom: 0.5rem; }
+        .post-step p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; }
+
+        /* Accordion */
+        .accordion { margin: 2rem 0; }
+        .accordion-item { border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden; }
+        .accordion-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px; cursor: pointer; background: var(--background-alt);
+            color: var(--text-primary); font-weight: 600; font-size: 0.95rem;
             transition: background 0.2s;
         }
-        .advanced-builder-header:hover {
-            background: rgba(255, 46, 190, 0.05);
+        .accordion-header:hover { background: rgba(255,46,190,0.05); }
+        .accordion-header .acc-icon { transition: transform 0.2s; font-size: 1.2rem; color: var(--text-muted); }
+        .accordion-item.open .accordion-header .acc-icon { transform: rotate(45deg); }
+        .accordion-body {
+            max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+            padding: 0 20px; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
         }
-        .advanced-builder-header h3 {
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .accordion-item.open .accordion-body { max-height: 600px; padding: 0 20px 16px; }
+
+        /* Builder Layout */
+        .builder-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; margin: 2rem 0; }
+        @media (max-width: 900px) { .builder-layout { grid-template-columns: 1fr; } }
+        .builder-options { display: flex; flex-direction: column; gap: 1.5rem; }
+        .builder-section {
+            background: var(--background-alt); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem;
         }
-        .advanced-builder-header .toggle-icon {
-            font-size: 1.5rem;
-            transition: transform 0.3s;
+        .builder-section h4 { color: var(--text-primary); margin-bottom: 1rem; font-size: 1rem; }
+        .builder-section label { display: block; padding: 8px 0; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer; }
+        .builder-section label:hover { color: var(--text-primary); }
+        .builder-section input[type="radio"], .builder-section input[type="checkbox"] { margin-right: 8px; accent-color: var(--primary-color); }
+        .builder-section select {
+            width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--background); color: var(--text-primary); font-size: 0.9rem;
         }
-        .advanced-builder.open .toggle-icon {
-            transform: rotate(180deg);
+
+        /* Sticky Summary Sidebar */
+        .builder-summary {
+            position: sticky; top: 100px;
+            background: var(--background-alt); border: 2px solid var(--primary-color); border-radius: 14px;
+            padding: 1.5rem; align-self: start;
         }
-        .advanced-builder-content {
-            display: none;
-            padding: 1.5rem;
+        .builder-summary h3 { color: var(--text-primary); font-size: 1.1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; }
+        .summary-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.9rem; color: var(--text-secondary); }
+        .summary-line.total { border-top: 2px solid var(--border-color); margin-top: 8px; padding-top: 12px; font-weight: 700; color: var(--text-primary); font-size: 1rem; }
+        .summary-line .amount { color: var(--primary-color); font-weight: 600; }
+        .summary-line.total .amount { font-size: 1.15rem; }
+
+        /* Performance CTA */
+        .perf-cta {
+            background: linear-gradient(135deg, rgba(74,222,128,0.08), rgba(255,46,190,0.08));
+            border: 1px solid rgba(74,222,128,0.25); border-radius: 12px;
+            padding: 1.5rem; margin: 2rem 0; text-align: center;
         }
-        .advanced-builder.open .advanced-builder-content {
-            display: block;
+        .perf-cta h4 { color: var(--success-color); margin-bottom: 0.5rem; }
+        .perf-cta p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem; }
+
+        /* Business card add-on banner */
+        .addon-banner {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 1.25rem 1.5rem; margin: 1.5rem 0; display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
         }
-        
-        /* Mobile adjustments */
-        @media (max-width: 768px) {
-            .package-tabs {
-                flex-direction: column;
-                max-width: 100%;
-            }
-            .package-tab {
-                flex-direction: row;
-                justify-content: center;
-            }
-            .recommended-banner {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
+        .addon-banner .addon-info h4 { color: var(--text-primary); margin-bottom: 0.25rem; }
+        .addon-banner .addon-info p { color: var(--text-secondary); font-size: 0.85rem; }
     </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="container navbar-inner">
-            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;font-weight:800;">
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a class="nav-brand" href="index.html" style="text-decoration:none;color:inherit;">
                 <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo">
             </a>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a class="active" href="plans.html">Plans</a>
-                <a href="about.html">About</a>
-                <a href="faq.html">FAQ</a>
-                <a href="referrals.html">Referrals</a>
-                <a href="contact.html">Contact</a>
-                <a href="/portal" class="btn btn-primary" style="padding:8px 16px;font-size:14px;" data-track-cta="nav-login">Login</a>
-            </nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a class="active" href="plans.html">Plans</a></li>
+                <li><a href="about.html">GLAM</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="referrals.html">Referrals</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="/portal" class="btn btn-primary" style="padding:8px 16px;font-size:14px;" data-track-cta="nav-login">Login</a></li>
+            </ul>
         </div>
-    </header>
+    </nav>
 
-    <!-- Sale Banner (from pricing admin) -->
-    <div id="saleBanner" class="sale-banner" style="display:none;">
-        <div class="container">
-            <span class="sale-badge">🔥 SALE</span>
-            <span id="saleText">Limited Time Offer!</span>
-            <span id="saleTimer" class="sale-timer"></span>
-        </div>
-    </div>
+    <main>
+        <!-- Hero -->
+        <section class="section" style="padding-top: 6rem;">
+            <div class="container">
+                <div class="section-header">
+                    <h1 style="font-size: 2.5rem; color: var(--text-primary); margin-bottom: 0.5rem;">Packages &amp; Plans</h1>
+                    <p>From launch to scale — pick the path that fits your business today.</p>
+                </div>
+            </div>
+        </section>
 
-    <main class="container section">
-        <h1 class="section-title">Choose Your Package</h1>
-        <p class="pill" style="max-width:600px;margin:0 auto 1rem;">Three paths to get more clients. Pick the one that fits your stage and goals.</p>
+        <!-- How Boss Booker Works -->
+        <section class="how-it-works section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>How Boss Booker Works</h2>
+                    <p>Three phases to take your service business from setup to autopilot.</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>Foundation</h3>
+                        <p>One-time setup. We build your brand identity, booking system, and online presence so you look legit from day one.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>Growth</h3>
+                        <p>Monthly outreach engine. We actively contact leads on your behalf through calls, SMS, email, and DMs to fill your calendar.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>Automation + Ops</h3>
+                        <p>Full-service management. Automation handles follow-ups, AI manages chats, ads drive traffic, and we run operations so you focus on the work.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <!-- Recommended banner (shown when coming from quiz) -->
-        <div id="recommendedBanner" class="recommended-banner">
-            <strong>🎯 Recommended for you:</strong>
-            <p id="recommendedText">Based on your quiz, we think this is the best fit.</p>
-        </div>
+        <hr class="section-divider" style="max-width: 1200px; margin-left: auto; margin-right: auto;">
 
         <!-- Package Tabs -->
-        <div class="package-tabs" role="tablist">
-            <button class="package-tab active" role="tab" data-tab="starter-pack" aria-selected="true" id="tab-starter-pack">
-                <span class="tab-icon">🚀</span>
-                <span class="tab-label">Starter Pack</span>
-            </button>
-            <button class="package-tab" role="tab" data-tab="growth-engine" aria-selected="false" id="tab-growth-engine">
-                <span class="tab-icon">⚡</span>
-                <span class="tab-label">Growth Engine</span>
-            </button>
-            <button class="package-tab" role="tab" data-tab="operator" aria-selected="false" id="tab-operator">
-                <span class="tab-icon">🤝</span>
-                <span class="tab-label">Operator</span>
-            </button>
-        </div>
-
-        <!-- STARTER PACK Content -->
-        <div id="starter-pack" class="package-content active" role="tabpanel">
-            <h2 style="text-align:center;color:var(--text-primary);">🚀 Starter Pack — Launch</h2>
-            <p style="text-align:center;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem;">
-                Get your brand online and start capturing inquiries. Perfect for new businesses or those needing a fresh start.
-            </p>
-            
-            <div class="tier-cards">
-                <div class="tier-card" id="starterLiteCard">
-                    <h3 id="starterLiteTitle">Starter Lite</h3>
-                    <p class="tier-who" id="starterLiteWho">For solopreneurs testing the waters</p>
-                    <div class="tier-price" id="starterLitePrice">$499 <small>one-time</small></div>
-                    <div class="tier-timeline">⏱️ Launch in 3–5 days</div>
-                    <ul class="tier-features">
-                        <li>1-page website (mobile-optimized)</li>
-                        <li>Basic contact form</li>
-                        <li>Google Business Profile setup</li>
-                        <li>Social links integration</li>
-                        <li>1 revision round</li>
-                    </ul>
-                    <!-- Small Business Starter Kit Toggle -->
-                    <label style="display:flex;align-items:center;gap:8px;padding:12px;margin:12px 0;background:rgba(255,46,190,0.08);border:1px dashed var(--primary-color);border-radius:8px;cursor:pointer;font-size:0.85rem;">
-                        <input type="checkbox" id="smallBusinessToggle" onchange="toggleSmallBusinessKit()" style="width:18px;height:18px;accent-color:var(--primary-color);">
-                        <span><strong>I have fewer than 10 employees</strong><br><small style="color:var(--text-muted);">Switch to Small Business Starter Kit ($199/mo + $399 setup)</small></span>
-                    </label>
-                    <button class="btn btn-secondary" id="starterLiteBtn" onclick="startPackage('starter-lite', 499, true)">Start Lite →</button>
-                </div>
-                
-                <div class="tier-card featured">
-                    <span class="tier-badge">Most Popular</span>
-                    <h3>Starter Standard</h3>
-                    <p class="tier-who">For businesses ready to capture leads</p>
-                    <div class="tier-price">$999 <small>one-time</small></div>
-                    <div class="tier-timeline">⏱️ Launch in 5–7 days</div>
-                    <ul class="tier-features">
-                        <li>3-page website with booking/contact</li>
-                        <li>CRM setup (pipeline + basic automation)</li>
-                        <li>Google Business Profile optimization</li>
-                        <li>Missed-call text-back</li>
-                        <li>2 revision rounds</li>
-                        <li>30-day support</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="startPackage('starter-standard', 999, true)">Start Standard →</button>
-                </div>
-                
-                <div class="tier-card">
-                    <h3>Starter Plus</h3>
-                    <p class="tier-who">For businesses wanting the full foundation</p>
-                    <div class="tier-price">$1,499 <small>one-time</small></div>
-                    <div class="tier-timeline">⏱️ Launch in 7–10 days</div>
-                    <ul class="tier-features">
-                        <li>5-page website with booking</li>
-                        <li>Full CRM setup + automations</li>
-                        <li>Google Business Profile + basic SEO</li>
-                        <li>SMS templates + missed-call text-back</li>
-                        <li>Analytics dashboard</li>
-                        <li>3 revision rounds</li>
-                        <li>60-day support</li>
-                    </ul>
-                    <button class="btn btn-secondary" onclick="startPackage('starter-plus', 1499, true)">Start Plus →</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- GROWTH ENGINE Content -->
-        <div id="growth-engine" class="package-content" role="tabpanel">
-            <h2 style="text-align:center;color:var(--text-primary);">⚡ Growth Engine — Convert</h2>
-            <p style="text-align:center;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem;">
-                Turn inquiries into clients. Automated follow-ups, outreach, and marketing channels that work while you sleep.
-            </p>
-            
-            <div class="tier-cards">
-                <div class="tier-card">
-                    <h3>Growth Lite</h3>
-                    <p class="tier-who">For businesses ready to automate follow-ups</p>
-                    <div class="tier-price">$599 <small>/month</small></div>
-                    <div class="tier-timeline">⏱️ Setup in 5–7 days</div>
-                    <ul class="tier-features">
-                        <li>Automated follow-up sequences (3-touch)</li>
-                        <li>Client booking outreach (60 attempts/mo)</li>
-                        <li>CRM pipeline management</li>
-                        <li>Missed-call text-back</li>
-                        <li>Weekly KPI email</li>
-                        <li>15-min monthly strategy call</li>
-                    </ul>
-                    <button class="btn btn-secondary" onclick="startPackage('growth-lite', 599, false)">Start Lite →</button>
-                </div>
-                
-                <div class="tier-card featured">
-                    <span class="tier-badge">Best Value</span>
-                    <h3>Growth Standard</h3>
-                    <p class="tier-who">For businesses scaling their client acquisition</p>
-                    <div class="tier-price">$999 <small>/month</small></div>
-                    <div class="tier-timeline">⏱️ Setup in 7–10 days</div>
-                    <ul class="tier-features">
-                        <li>Automated follow-ups (4-touch + rules)</li>
-                        <li>Client booking outreach (150 attempts/mo)</li>
-                        <li>Pick 1: Google Ads OR Local SEO</li>
-                        <li>SMS assistant + templates</li>
-                        <li>Analytics dashboard</li>
-                        <li>30-min monthly strategy call</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="startPackage('growth-standard', 999, false)">Start Standard →</button>
-                </div>
-                
-                <div class="tier-card">
-                    <h3>Growth Plus</h3>
-                    <p class="tier-who">For aggressive growth and multi-channel marketing</p>
-                    <div class="tier-price">$1,899 <small>/month</small></div>
-                    <div class="tier-timeline">⏱️ Setup in 10–14 days</div>
-                    <ul class="tier-features">
-                        <li>Advanced follow-ups (5-touch + smart rules)</li>
-                        <li>Client booking outreach (300 attempts/mo)</li>
-                        <li>Google Ads + Local SEO included</li>
-                        <li>Website included or 50% credit</li>
-                        <li>AI chat widget</li>
-                        <li>45-min monthly strategy call</li>
-                    </ul>
-                    <button class="btn btn-secondary" onclick="startPackage('growth-plus', 1899, false)">Start Plus →</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- OPERATOR Content -->
-        <div id="operator" class="package-content" role="tabpanel">
-            <h2 style="text-align:center;color:var(--text-primary);">🤝 Operator — Monthly Partner</h2>
-            <p style="text-align:center;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem;">
-                We run it for you. Full-service management, optimization, and a dedicated team keeping your pipeline full.
-            </p>
-            
-            <div class="tier-cards">
-                <div class="tier-card">
-                    <h3>Operator Standard</h3>
-                    <p class="tier-who">For busy owners wanting hands-off operation</p>
-                    <div class="tier-price">$2,999 <small>/month</small></div>
-                    <div class="tier-timeline">⏱️ Onboarding: 2 weeks</div>
-                    <ul class="tier-features">
-                        <li>Everything in Growth Plus</li>
-                        <li>Client booking outreach (600 attempts/mo)</li>
-                        <li>Dedicated success manager</li>
-                        <li>Bi-weekly strategy calls</li>
-                        <li>Monthly performance reports</li>
-                        <li>Campaign optimization</li>
-                        <li>Priority support (same-day response)</li>
-                    </ul>
-                    <button class="btn btn-secondary" onclick="startPackage('operator-standard', 2999, false)">Start Standard →</button>
-                </div>
-                
-                <div class="tier-card featured">
-                    <span class="tier-badge">Full Service</span>
-                    <h3>Operator Pro</h3>
-                    <p class="tier-who">For growth-focused businesses wanting it all</p>
-                    <div class="tier-price">$4,199 <small>/month</small></div>
-                    <div class="tier-timeline">⏱️ Onboarding: 2 weeks</div>
-                    <ul class="tier-features">
-                        <li>Everything in Operator Standard</li>
-                        <li>Client booking outreach (1,200 attempts/mo)</li>
-                        <li>Multi-location support</li>
-                        <li>Advanced ads management (Google + Meta)</li>
-                        <li>Content calendar + social posting</li>
-                        <li>Quarterly exec reviews</li>
-                        <li>Custom integrations</li>
-                    </ul>
-                    <button class="btn btn-primary" onclick="startPackage('operator-pro', 4199, false)">Start Pro →</button>
-                </div>
-                
-                <div class="tier-card">
-                    <h3>Operator Enterprise</h3>
-                    <p class="tier-who">For multi-location or high-volume businesses</p>
-                    <div class="tier-price">Custom</div>
-                    <div class="tier-timeline">⏱️ Let's talk scope</div>
-                    <ul class="tier-features">
-                        <li>Everything in Operator Pro</li>
-                        <li>Unlimited outreach attempts</li>
-                        <li>Dedicated account team</li>
-                        <li>Custom SLAs</li>
-                        <li>White-label options</li>
-                        <li>API access + integrations</li>
-                        <li>On-premise options</li>
-                    </ul>
-                    <button class="btn btn-secondary" onclick="openServiceRequestModal('enterprise')">Contact Us →</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Advanced Builder (collapsed by default) -->
-        <div class="advanced-builder" id="advancedBuilder">
-            <div class="advanced-builder-header" onclick="toggleAdvancedBuilder()">
-                <h3>🔧 Advanced Builder <span style="font-weight:400;color:var(--text-muted);font-size:0.9rem;">(Customize your package)</span></h3>
-                <span class="toggle-icon">▼</span>
-            </div>
-            <div class="advanced-builder-content">
-                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">
-                    Power users: build a custom package from our full menu. Includes legacy bundles (Nano → Enterprise), GLAM plans, and à la carte add-ons.
-                </p>
-                
-                <!-- Base plans selection -->
-                <div class="card" style="margin-bottom:1.5rem;">
-                    <h3>Base Bundles</h3>
-                    <div id="basePlansContainer" class="radio-group"></div>
+        <section class="section" style="padding-top: 1rem;">
+            <div class="container">
+                <div class="package-tabs">
+                    <button class="package-tab active" data-tab="foundation" onclick="switchTab('foundation')">
+                        <span class="tab-icon">🧱</span>
+                        <span class="tab-label">Foundation</span>
+                        <span style="font-size:0.7rem;color:inherit;opacity:0.8;">One-time</span>
+                    </button>
+                    <button class="package-tab" data-tab="growth" onclick="switchTab('growth')">
+                        <span class="tab-icon">📈</span>
+                        <span class="tab-label">Growth</span>
+                        <span style="font-size:0.7rem;color:inherit;opacity:0.8;">Monthly</span>
+                    </button>
+                    <button class="package-tab" data-tab="ops" onclick="switchTab('ops')">
+                        <span class="tab-icon">⚙️</span>
+                        <span class="tab-label">Automation+Ops</span>
+                        <span style="font-size:0.7rem;color:inherit;opacity:0.8;">Monthly</span>
+                    </button>
+                    <button class="package-tab" data-tab="builder" onclick="switchTab('builder')">
+                        <span class="tab-icon">🔧</span>
+                        <span class="tab-label">Build Your Package</span>
+                        <span style="font-size:0.7rem;color:inherit;opacity:0.8;">Custom</span>
+                    </button>
                 </div>
 
-                <!-- GLAM Plans Section -->
-                <section id="glamSection" style="margin-bottom:1.5rem;">
-                    <h3 class="section-title" style="font-size:1.25rem;">GLAM by Boss Booker — Beauty & Creator Services</h3>
-                    <p class="pill" style="margin-bottom:12px;font-size:0.85rem;">Stylists, MUAs, braiders, nail artists and creators — DM-driven bookings, fast turnarounds. Sparkle included ✨</p>
-                    <div class="card">
-                        <div id="glamPlansContainer" class="radio-group"></div>
+                <!-- ===== FOUNDATION TAB ===== -->
+                <div id="tab-foundation" class="package-content active">
+                    <div class="section-header">
+                        <h2>Foundation Packages</h2>
+                        <p>One-time setup to build your brand, booking system, and digital presence.</p>
                     </div>
-                </section>
 
-                <!-- Customize + summary -->
-                <div class="grid-2">
-                    <div class="card">
-                        <h3>Tiered Add-ons</h3>
-                        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Select one tier per category (optional)</p>
-                        <div id="tieredAddonsContainer"></div>
+                    <div class="tier-cards">
+                        <!-- Foundation Lite -->
+                        <div class="tier-card">
+                            <h3>Foundation Lite</h3>
+                            <div class="price">$499</div>
+                            <div class="price-note">One-time</div>
+                            <ul>
+                                <li>Logo design (1 concept, 1 revision round)</li>
+                                <li>Brand color palette</li>
+                                <li>CRM setup (basic pipeline)</li>
+                                <li>Booking link configuration</li>
+                                <li>1 revision round included (extra rounds $25 each)</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('foundation-lite')" data-track-cta="start-foundation-lite">Start Foundation →</button>
+                        </div>
 
-                        <h3 style="margin-top:24px;">Additional Services</h3>
-                        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Select any that apply</p>
-                        <div id="flatAddonsContainer" class="checkbox-group"></div>
-                        
-                        <!-- Business Card Design + Print -->
-                        <h3 style="margin-top:24px;">📇 Business Card Design + Print</h3>
-                        <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-top: 8px;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap;">
-                                <div style="flex: 1; min-width: 200px;">
-                                    <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Business Card Design + Print</div>
-                                    <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Clean, pro business cards — template-based or fully custom. Choose single/double sided and quantity.</div>
-                                    <div id="businessCardSummary" style="font-size: 12px; color: var(--text-secondary); margin-top: 8px; display: none;"></div>
+                        <!-- Foundation Standard -->
+                        <div class="tier-card featured">
+                            <span class="featured-badge">Most Popular</span>
+                            <h3>Foundation Standard</h3>
+                            <div class="price">$999</div>
+                            <div class="price-note">One-time</div>
+                            <ul>
+                                <li>Logo design (2 concepts, 2 revision rounds)</li>
+                                <li>Brand color palette + typography</li>
+                                <li>CRM setup (full pipeline + automations)</li>
+                                <li>Booking link + calendar integration</li>
+                                <li>GBP + Local Presence setup</li>
+                                <li>Social profile optimization (up to 2)</li>
+                                <li>2 revision rounds included (extra rounds $25 each)</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('foundation-standard')" data-track-cta="start-foundation-standard">Start Foundation →</button>
+                        </div>
+
+                        <!-- Foundation Plus -->
+                        <div class="tier-card">
+                            <h3>Foundation Plus</h3>
+                            <div class="price">$1,499</div>
+                            <div class="price-note">One-time</div>
+                            <ul>
+                                <li>Everything in Standard</li>
+                                <li>Logo design (3 concepts, 3 revision rounds)</li>
+                                <li>Brand style guide document</li>
+                                <li>Social profile optimization (up to 4)</li>
+                                <li>Basic automation workflows</li>
+                                <li>Conversion Landing Page included</li>
+                                <li>3 revision rounds included (extra rounds $25 each)</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('foundation-plus')" data-track-cta="start-foundation-plus">Start Foundation →</button>
+                        </div>
+                    </div>
+
+                    <!-- Website Options -->
+                    <h3 style="color: var(--text-primary); margin-top: 2.5rem; margin-bottom: 0.5rem;">Optional Website Add-Ons</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1rem;">Add a web presence to any Foundation package.</p>
+                    <div class="website-options">
+                        <div class="website-option">
+                            <h4>Basic Info Page</h4>
+                            <div class="wo-price">$349</div>
+                            <p>Template-based single page with your branding, services, hours, and contact info. No CRM integration.</p>
+                        </div>
+                        <div class="website-option">
+                            <h4>Conversion Landing Page</h4>
+                            <div class="wo-price">$599</div>
+                            <p>Custom-designed landing page with lead capture form, CRM integration, call tracking, and conversion analytics.</p>
+                        </div>
+                    </div>
+
+                    <!-- Business Cards Add-On -->
+                    <div class="addon-banner">
+                        <div class="addon-info">
+                            <h4>📇 Business Cards</h4>
+                            <p>Printing included. Shipping billed separately. Pickup available.</p>
+                        </div>
+                        <button type="button" class="btn-primary" onclick="openBusinessCardModal()" style="white-space:nowrap; padding: 10px 20px;">Configure Cards</button>
+                    </div>
+                    <div id="businessCardSummary" style="display:none; padding:12px 16px; background:rgba(255,46,190,0.06); border-radius:8px; margin-top:8px; font-size:0.9rem; color:var(--text-secondary);"></div>
+                </div>
+
+                <!-- ===== GROWTH TAB ===== -->
+                <div id="tab-growth" class="package-content">
+                    <div class="section-header">
+                        <h2>Growth Packages</h2>
+                        <p>Monthly outreach engine — we contact leads and fill your calendar.</p>
+                    </div>
+
+                    <div class="attempt-callout">
+                        <strong>What is an attempt?</strong> An attempt is one outbound contact action through an approved channel (call, SMS, email, or DM) to a specific lead.
+                    </div>
+
+                    <div class="tier-cards">
+                        <!-- Growth Lite -->
+                        <div class="tier-card">
+                            <h3>Growth Lite</h3>
+                            <div class="price">$599<span style="font-size:1rem;font-weight:400;">/mo</span></div>
+                            <div class="price-note">60 attempts per month</div>
+                            <ul>
+                                <li>60 outbound contact attempts/month</li>
+                                <li>Lead list sourcing</li>
+                                <li>CRM lead tracking</li>
+                                <li>Monthly performance report</li>
+                                <li>1 revision round included (extra rounds $25 each)</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('growth-lite')" data-track-cta="start-growth-lite">Start Growth →</button>
+                        </div>
+
+                        <!-- Growth Standard -->
+                        <div class="tier-card featured">
+                            <span class="featured-badge">Most Popular</span>
+                            <h3>Growth Standard</h3>
+                            <div class="price">$999<span style="font-size:1rem;font-weight:400;">/mo</span></div>
+                            <div class="price-note">120 attempts per month</div>
+                            <ul>
+                                <li>120 outbound contact attempts/month</li>
+                                <li>Lead list sourcing + qualification</li>
+                                <li>CRM pipeline management</li>
+                                <li>Follow-up sequences</li>
+                                <li>Bi-weekly performance reports</li>
+                                <li>2 revision rounds included (extra rounds $25 each)</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('growth-standard')" data-track-cta="start-growth-standard">Start Growth →</button>
+                        </div>
+
+                        <!-- Growth Plus -->
+                        <div class="tier-card">
+                            <h3>Growth Plus</h3>
+                            <div class="price">$1,899<span style="font-size:1rem;font-weight:400;">/mo</span></div>
+                            <div class="price-note">300 attempts per month</div>
+                            <ul>
+                                <li>300 outbound contact attempts/month</li>
+                                <li>Lead list sourcing + deep qualification</li>
+                                <li>CRM pipeline management + automation</li>
+                                <li>Multi-channel follow-up sequences</li>
+                                <li>Weekly performance reports</li>
+                                <li>Dedicated account manager</li>
+                                <li>3 revision rounds included (extra rounds $25 each)</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('growth-plus')" data-track-cta="start-growth-plus">Start Growth →</button>
+                        </div>
+                    </div>
+
+                    <!-- Outreach Model Explainer -->
+                    <div class="outreach-explainer">
+                        <h3>How Our Outreach Model Works</h3>
+                        <p><strong>Attempt-based model:</strong> You pay a flat monthly rate for a set number of outbound contact attempts. An attempt is one outbound contact action through an approved channel (call, SMS, email, or DM) to a specific lead. This model gives you predictable costs with transparent reporting.</p>
+                        <p><strong>Performance-based booking:</strong> Want to pay only for results? Our performance tier charges per booked appointment instead of per attempt. A booked appointment = confirmed date/time on calendar meeting minimum qualification rules. No-shows, cancellations, duplicates, and unqualified leads do not count.</p>
+                    </div>
+
+                    <!-- Performance-Based CTA -->
+                    <div class="perf-cta">
+                        <h4>🎯 Prefer Performance-Based Booking?</h4>
+                        <p>Pay per booked appointment instead of per attempt. Only qualified, confirmed bookings count.</p>
+                        <a href="contact.html" class="btn btn-primary" style="display:inline-block;padding:12px 24px;" data-track-cta="perf-booking-inquiry">Talk to Sales →</a>
+                    </div>
+                </div>
+
+                <!-- ===== AUTOMATION + OPS TAB ===== -->
+                <div id="tab-ops" class="package-content">
+                    <div class="section-header">
+                        <h2>Automation + Ops Packages</h2>
+                        <p>Full-service management — automation, ads, AI, and operations handled for you.</p>
+                    </div>
+
+                    <div class="attempt-callout">
+                        <strong>What is an attempt?</strong> An attempt is one outbound contact action through an approved channel (call, SMS, email, or DM) to a specific lead.
+                    </div>
+
+                    <div class="tier-cards">
+                        <!-- Ops Standard -->
+                        <div class="tier-card">
+                            <h3>Ops Standard</h3>
+                            <div class="price">$2,999<span style="font-size:1rem;font-weight:400;">/mo</span></div>
+                            <div class="price-note">600 attempts per month</div>
+                            <ul>
+                                <li>600 outbound contact attempts/month</li>
+                                <li>Full CRM automation + pipeline</li>
+                                <li>AI chat integration</li>
+                                <li>PPC ad management (ad spend billed separately)</li>
+                                <li>GBP + Local Presence management</li>
+                                <li>Social media posting</li>
+                                <li>Weekly reports + strategy calls</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('ops-standard')" data-track-cta="start-ops-standard">Start Ops →</button>
+                        </div>
+
+                        <!-- Ops Pro -->
+                        <div class="tier-card featured">
+                            <span class="featured-badge">Best Value</span>
+                            <h3>Ops Pro</h3>
+                            <div class="price">$4,199<span style="font-size:1rem;font-weight:400;">/mo</span></div>
+                            <div class="price-note">1,200 attempts per month</div>
+                            <ul>
+                                <li>1,200 outbound contact attempts/month</li>
+                                <li>Everything in Ops Standard</li>
+                                <li>Advanced automation workflows</li>
+                                <li>Multi-channel ad management</li>
+                                <li>Dedicated ops manager</li>
+                                <li>Priority support + Slack channel</li>
+                                <li>Custom reporting dashboard</li>
+                            </ul>
+                            <button class="btn-primary" onclick="openServiceRequestModal('ops-pro')" data-track-cta="start-ops-pro">Start Ops →</button>
+                        </div>
+
+                        <!-- Ops Enterprise -->
+                        <div class="tier-card">
+                            <h3>Ops Enterprise</h3>
+                            <div class="price">Custom</div>
+                            <div class="price-note">Tailored to your operation</div>
+                            <ul>
+                                <li>Custom attempt volume</li>
+                                <li>Everything in Ops Pro</li>
+                                <li>White-label options</li>
+                                <li>Multi-location support</li>
+                                <li>Custom integrations</li>
+                                <li>Dedicated team</li>
+                                <li>SLA guarantees</li>
+                            </ul>
+                            <button class="btn-secondary" onclick="openServiceRequestModal('ops-enterprise')" data-track-cta="talk-to-sales-enterprise">Talk to Sales →</button>
+                        </div>
+                    </div>
+
+                    <div class="attempt-callout" style="margin-top: 1.5rem;">
+                        <strong>💡 Ad spend note:</strong> Ad spend is paid separately by the client. Boss Booker manages campaign setup, optimization, and reporting — you control the budget directly with the ad platform.
+                    </div>
+                </div>
+
+                <!-- ===== BUILD YOUR PACKAGE TAB ===== -->
+                <div id="tab-builder" class="package-content">
+                    <div class="section-header">
+                        <h2>Build Your Package</h2>
+                        <p>Mix and match services to create the perfect plan for your business.</p>
+                    </div>
+
+                    <div class="builder-layout">
+                        <div class="builder-options">
+                            <!-- Base Tier -->
+                            <div class="builder-section">
+                                <h4>📦 Base Tier <span style="font-size:0.8rem;color:var(--text-muted);">(required)</span></h4>
+                                <label><input type="radio" name="builderBase" value="nano" data-monthly="599" data-setup="0" checked onchange="updateBuilder()"> <strong>Nano</strong> — $599/mo</label>
+                                <label><input type="radio" name="builderBase" value="micro" data-monthly="799" data-setup="299" onchange="updateBuilder()"> <strong>Micro</strong> — $799/mo + $299 setup</label>
+                                <label><input type="radio" name="builderBase" value="pro" data-monthly="3799" data-setup="0" onchange="updateBuilder()"> <strong>Pro</strong> — $3,799/mo</label>
+                                <label><input type="radio" name="builderBase" value="scale" data-monthly="4199" data-setup="1200" onchange="updateBuilder()"> <strong>Scale</strong> — $4,199/mo + $1,200 setup</label>
+                                <label><input type="radio" name="builderBase" value="enterprise" data-monthly="0" data-setup="0" onchange="updateBuilder()"> <strong>Enterprise</strong> — Custom pricing</label>
+                            </div>
+
+                            <!-- Appointment Setting Add-On -->
+                            <div class="builder-section">
+                                <h4>📞 Appointment Setting Add-On</h4>
+                                <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;">An attempt is one outbound contact action through an approved channel (call, SMS, email, or DM) to a specific lead.</p>
+                                <label><input type="radio" name="builderAppt" value="none" data-monthly="0" checked onchange="updateBuilder()"> None</label>
+                                <label><input type="radio" name="builderAppt" value="60" data-monthly="199" onchange="updateBuilder()"> 60 attempts — $199/mo</label>
+                                <label><input type="radio" name="builderAppt" value="120" data-monthly="349" onchange="updateBuilder()"> 120 attempts — $349/mo</label>
+                                <label><input type="radio" name="builderAppt" value="300" data-monthly="699" onchange="updateBuilder()"> 300 attempts — $699/mo</label>
+                                <label><input type="radio" name="builderAppt" value="1200" data-monthly="1999" onchange="updateBuilder()"> 1,200 attempts — $1,999/mo</label>
+                            </div>
+
+                            <!-- PPC + Local Add-On -->
+                            <div class="builder-section">
+                                <h4>📣 PPC + Local Add-On</h4>
+                                <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;">Ad spend is paid separately by the client.</p>
+                                <div style="margin-bottom:10px;">
+                                    <strong style="color:var(--text-primary);font-size:0.9rem;">PPC Management</strong>
+                                    <label><input type="radio" name="builderPPC" value="none" data-monthly="0" checked onchange="updateBuilder()"> None</label>
+                                    <label><input type="radio" name="builderPPC" value="basic" data-monthly="299" onchange="updateBuilder()"> Basic — $299/mo</label>
+                                    <label><input type="radio" name="builderPPC" value="standard" data-monthly="499" onchange="updateBuilder()"> Standard — $499/mo</label>
+                                    <label><input type="radio" name="builderPPC" value="advanced" data-monthly="799" onchange="updateBuilder()"> Advanced — $799/mo</label>
                                 </div>
-                                <button type="button" class="btn-primary" onclick="openBusinessCardModal()" style="white-space: nowrap;">Configure</button>
+                                <div>
+                                    <strong style="color:var(--text-primary);font-size:0.9rem;">Local Presence</strong>
+                                    <label><input type="radio" name="builderLocal" value="none" data-monthly="0" checked onchange="updateBuilder()"> None</label>
+                                    <label><input type="radio" name="builderLocal" value="basic" data-monthly="149" onchange="updateBuilder()"> Basic — $149/mo</label>
+                                    <label><input type="radio" name="builderLocal" value="standard" data-monthly="299" onchange="updateBuilder()"> Standard — $299/mo</label>
+                                </div>
                             </div>
+
+                            <!-- One-Time Services Add-On -->
+                            <div class="builder-section">
+                                <h4>🎨 One-Time Services</h4>
+                                <label><input type="checkbox" name="builderOneTime" value="infopage" data-onetime="349" onchange="updateBuilder()"> Basic Info Page — $349</label>
+                                <label><input type="checkbox" name="builderOneTime" value="landingpage" data-onetime="599" onchange="updateBuilder()"> Conversion Landing Page — $599</label>
+                                <label><input type="checkbox" name="builderOneTime" value="gbpsetup" data-onetime="149" onchange="updateBuilder()"> GBP Setup — $149</label>
+                                <div style="margin-top:8px;">
+                                    <label style="display:flex;align-items:center;gap:8px;">
+                                        <input type="checkbox" id="builderBizCards" onchange="updateBuilder()"> Business Cards
+                                        <button type="button" class="btn-secondary" onclick="openBusinessCardModal()" style="padding:4px 12px;font-size:0.8rem;margin-left:auto;">Configure</button>
+                                    </label>
+                                    <p style="font-size:0.78rem;color:var(--text-muted);margin:4px 0 0 24px;">Printing included. Shipping billed separately. Pickup available.</p>
+                                </div>
+                            </div>
+
+                            <!-- Monthly Services Add-On -->
+                            <div class="builder-section">
+                                <h4>🔁 Monthly Services</h4>
+                                <label><input type="checkbox" name="builderMonthly" value="automation" data-monthly="149" onchange="updateBuilder()"> Core Automation — $149/mo</label>
+                                <label><input type="checkbox" name="builderMonthly" value="sms" data-monthly="99" onchange="updateBuilder()"> SMS Templates — $99/mo</label>
+                                <label><input type="checkbox" name="builderMonthly" value="aichat" data-monthly="199" onchange="updateBuilder()"> AI Chat — $199/mo</label>
+                                <label><input type="checkbox" name="builderMonthly" value="social" data-monthly="299" onchange="updateBuilder()"> Social Posting — $299/mo</label>
+                            </div>
+
+                            <!-- Performance-Based Booking Add-On -->
+                            <div class="builder-section">
+                                <h4>🎯 Performance-Based Booking</h4>
+                                <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:8px;">Booked appointment = confirmed date/time on calendar meeting minimum qualification rules. No-shows, cancellations, duplicates, unqualified leads do not count.</p>
+                                <label><input type="checkbox" id="builderPerfBooking" onchange="updateBuilder()"> Add performance-based booking (custom pricing — we'll follow up)</label>
+                            </div>
+                        </div>
+
+                        <!-- Sticky Summary Sidebar -->
+                        <div class="builder-summary">
+                            <h3>📋 Your Package Summary</h3>
+                            <div id="builderSummaryLines">
+                                <div class="summary-line"><span>Base Tier</span><span class="amount" id="sumBase">$599/mo</span></div>
+                                <div class="summary-line"><span>Appointment Setting</span><span class="amount" id="sumAppt">—</span></div>
+                                <div class="summary-line"><span>PPC Management</span><span class="amount" id="sumPPC">—</span></div>
+                                <div class="summary-line"><span>Local Presence</span><span class="amount" id="sumLocal">—</span></div>
+                                <div class="summary-line"><span>Monthly Services</span><span class="amount" id="sumMonthly">—</span></div>
+                                <div class="summary-line"><span>One-Time Services</span><span class="amount" id="sumOneTime">—</span></div>
+                            </div>
+                            <hr style="border-color: var(--border-color); margin: 12px 0;">
+                            <div class="summary-line"><span>One-Time Subtotal</span><span class="amount" id="sumOneTimeTotal">$0</span></div>
+                            <div class="summary-line"><span>Monthly Subtotal</span><span class="amount" id="sumMonthlyTotal">$599/mo</span></div>
+                            <div class="summary-line"><span>Setup Fees</span><span class="amount" id="sumSetup">$0</span></div>
+                            <div class="summary-line total"><span>Due Today</span><span class="amount" id="sumDueToday">$0</span></div>
+                            <div class="summary-line total"><span>Monthly Ongoing</span><span class="amount" id="sumOngoing">$599/mo</span></div>
+                            <div id="builderPerfNote" style="display:none;margin-top:10px;padding:10px;background:rgba(74,222,128,0.08);border-radius:8px;font-size:0.82rem;color:var(--success-color);">
+                                ✅ Performance-based booking selected — custom pricing will be discussed during onboarding.
+                            </div>
+                            <div id="builderEnterpriseNote" style="display:none;margin-top:10px;padding:10px;background:rgba(255,46,190,0.08);border-radius:8px;font-size:0.82rem;color:var(--primary-color);">
+                                Enterprise tier selected — all pricing is custom. We'll build a tailored quote.
+                            </div>
+                            <button class="btn-primary" style="width:100%;margin-top:16px;padding:14px;" onclick="openServiceRequestModal('custom-builder')" data-track-cta="build-my-package">Build My Package →</button>
                         </div>
                     </div>
+                </div>
 
-                    <aside class="summary-card">
-                        <h3>Summary</h3>
-                        <div class="summary-content">
-                            <div class="summary-line">
-                                <span>Base Plan:</span>
-                                <strong id="summaryPlanName">—</strong>
-                            </div>
-                            <div class="summary-line" id="summaryOriginalRow" style="display:none;">
-                                <span>Original Price:</span>
-                                <span id="summaryOriginalPrice" style="text-decoration:line-through;color:var(--text-muted);">$0</span>
-                            </div>
-                            <div class="summary-line">
-                                <span>Monthly Total:</span>
-                                <strong class="price-highlight" id="summaryMonthly">$0</strong>
-                            </div>
-                            <div class="summary-line" id="summarySetupRow">
-                                <span>One-time Setup:</span>
-                                <strong id="summarySetup">$0</strong>
-                            </div>
-                            <div class="summary-line summary-total">
-                                <span>First Month Due:</span>
-                                <strong class="price-highlight" id="summaryFirstMonth">$0</strong>
-                            </div>
-                            
-                            <div id="summaryAddons" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-color);display:none;">
-                                <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Selected Add-ons:</div>
-                                <div id="summaryAddonsList"></div>
-                            </div>
-                            
-                            <p style="color:var(--text-secondary);font-size:11px;margin-top:16px;">
-                                Note: Bundles include platform setup, quiet-hours compliance, basic analytics and weekly KPI email. Carrier fees billed at cost.
-                            </p>
-                            
-                            <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
-                                <button class="btn-primary" onclick="copyQuote()" data-track-cta="copy-quote">📋 Copy Quote</button>
-                                <button class="btn-secondary" onclick="openServiceRequestModal()" data-track-cta="submit-plan-for-review">Submit Plan for Review</button>
-                            </div>
-                        </div>
-                    </aside>
+            </div>
+        </section>
+
+        <!-- GLAM Callout -->
+        <section class="section">
+            <div class="container">
+                <div class="glam-callout">
+                    <h3>✨ Looking for GLAM-Specific Plans?</h3>
+                    <p>Hair stylists, barbers, estheticians, nail techs, and beauty pros — we have packages built just for you.</p>
+                    <a href="about.html" data-track-cta="glam-plans-link">View GLAM Plans →</a>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- What Happens After Checkout -->
+        <section class="post-checkout section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>What Happens After Checkout</h2>
+                    <p>From sign-up to results in four simple steps.</p>
+                </div>
+                <div class="post-checkout-grid">
+                    <div class="post-step">
+                        <div class="post-icon">📋</div>
+                        <h4>Intake Form</h4>
+                        <p>Complete a short questionnaire so we understand your business, goals, and preferences.</p>
+                    </div>
+                    <div class="post-step">
+                        <div class="post-icon">🔑</div>
+                        <h4>Access Handoff</h4>
+                        <p>Share logins and assets securely. We'll set up your CRM, tools, and integrations.</p>
+                    </div>
+                    <div class="post-step">
+                        <div class="post-icon">📞</div>
+                        <h4>Kickoff Call</h4>
+                        <p>30-minute call to align on strategy, timelines, and deliverables with your account manager.</p>
+                    </div>
+                    <div class="post-step">
+                        <div class="post-icon">🚀</div>
+                        <h4>Implementation</h4>
+                        <p>We build, launch, and start driving results. You'll receive progress updates along the way.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Definitions & Policies -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Definitions &amp; Policies</h2>
+                </div>
+                <div class="accordion" id="definitionsAccordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Attempt</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>An attempt is one outbound contact action through an approved channel (call, SMS, email, or DM) to a specific lead. Each unique contact to a unique lead counts as one attempt. Follow-up attempts to the same lead are counted separately.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Lead</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>A lead is a potential customer identified through sourcing, inbound interest, or referral who has not yet booked an appointment. Leads are tracked in your CRM pipeline.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Appointment</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>A confirmed booking on your calendar with a specific date, time, and service. The lead has agreed to attend and meets minimum qualification criteria.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Business Hours</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Monday through Friday, 9:00 AM to 5:00 PM local time. Can be customized during onboarding.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Ad Spend</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Ad spend is paid separately by the client. Boss Booker manages campaign setup, targeting, optimization, and reporting. You maintain direct control of your ad budget through the advertising platform (Google Ads, Meta, etc.).</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Setup Fees</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>One-time fees charged at the start of service for initial platform configuration, account creation, and onboarding. Setup fees are non-refundable and due before work begins.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Revisions</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Each tier includes a set number of revision rounds: Lite includes 1 round, Standard includes 2 rounds, Plus includes 3 rounds. A revision round covers one set of consolidated feedback. Extra revision rounds are $25 each.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Business Cards</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Printing included. Shipping billed separately. Pickup available. Template cards include 1 revision round. Custom cards include 2 revision rounds. Extra revision rounds: $25 each. Rush / same-day: +$35.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Performance-Based Booking</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Booked appointment = confirmed date/time on calendar meeting minimum qualification rules. No-shows, cancellations, duplicates, unqualified leads do not count. Pricing is custom and agreed upon during onboarding based on your industry, service value, and volume requirements.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>GBP + Local Presence</span><span class="acc-icon">+</span>
+                        </div>
+                        <div class="accordion-body">
+                            <p>Google Business Profile optimization, local presence setup, citations basics, review workflow guidance, and basic on-page/local signals (where applicable). Full SEO (ongoing content + deeper optimization) is available by custom scope.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer class="footer">
@@ -584,7 +813,7 @@
             <div class="footer-bottom" style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;">
                 <div style="display:flex;align-items:center;gap:12px;">
                     <img src="/boss-booker_logo_primary.png" alt="Boss Booker logo" style="height:32px;width:32px;border-radius:6px;box-shadow:0 2px 8px rgba(255,46,190,0.15);">
-                    <p style="margin:0;">© 2025 Boss Booker. All rights reserved.</p>
+                    <p style="margin:0;">&copy; 2025 Boss Booker. All rights reserved.</p>
                 </div>
                 <span style="color:var(--border-color);">|</span>
                 <a href="tel:+16028422772" class="phone-link" style="display:flex;align-items:center;gap:6px;color:var(--primary-color);text-decoration:none;font-weight:500;">
@@ -602,10 +831,8 @@
                 <h2 style="margin:0; color:var(--text-primary);">Business Card Design + Print</h2>
                 <button onclick="closeBusinessCardModal()" class="btn-secondary" style="padding:6px 12px;">Close</button>
             </div>
-            
             <form id="businessCardForm">
                 <div style="display:grid; gap:20px;">
-                    <!-- Package Toggle -->
                     <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
                         <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Package Type</legend>
                         <div class="radio-group" style="gap: 10px;">
@@ -619,8 +846,6 @@
                             </label>
                         </div>
                     </fieldset>
-
-                    <!-- Sides Toggle -->
                     <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
                         <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Card Sides</legend>
                         <div class="radio-group" style="gap: 10px;">
@@ -634,8 +859,6 @@
                             </label>
                         </div>
                     </fieldset>
-
-                    <!-- Quantity Toggle -->
                     <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
                         <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Quantity</legend>
                         <div class="radio-group" style="gap: 10px;">
@@ -653,8 +876,6 @@
                             </label>
                         </div>
                     </fieldset>
-
-                    <!-- Add-on +100 cards -->
                     <fieldset style="border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: rgba(255,255,255,0.02);">
                         <legend style="color: var(--text-primary); font-weight: 600; padding: 0 8px;">Optional Add-on</legend>
                         <label class="checkbox-option" style="padding: 12px;">
@@ -662,8 +883,6 @@
                             <span><strong>Add +100 more cards</strong></span>
                         </label>
                     </fieldset>
-
-                    <!-- Live Price Display -->
                     <div style="background: var(--background); border: 2px solid var(--primary-color); border-radius: 10px; padding: 20px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <span style="font-size: 18px; font-weight: 600; color: var(--text-primary);">Total (per order):</span>
@@ -673,15 +892,13 @@
                             Package: Template • Sides: Single • Qty: 100 • Add-on: No
                         </div>
                     </div>
-
-                    <!-- Fine Print -->
                     <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 8px;">
+                        <div style="margin-bottom: 6px;">• Printing included. Shipping billed separately. Pickup available.</div>
                         <div style="margin-bottom: 6px;">• Template includes 1 revision round. Custom includes 2 revision rounds.</div>
                         <div style="margin-bottom: 6px;">• Extra revision rounds: $25 each.</div>
                         <div>• Rush / same-day: +$35.</div>
                     </div>
                 </div>
-                
                 <div style="display:flex; gap:10px; margin-top:20px;">
                     <button type="button" onclick="applyBusinessCardSelection()" class="btn-primary">Apply Selection</button>
                     <button type="button" onclick="closeBusinessCardModal()" class="btn-secondary">Cancel</button>
@@ -748,741 +965,193 @@
     <script src="/datastore.js"></script>
     <script src="/pricing-admin.js"></script>
     <script src="/analytics.js"></script>
+    <script src="/plans.js"></script>
     <script>
-    /**
-     * Plans Page - Tab Navigation + Dynamic Pricing
-     */
-    (function() {
-        'use strict';
-        
-        let pricing = null;
-        let sale = null;
-        let selectedPlan = null;
-        let selectedPackage = null; // For tier card selection
-        let selectedAddons = {
-            tiered: {},
-            flat: []
-        };
-        
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        
-        document.addEventListener('DOMContentLoaded', init);
-        
-        function init() {
-            loadPricing();
-            setupTabs();
-            handleDeepLinks();
-            renderAdvancedBuilder();
-            updateSummary();
-            
-            // Form submission
-            const form = document.getElementById('serviceRequestForm');
-            if (form) {
-                form.addEventListener('submit', handleFormSubmit);
-            }
-            
-            // Track page view
-            if (typeof Analytics !== 'undefined') {
-                Analytics.trackPageView();
-            }
+    /* ---- Tab Switching ---- */
+    function switchTab(tabName) {
+        document.querySelectorAll('.package-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.package-content').forEach(function(c) { c.classList.remove('active'); });
+        var btn = document.querySelector('.package-tab[data-tab="' + tabName + '"]');
+        var content = document.getElementById('tab-' + tabName);
+        if (btn) btn.classList.add('active');
+        if (content) content.classList.add('active');
+    }
+
+    /* ---- Accordion ---- */
+    function toggleAccordion(header) {
+        var item = header.parentElement;
+        var wasOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.accordion-item').forEach(function(i) { i.classList.remove('open'); });
+        if (!wasOpen) item.classList.add('open');
+    }
+
+    /* ---- Builder Calculator ---- */
+    function updateBuilder() {
+        var baseEl = document.querySelector('input[name="builderBase"]:checked');
+        var apptEl = document.querySelector('input[name="builderAppt"]:checked');
+        var ppcEl = document.querySelector('input[name="builderPPC"]:checked');
+        var localEl = document.querySelector('input[name="builderLocal"]:checked');
+        var perfBooking = document.getElementById('builderPerfBooking');
+
+        var baseMonthly = parseInt(baseEl.dataset.monthly) || 0;
+        var baseSetup = parseInt(baseEl.dataset.setup) || 0;
+        var isEnterprise = baseEl.value === 'enterprise';
+
+        var apptMonthly = parseInt(apptEl.dataset.monthly) || 0;
+        var ppcMonthly = parseInt(ppcEl.dataset.monthly) || 0;
+        var localMonthly = parseInt(localEl.dataset.monthly) || 0;
+
+        // Monthly services checkboxes
+        var monthlyServicesTotal = 0;
+        document.querySelectorAll('input[name="builderMonthly"]:checked').forEach(function(cb) {
+            monthlyServicesTotal += parseInt(cb.dataset.monthly) || 0;
+        });
+
+        // One-time services checkboxes
+        var oneTimeTotal = 0;
+        document.querySelectorAll('input[name="builderOneTime"]:checked').forEach(function(cb) {
+            oneTimeTotal += parseInt(cb.dataset.onetime) || 0;
+        });
+
+        // Business cards
+        var bizCardsEl = document.getElementById('builderBizCards');
+        var bizCardsTotal = 0;
+        if (bizCardsEl && bizCardsEl.checked && window.businessCardSelection) {
+            bizCardsTotal = window.businessCardSelection.total || 0;
         }
-        
-        function loadPricing() {
-            if (typeof PricingAdmin !== 'undefined') {
-                pricing = PricingAdmin.getPricing();
-                sale = PricingAdmin.getSale();
-            } else {
-                pricing = getDefaultPricing();
-            }
+        oneTimeTotal += bizCardsTotal;
+
+        var totalMonthly = baseMonthly + apptMonthly + ppcMonthly + localMonthly + monthlyServicesTotal;
+        var dueToday = baseSetup + oneTimeTotal;
+
+        // Update display
+        function fmt(n) { return '$' + n.toLocaleString(); }
+
+        document.getElementById('sumBase').textContent = isEnterprise ? 'Custom' : fmt(baseMonthly) + '/mo';
+        document.getElementById('sumAppt').textContent = apptMonthly ? fmt(apptMonthly) + '/mo' : '\u2014';
+        document.getElementById('sumPPC').textContent = ppcMonthly ? fmt(ppcMonthly) + '/mo' : '\u2014';
+        document.getElementById('sumLocal').textContent = localMonthly ? fmt(localMonthly) + '/mo' : '\u2014';
+        document.getElementById('sumMonthly').textContent = monthlyServicesTotal ? fmt(monthlyServicesTotal) + '/mo' : '\u2014';
+        document.getElementById('sumOneTime').textContent = oneTimeTotal ? fmt(oneTimeTotal) : '\u2014';
+
+        document.getElementById('sumOneTimeTotal').textContent = fmt(oneTimeTotal);
+        document.getElementById('sumMonthlyTotal').textContent = isEnterprise ? 'Custom' : fmt(totalMonthly) + '/mo';
+        document.getElementById('sumSetup').textContent = fmt(baseSetup);
+        document.getElementById('sumDueToday').textContent = isEnterprise ? 'Custom' : fmt(dueToday);
+        document.getElementById('sumOngoing').textContent = isEnterprise ? 'Custom' : fmt(totalMonthly) + '/mo';
+
+        // Performance note
+        var perfNote = document.getElementById('builderPerfNote');
+        if (perfNote) perfNote.style.display = (perfBooking && perfBooking.checked) ? 'block' : 'none';
+
+        // Enterprise note
+        var entNote = document.getElementById('builderEnterpriseNote');
+        if (entNote) entNote.style.display = isEnterprise ? 'block' : 'none';
+    }
+
+    /* ---- Service Request Modal ---- */
+    window.openServiceRequestModal = function(packageId) {
+        var modal = document.getElementById('serviceRequestModal');
+        if (!modal) return;
+        var summary = document.getElementById('modalPlanSummary');
+        if (summary) {
+            var label = packageId ? packageId.replace(/-/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); }) : 'Custom Package';
+            summary.innerHTML = '<strong>' + label + '</strong>';
         }
-        
-        function getDefaultPricing() {
-            return {
-                sale: { active: false },
-                plans: [
-                    { id: 'starter', name: 'Starter', price: 1899, setup: 0, featured: true, description: 'Most popular plan' }
-                ],
-                glamPlans: [],
-                tieredAddons: [],
-                flatAddons: []
-            };
-        }
-        
-        // ============================================
-        // TAB NAVIGATION
-        // ============================================
-        
-        function setupTabs() {
-            const tabs = document.querySelectorAll('.package-tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.dataset.tab;
-                    switchTab(tabId);
-                    
-                    // Track tab switch
-                    if (typeof Analytics !== 'undefined') {
-                        Analytics.trackCTA('tab_switch', { tab: tabId });
-                    }
-                });
-            });
-        }
-        
-        function switchTab(tabId) {
-            // Update tab buttons
-            document.querySelectorAll('.package-tab').forEach(t => {
-                t.classList.remove('active');
-                t.setAttribute('aria-selected', 'false');
-            });
-            const activeTab = document.querySelector(`[data-tab="${tabId}"]`);
-            if (activeTab) {
-                activeTab.classList.add('active');
-                activeTab.setAttribute('aria-selected', 'true');
-            }
-            
-            // Update content
-            document.querySelectorAll('.package-content').forEach(c => {
-                c.classList.remove('active');
-            });
-            const activeContent = document.getElementById(tabId);
-            if (activeContent) {
-                activeContent.classList.add('active');
-            }
-            
-            // Update URL hash without scrolling
-            history.replaceState(null, null, `#${tabId}`);
-        }
-        
-        // ============================================
-        // DEEP LINKS & RECOMMENDATIONS
-        // ============================================
-        
-        function handleDeepLinks() {
-            const hash = window.location.hash.slice(1);
-            const params = new URLSearchParams(window.location.search);
-            const rec = params.get('rec');
-            
-            // If coming from quiz with recommendation
-            if (rec) {
-                switchTab(rec);
-                showRecommendedBanner(rec);
-            } else if (hash && ['starter-pack', 'growth-engine', 'operator'].includes(hash)) {
-                switchTab(hash);
-            }
-        }
-        
-        function showRecommendedBanner(packageId) {
-            const banner = document.getElementById('recommendedBanner');
-            const text = document.getElementById('recommendedText');
-            if (!banner) return;
-            
-            const names = {
-                'starter-pack': 'Starter Pack',
-                'growth-engine': 'Growth Engine',
-                'operator': 'Operator'
-            };
-            
-            text.textContent = `Based on your quiz answers, ${names[packageId] || packageId} looks like the best fit for your business.`;
-            banner.classList.add('show');
-        }
-        
-        // ============================================
-        // PACKAGE SELECTION (from tier cards)
-        // ============================================
-        
-        window.startPackage = function(packageId, price, isOneTime) {
-            selectedPackage = { id: packageId, price: price, isOneTime: isOneTime };
-            
-            // Pre-fill modal
-            const summary = document.getElementById('modalPlanSummary');
-            if (summary) {
-                const formattedPrice = isOneTime ? `$${price.toLocaleString()} one-time` : `$${price.toLocaleString()}/mo`;
-                summary.innerHTML = `<strong>${formatPackageName(packageId)}</strong> — ${formattedPrice}`;
-            }
-            
-            // Open modal
-            openServiceRequestModal(packageId);
-            
-            // Track
-            if (typeof Analytics !== 'undefined') {
-                Analytics.trackCTA('start_package', { package: packageId, price: price });
-            }
-        };
-        
-        function formatPackageName(id) {
-            const names = {
-                'starter-lite': 'Starter Lite',
-                'starter-standard': 'Starter Standard',
-                'starter-plus': 'Starter Plus',
-                'growth-lite': 'Growth Lite',
-                'growth-standard': 'Growth Standard',
-                'growth-plus': 'Growth Plus',
-                'operator-standard': 'Operator Standard',
-                'operator-pro': 'Operator Pro',
-                'enterprise': 'Enterprise'
-            };
-            return names[id] || id;
-        }
-        
-        // ============================================
-        // ADVANCED BUILDER
-        // ============================================
-        
-        window.toggleAdvancedBuilder = function() {
-            const builder = document.getElementById('advancedBuilder');
-            builder.classList.toggle('open');
-            
-            if (typeof Analytics !== 'undefined') {
-                Analytics.trackCTA('toggle_advanced_builder', { open: builder.classList.contains('open') });
-            }
-        };
-        
-        function renderAdvancedBuilder() {
-            renderSaleBanner();
-            renderBasePlans();
-            renderGlamPlans();
-            renderTieredAddons();
-            renderFlatAddons();
-        }
-        
-        function renderSaleBanner() {
-            const banner = document.getElementById('saleBanner');
-            if (!banner) return;
-            
-            if (sale && sale.active) {
-                banner.style.display = 'block';
-                document.getElementById('saleText').textContent = 
-                    `${sale.name || 'Sale'} — ${sale.discount}% OFF all plans!`;
-                
-                if (sale.endDate) {
-                    updateSaleTimer(sale.endDate);
-                }
-            } else {
-                banner.style.display = 'none';
-            }
-        }
-        
-        function updateSaleTimer(endDate) {
-            const timer = document.getElementById('saleTimer');
-            if (!timer) return;
-            
-            function update() {
-                const now = new Date();
-                const end = new Date(endDate);
-                const diff = end - now;
-                
-                if (diff <= 0) {
-                    timer.textContent = 'Sale ended';
-                    return;
-                }
-                
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                
-                if (days > 0) {
-                    timer.textContent = `Ends in ${days}d ${hours}h`;
-                } else {
-                    timer.textContent = `Ends in ${hours}h ${mins}m`;
-                }
-            }
-            
-            update();
-            setInterval(update, 60000);
-        }
-        
-        function renderBasePlans() {
-            const container = document.getElementById('basePlansContainer');
-            if (!container || !pricing.plans) return;
-            
-            container.innerHTML = pricing.plans.map((plan, index) => {
-                const displayPrice = getDisplayPrice(plan.price);
-                const originalPrice = plan.price;
-                const hasDiscount = sale && sale.active && !plan.custom;
-                
-                return `
-                    <label class="radio-option ${plan.featured ? 'featured' : ''} ${plan.special ? 'special' : ''}" data-plan-id="${plan.id}">
-                        <input type="radio" name="basePlan" value="${plan.id}" 
-                            data-price="${displayPrice}" 
-                            data-original="${originalPrice}"
-                            data-setup="${plan.setup}" 
-                            ${plan.custom ? 'data-custom="true"' : ''}
-                            onchange="window.PlansPage.selectPlan('${plan.id}')"
-                            ${index === 0 || plan.featured ? 'checked' : ''}>
-                        <span class="plan-content">
-                            <span class="plan-header">
-                                <strong>${escHtml(plan.name)}</strong>
-                                ${plan.featured ? '<span class="badge">Most Popular</span>' : ''}
-                                ${plan.special ? '<span class="badge special">Special</span>' : ''}
-                                ${hasDiscount ? '<span class="badge sale">' + sale.discount + '% OFF</span>' : ''}
-                            </span>
-                            <span class="plan-price">
-                                ${plan.custom ? 'Custom pricing' : `
-                                    ${hasDiscount ? '<span class="original-price">$' + formatNumber(originalPrice) + '</span>' : ''}
-                                    <span class="current-price">$${formatNumber(displayPrice)}/mo</span>
-                                    ${plan.setup > 0 ? '<span class="setup-price">+ $' + formatNumber(plan.setup) + ' setup</span>' : ''}
-                                `}
-                            </span>
-                            <small class="plan-desc">${escHtml(plan.description || '')}</small>
-                        </span>
-                    </label>
-                `;
-            }).join('');
-            
-            const featured = pricing.plans.find(p => p.featured) || pricing.plans[0];
-            if (featured) selectPlan(featured.id);
-        }
-        
-        function renderGlamPlans() {
-            const container = document.getElementById('glamPlansContainer');
-            const section = document.getElementById('glamSection');
-            if (!container || !pricing.glamPlans || pricing.glamPlans.length === 0) {
-                if (section) section.style.display = 'none';
-                return;
-            }
-            
-            container.innerHTML = pricing.glamPlans.map(plan => {
-                const displayPrice = getDisplayPrice(plan.price);
-                const hasDiscount = sale && sale.active;
-                
-                return `
-                    <label class="radio-option glam" data-plan-id="${plan.id}">
-                        <input type="radio" name="basePlan" value="${plan.id}" 
-                            data-price="${displayPrice}" 
-                            data-original="${plan.price}"
-                            data-setup="${plan.setup}"
-                            onchange="window.PlansPage.selectPlan('${plan.id}')">
-                        <span class="plan-content">
-                            <span class="plan-header">
-                                <strong>${escHtml(plan.name)}</strong>
-                                ${hasDiscount ? '<span class="badge sale">' + sale.discount + '% OFF</span>' : ''}
-                            </span>
-                            <span class="plan-price">
-                                ${hasDiscount ? '<span class="original-price">$' + formatNumber(plan.price) + '</span>' : ''}
-                                <span class="current-price">$${formatNumber(displayPrice)}/mo</span>
-                                ${plan.setup > 0 ? '<span class="setup-price">+ $' + formatNumber(plan.setup) + ' setup</span>' : ''}
-                            </span>
-                            <small class="plan-desc">${escHtml(plan.description || '')}</small>
-                        </span>
-                    </label>
-                `;
-            }).join('');
-        }
-        
-        function renderTieredAddons() {
-            const container = document.getElementById('tieredAddonsContainer');
-            if (!container || !pricing.tieredAddons) return;
-            
-            container.innerHTML = pricing.tieredAddons.map(category => `
-                <div class="addon-category" data-category="${category.id}">
-                    <div class="addon-category-title">${escHtml(category.name)}</div>
-                    <div class="radio-group compact">
-                        <label class="radio-option small">
-                            <input type="radio" name="addon_${category.id}" value="" checked
-                                onchange="window.PlansPage.selectTieredAddon('${category.id}', '')">
-                            <span>None</span>
-                        </label>
-                        ${category.tiers.map(tier => `
-                            <label class="radio-option small">
-                                <input type="radio" name="addon_${category.id}" value="${tier.id}"
-                                    data-price="${tier.price}"
-                                    data-onetime="${tier.onetime || false}"
-                                    onchange="window.PlansPage.selectTieredAddon('${category.id}', '${tier.id}')">
-                                <span>
-                                    ${escHtml(tier.name)} — 
-                                    <strong>$${formatNumber(tier.price)}</strong>
-                                    ${tier.onetime ? '<small>(one-time)</small>' : '<small>/mo</small>'}
-                                </span>
-                            </label>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function renderFlatAddons() {
-            const container = document.getElementById('flatAddonsContainer');
-            if (!container || !pricing.flatAddons) return;
-            
-            container.innerHTML = pricing.flatAddons.map(addon => `
-                <label class="checkbox-option">
-                    <input type="checkbox" value="${addon.id}"
-                        data-price="${addon.price}"
-                        data-onetime="${addon.onetime || false}"
-                        onchange="window.PlansPage.toggleFlatAddon('${addon.id}')">
-                    <span>
-                        ${escHtml(addon.name)} — 
-                        <strong>$${formatNumber(addon.price)}</strong>
-                        ${addon.onetime ? '(one-time)' : '/mo'}
-                    </span>
-                </label>
-            `).join('');
-        }
-        
-        // ============================================
-        // SELECTION HANDLERS
-        // ============================================
-        
-        function selectPlan(planId) {
-            selectedPlan = pricing.plans.find(p => p.id === planId) || 
-                          pricing.glamPlans.find(p => p.id === planId);
-            updateSummary();
-            
-            if (typeof Analytics !== 'undefined') {
-                Analytics.trackCTA('select_plan', { plan: planId });
-            }
-        }
-        
-        function selectTieredAddon(categoryId, tierId) {
-            if (tierId) {
-                const category = pricing.tieredAddons.find(c => c.id === categoryId);
-                const tier = category?.tiers.find(t => t.id === tierId);
-                if (tier) {
-                    selectedAddons.tiered[categoryId] = { ...tier, categoryName: category.name };
-                }
-            } else {
-                delete selectedAddons.tiered[categoryId];
-            }
-            updateSummary();
-        }
-        
-        function toggleFlatAddon(addonId) {
-            const idx = selectedAddons.flat.indexOf(addonId);
-            if (idx >= 0) {
-                selectedAddons.flat.splice(idx, 1);
-            } else {
-                selectedAddons.flat.push(addonId);
-            }
-            updateSummary();
-        }
-        
-        // ============================================
-        // SUMMARY & PRICING
-        // ============================================
-        
-        function getDisplayPrice(price) {
-            if (sale && sale.active && price > 0) {
-                return Math.round(price * (1 - sale.discount / 100));
-            }
-            return price;
-        }
-        
-        function updateSummary() {
-            if (!selectedPlan) return;
-            
-            const hasDiscount = sale && sale.active && !selectedPlan.custom;
-            
-            document.getElementById('summaryPlanName').textContent = selectedPlan.name;
-            
-            const originalRow = document.getElementById('summaryOriginalRow');
-            if (hasDiscount) {
-                originalRow.style.display = 'flex';
-                document.getElementById('summaryOriginalPrice').textContent = '$' + formatNumber(selectedPlan.price);
-            } else {
-                originalRow.style.display = 'none';
-            }
-            
-            let monthlyTotal = getDisplayPrice(selectedPlan.price);
-            let onetimeTotal = selectedPlan.setup || 0;
-            let addonsList = [];
-            
-            Object.values(selectedAddons.tiered).forEach(addon => {
-                if (addon.onetime) {
-                    onetimeTotal += addon.price;
-                } else {
-                    monthlyTotal += addon.price;
-                }
-                addonsList.push(`${addon.categoryName}: ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
-            });
-            
-            selectedAddons.flat.forEach(addonId => {
-                const addon = pricing.flatAddons.find(a => a.id === addonId);
-                if (addon) {
-                    if (addon.onetime) {
-                        onetimeTotal += addon.price;
-                    } else {
-                        monthlyTotal += addon.price;
-                    }
-                    addonsList.push(`${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
-                }
-            });
-            
-            document.getElementById('summaryMonthly').textContent = 
-                selectedPlan.custom ? 'Custom' : '$' + formatNumber(monthlyTotal);
-            
-            document.getElementById('summarySetup').textContent = '$' + formatNumber(onetimeTotal);
-            document.getElementById('summarySetupRow').style.display = onetimeTotal > 0 ? 'flex' : 'none';
-            
-            document.getElementById('summaryFirstMonth').textContent = 
-                selectedPlan.custom ? 'Contact us' : '$' + formatNumber(monthlyTotal + onetimeTotal);
-            
-            const addonsSection = document.getElementById('summaryAddons');
-            const addonListEl = document.getElementById('summaryAddonsList');
-            if (addonsList.length > 0) {
-                addonsSection.style.display = 'block';
-                addonListEl.innerHTML = addonsList.map(a => `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">• ${escHtml(a)}</div>`).join('');
-            } else {
-                addonsSection.style.display = 'none';
-            }
-        }
-        
-        // ============================================
-        // ACTIONS
-        // ============================================
-        
-        window.copyQuote = function() {
-            if (!selectedPlan) return;
-            
-            const hasDiscount = sale && sale.active && !selectedPlan.custom;
-            let quote = `Boss Booker Quote\n${'='.repeat(30)}\n\n`;
-            quote += `Plan: ${selectedPlan.name}\n`;
-            
-            if (hasDiscount) {
-                quote += `Original: $${formatNumber(selectedPlan.price)}/mo\n`;
-                quote += `Sale Price: $${formatNumber(getDisplayPrice(selectedPlan.price))}/mo (${sale.discount}% off)\n`;
-            } else if (!selectedPlan.custom) {
-                quote += `Monthly: $${formatNumber(getDisplayPrice(selectedPlan.price))}/mo\n`;
-            }
-            
-            if (selectedPlan.setup > 0) {
-                quote += `Setup: $${formatNumber(selectedPlan.setup)}\n`;
-            }
-            
-            const addonLines = [];
-            Object.values(selectedAddons.tiered).forEach(addon => {
-                addonLines.push(`  - ${addon.categoryName}: ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
-            });
-            selectedAddons.flat.forEach(addonId => {
-                const addon = pricing.flatAddons.find(a => a.id === addonId);
-                if (addon) {
-                    addonLines.push(`  - ${addon.name} ($${formatNumber(addon.price)}${addon.onetime ? ' one-time' : '/mo'})`);
-                }
-            });
-            
-            if (addonLines.length > 0) {
-                quote += `\nAdd-ons:\n${addonLines.join('\n')}\n`;
-            }
-            
-            quote += `\n${'='.repeat(30)}\n`;
-            quote += `Generated: ${new Date().toLocaleDateString()}\n`;
-            quote += `Contact: (602) 842-2772 | help@bossbooker.com`;
-            
-            navigator.clipboard.writeText(quote).then(() => {
-                alert('Quote copied to clipboard!');
-            }).catch(() => {
-                prompt('Copy this quote:', quote);
-            });
-        };
-        
-        window.openServiceRequestModal = function(packageId) {
-            const modal = document.getElementById('serviceRequestModal');
-            if (!modal) return;
-            
-            const summary = document.getElementById('modalPlanSummary');
-            if (summary) {
-                if (selectedPackage) {
-                    const formattedPrice = selectedPackage.isOneTime ? 
-                        `$${selectedPackage.price.toLocaleString()} one-time` : 
-                        `$${selectedPackage.price.toLocaleString()}/mo`;
-                    summary.innerHTML = `<strong>${formatPackageName(selectedPackage.id)}</strong> — ${formattedPrice}`;
-                } else if (selectedPlan) {
-                    summary.innerHTML = `
-                        <strong>${selectedPlan.name}</strong> — 
-                        ${selectedPlan.custom ? 'Custom pricing' : '$' + formatNumber(getDisplayPrice(selectedPlan.price)) + '/mo'}
-                        ${Object.keys(selectedAddons.tiered).length + selectedAddons.flat.length > 0 ? 
-                            ' + ' + (Object.keys(selectedAddons.tiered).length + selectedAddons.flat.length) + ' add-on(s)' : ''}
-                    `;
-                } else if (packageId === 'enterprise') {
-                    summary.innerHTML = `<strong>Enterprise</strong> — Custom pricing`;
-                }
-            }
-            
-            modal.style.display = 'flex';
-        };
-        
-        window.closeServiceRequestModal = function() {
-            const modal = document.getElementById('serviceRequestModal');
-            if (modal) modal.style.display = 'none';
-            selectedPackage = null; // Reset
-        };
-        
-        function handleFormSubmit(e) {
+        modal.style.display = 'flex';
+    };
+    window.closeServiceRequestModal = function() {
+        var modal = document.getElementById('serviceRequestModal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    /* ---- Service Request Form Submit ---- */
+    var srForm = document.getElementById('serviceRequestForm');
+    if (srForm) {
+        srForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const form = e.target;
-            const formData = new FormData(form);
-            
-            const planInfo = selectedPackage || selectedPlan;
-            
-            const data = {
-                companyName: formData.get('companyName'),
-                contactName: formData.get('contactName'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
-                companySize: formData.get('companySize'),
-                notes: formData.get('notes'),
-                plan: selectedPackage ? formatPackageName(selectedPackage.id) : (selectedPlan?.name || 'Unknown'),
-                monthlyTotal: selectedPackage ? 
-                    (selectedPackage.isOneTime ? `$${selectedPackage.price} one-time` : `$${selectedPackage.price}/mo`) :
-                    (selectedPlan?.custom ? 'Custom' : '$' + formatNumber(getDisplayPrice(selectedPlan?.price || 0))),
-                setupFee: selectedPlan ? '$' + formatNumber(selectedPlan.setup || 0) : '$0',
-                addons: [
-                    ...Object.values(selectedAddons.tiered).map(a => a.name),
-                    ...selectedAddons.flat.map(id => pricing.flatAddons.find(a => a.id === id)?.name).filter(Boolean)
-                ],
-                source: 'plans_page'
-            };
-            
-            if (typeof DataStore !== 'undefined') {
-                DataStore.savePlanRequest({
-                    ...data,
-                    status: 'new',
-                    createdAt: Date.now()
-                });
-            }
-            
-            if (typeof Analytics !== 'undefined') {
-                Analytics.trackCTA('plan_request', { plan: data.plan });
-            }
-            
+            var formData = new FormData(srForm);
+            var data = {};
+            formData.forEach(function(v, k) { data[k] = v; });
+            var summaryEl = document.getElementById('modalPlanSummary');
+            if (summaryEl) data.selectedPackage = summaryEl.textContent;
+            console.log('Service request submitted:', data);
+            alert('Thank you! Your plan request has been submitted. We will be in touch within 1 business day.');
             closeServiceRequestModal();
-            alert('Thank you! Your plan request has been submitted. We\'ll be in touch within 24 hours.');
-            form.reset();
-        }
-        
-        // ============================================
-        // UTILITIES
-        // ============================================
-        
-        function formatNumber(num) {
-            return num.toLocaleString();
-        }
-        
-        function escHtml(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-        
-        // ============================================
-        // EXPOSE TO GLOBAL
-        // ============================================
-        
-        window.PlansPage = {
-            selectPlan,
-            selectTieredAddon,
-            toggleFlatAddon
-        };
-        
-    })();
-    
-    // ============================================
-    // SMALL BUSINESS STARTER KIT TOGGLE
-    // ============================================
-    window.toggleSmallBusinessKit = function() {
-        const checkbox = document.getElementById('smallBusinessToggle');
-        const card = document.getElementById('starterLiteCard');
-        const title = document.getElementById('starterLiteTitle');
-        const who = document.getElementById('starterLiteWho');
-        const price = document.getElementById('starterLitePrice');
-        const btn = document.getElementById('starterLiteBtn');
-        
-        if (checkbox.checked) {
-            // Switch to Small Business Starter Kit
-            card.style.borderColor = 'var(--primary-color)';
-            card.style.background = 'linear-gradient(135deg, rgba(255, 46, 190, 0.08), rgba(255, 107, 53, 0.05))';
-            title.textContent = '⭐ Small Business Starter Kit';
-            who.textContent = 'Special for businesses under 10 employees';
-            price.innerHTML = '$199<small>/mo</small> <span style="font-size:0.8rem;color:var(--text-muted);">+ $399 setup</span>';
-            btn.textContent = 'Get Starter Kit →';
-            btn.className = 'btn btn-primary';
-            btn.setAttribute('onclick', "startPackage('smallbusiness', 199, false, 399)");
-        } else {
-            // Revert to Starter Lite
-            card.style.borderColor = '';
-            card.style.background = '';
-            title.textContent = 'Starter Lite';
-            who.textContent = 'For solopreneurs testing the waters';
-            price.innerHTML = '$499 <small>one-time</small>';
-            btn.textContent = 'Start Lite →';
-            btn.className = 'btn btn-secondary';
-            btn.setAttribute('onclick', "startPackage('starter-lite', 499, true)");
-        }
+            srForm.reset();
+            if (typeof Analytics !== 'undefined') {
+                Analytics.trackCTA('plan_request_submitted', data);
+            }
+        });
+    }
+
+    /* ---- Business Card Modal ---- */
+    var BUSINESS_CARD_PRICING = {
+        template: { single: { '100': 75, '250': 120, '1000': 200 }, double: { '100': 95, '250': 150, '1000': 260 } },
+        custom:   { single: { '100': 150, '250': 200, '1000': 350 }, double: { '100': 190, '250': 260, '1000': 440 } },
+        addon:    { template: { single: 25, double: 35 }, custom: { single: 40, double: 55 } }
     };
-    
-    // ============================================
-    // BUSINESS CARD FUNCTIONS
-    // ============================================
-    const BUSINESS_CARD_PRICING = {
-        template: { single: { 100: 75, 250: 125, 1000: 325 }, double: { 100: 95, 250: 155, 1000: 395 } },
-        custom: { single: { 100: 165, 250: 245, 1000: 525 }, double: { 100: 215, 250: 315, 1000: 625 } },
-        addon: { template: { single: 55, double: 75 }, custom: { single: 95, double: 125 } }
-    };
-    
-    let businessCardSelection = null;
-    
+    var businessCardSelection = null;
+    window.businessCardSelection = businessCardSelection;
+
     window.openBusinessCardModal = function() {
-        const modal = document.getElementById('businessCardModal');
-        if (modal) {
-            updateBusinessCardPrice();
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
+        var modal = document.getElementById('businessCardModal');
+        if (modal) { updateBusinessCardPrice(); modal.style.display = 'block'; }
     };
-    
     window.closeBusinessCardModal = function() {
-        const modal = document.getElementById('businessCardModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = '';
-        }
+        var modal = document.getElementById('businessCardModal');
+        if (modal) modal.style.display = 'none';
     };
-    
-    window.updateBusinessCardPrice = function() {
-        const pkg = document.querySelector('input[name="bcPackage"]:checked')?.value || 'template';
-        const sides = document.querySelector('input[name="bcSides"]:checked')?.value || 'single';
-        const qty = document.querySelector('input[name="bcQuantity"]:checked')?.value || '100';
-        const addon = document.getElementById('bcAddon100')?.checked || false;
-        
-        let total = BUSINESS_CARD_PRICING[pkg][sides][qty];
+
+    function updateBusinessCardPrice() {
+        var pkg = (document.querySelector('input[name="bcPackage"]:checked') || {}).value || 'template';
+        var sides = (document.querySelector('input[name="bcSides"]:checked') || {}).value || 'single';
+        var qty = (document.querySelector('input[name="bcQuantity"]:checked') || {}).value || '100';
+        var addon = document.getElementById('bcAddon100') ? document.getElementById('bcAddon100').checked : false;
+
+        var total = BUSINESS_CARD_PRICING[pkg][sides][qty];
         if (addon) total += BUSINESS_CARD_PRICING.addon[pkg][sides];
-        
-        const totalEl = document.getElementById('bcTotalPrice');
-        const breakdownEl = document.getElementById('bcBreakdown');
-        
-        if (totalEl) totalEl.textContent = '$' + total.toLocaleString();
+
+        var priceEl = document.getElementById('bcTotalPrice');
+        if (priceEl) priceEl.textContent = '$' + total.toLocaleString();
+
+        var breakdownEl = document.getElementById('bcBreakdown');
         if (breakdownEl) {
-            breakdownEl.textContent = `Package: ${pkg.charAt(0).toUpperCase() + pkg.slice(1)} • Sides: ${sides.charAt(0).toUpperCase() + sides.slice(1)} • Qty: ${qty} • Add-on: ${addon ? 'Yes' : 'No'}`;
+            var pkgLabel = pkg.charAt(0).toUpperCase() + pkg.slice(1);
+            var sidesLabel = sides.charAt(0).toUpperCase() + sides.slice(1);
+            breakdownEl.textContent = 'Package: ' + pkgLabel + ' \u2022 Sides: ' + sidesLabel + ' \u2022 Qty: ' + qty + ' \u2022 Add-on: ' + (addon ? 'Yes (+100)' : 'No');
         }
-    };
-    
+    }
+
     window.applyBusinessCardSelection = function() {
-        const pkg = document.querySelector('input[name="bcPackage"]:checked')?.value || 'template';
-        const sides = document.querySelector('input[name="bcSides"]:checked')?.value || 'single';
-        const qty = document.querySelector('input[name="bcQuantity"]:checked')?.value || '100';
-        const addon = document.getElementById('bcAddon100')?.checked || false;
-        
-        let total = BUSINESS_CARD_PRICING[pkg][sides][qty];
+        var pkg = (document.querySelector('input[name="bcPackage"]:checked') || {}).value || 'template';
+        var sides = (document.querySelector('input[name="bcSides"]:checked') || {}).value || 'single';
+        var qty = (document.querySelector('input[name="bcQuantity"]:checked') || {}).value || '100';
+        var addon = document.getElementById('bcAddon100') ? document.getElementById('bcAddon100').checked : false;
+
+        var total = BUSINESS_CARD_PRICING[pkg][sides][qty];
         if (addon) total += BUSINESS_CARD_PRICING.addon[pkg][sides];
-        
-        businessCardSelection = { package: pkg, sides, quantity: qty, addon, total };
-        
-        // Update summary in add-ons section
-        const summaryEl = document.getElementById('businessCardSummary');
+
+        businessCardSelection = { package: pkg, sides: sides, quantity: qty, addon: addon, total: total };
+        window.businessCardSelection = businessCardSelection;
+
+        var summaryEl = document.getElementById('businessCardSummary');
         if (summaryEl) {
-            const pkgLabel = pkg.charAt(0).toUpperCase() + pkg.slice(1);
-            const sidesLabel = sides.charAt(0).toUpperCase() + sides.slice(1);
-            const addonLabel = addon ? ' + 100 more' : '';
-            summaryEl.innerHTML = `<strong>Selected:</strong> ${pkgLabel}, ${sidesLabel}-sided, ${qty} cards${addonLabel} — <strong style="color: var(--primary-color);">$${total.toLocaleString()}</strong> (one-time)`;
+            var pkgLabel = pkg.charAt(0).toUpperCase() + pkg.slice(1);
+            var sidesLabel = sides.charAt(0).toUpperCase() + sides.slice(1);
+            var addonLabel = addon ? ' + 100 more' : '';
+            summaryEl.innerHTML = '<strong>Selected:</strong> ' + pkgLabel + ', ' + sidesLabel + '-sided, ' + qty + ' cards' + addonLabel + ' \u2014 <strong style="color: var(--primary-color);">$' + total.toLocaleString() + '</strong> (one-time)';
             summaryEl.style.display = 'block';
         }
-        
+
         closeBusinessCardModal();
-        
+
+        // Update builder if on builder tab
+        if (typeof updateBuilder === 'function') updateBuilder();
+
         if (typeof Analytics !== 'undefined') {
-            Analytics.trackCTA('business_cards_config', { pkg, sides, qty, total });
+            Analytics.trackCTA('business_cards_config', { pkg: pkg, sides: sides, qty: qty, total: total });
         }
     };
     </script>
