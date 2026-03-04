@@ -262,6 +262,9 @@
 
     // Resolve any referenced disclosure texts
     const resolvedDisclosures = (plan.disclosures || []).map(function (key) {
+      if (!DISCLOSURES[key]) {
+        console.warn('[BossBookerPricing] Unknown disclosure key: ' + key);
+      }
       return DISCLOSURES[key] || key;
     });
 
